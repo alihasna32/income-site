@@ -1,3 +1,0 @@
-module.exports=[16801,a=>{"use strict";a.s(["default",()=>c]);var b=a.i(7997);function c(){return(0,b.jsx)("div",{className:"flex min-h-[50dvh] items-center justify-center",children:(0,b.jsxs)("div",{className:"flex flex-col items-center gap-3",children:[(0,b.jsx)("span",{className:"coin-burst relative flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-gold to-orange text-2xl text-plum shadow-glow animate-pulse","aria-hidden":!0,children:"🪙"}),(0,b.jsx)("p",{className:"text-sm font-semibold text-muted",children:"Loading your coins…"})]})})}}];
-
-//# sourceMappingURL=src_app_loading_285101a8.js.map

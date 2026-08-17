@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "coinquest",
+  "name": "bd-income-site",
   "pages_build_output_dir": ".open-next/pages-dist",
   "compatibility_date": "2025-05-22",
   "compatibility_flags": ["nodejs_compat"],
