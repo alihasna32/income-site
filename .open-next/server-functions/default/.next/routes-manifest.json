@@ -1,0 +1,334 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/admin/games/[id]",
+      "regex": "^/api/admin/games/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/games/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/users/[id]/role",
+      "regex": "^/api/admin/users/([^/]+?)/role(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/users/(?<nxtPid>[^/]+?)/role(?:/)?$"
+    },
+    {
+      "page": "/api/admin/withdrawals/[id]",
+      "regex": "^/api/admin/withdrawals/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/withdrawals/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/challenges/[id]/submit",
+      "regex": "^/api/challenges/([^/]+?)/submit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/challenges/(?<nxtPid>[^/]+?)/submit(?:/)?$"
+    },
+    {
+      "page": "/api/games/[slug]/luck",
+      "regex": "^/api/games/([^/]+?)/luck(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/games/(?<nxtPslug>[^/]+?)/luck(?:/)?$"
+    },
+    {
+      "page": "/api/games/[slug]/session",
+      "regex": "^/api/games/([^/]+?)/session(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/games/(?<nxtPslug>[^/]+?)/session(?:/)?$"
+    },
+    {
+      "page": "/api/games/[slug]/status",
+      "regex": "^/api/games/([^/]+?)/status(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/games/(?<nxtPslug>[^/]+?)/status(?:/)?$"
+    },
+    {
+      "page": "/dashboard/games/[slug]",
+      "regex": "^/dashboard/games/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/dashboard/games/(?<nxtPslug>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/about",
+      "regex": "^/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/about(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/games",
+      "regex": "^/admin/games(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/games(?:/)?$"
+    },
+    {
+      "page": "/admin/rewards",
+      "regex": "^/admin/rewards(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/rewards(?:/)?$"
+    },
+    {
+      "page": "/admin/settings",
+      "regex": "^/admin/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/settings(?:/)?$"
+    },
+    {
+      "page": "/admin/users",
+      "regex": "^/admin/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/users(?:/)?$"
+    },
+    {
+      "page": "/admin/withdrawals",
+      "regex": "^/admin/withdrawals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/withdrawals(?:/)?$"
+    },
+    {
+      "page": "/challenges",
+      "regex": "^/challenges(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/challenges(?:/)?$"
+    },
+    {
+      "page": "/contact",
+      "regex": "^/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contact(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/achievements",
+      "regex": "^/dashboard/achievements(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/achievements(?:/)?$"
+    },
+    {
+      "page": "/dashboard/challenges",
+      "regex": "^/dashboard/challenges(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/challenges(?:/)?$"
+    },
+    {
+      "page": "/dashboard/challenges/math",
+      "regex": "^/dashboard/challenges/math(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/challenges/math(?:/)?$"
+    },
+    {
+      "page": "/dashboard/games",
+      "regex": "^/dashboard/games(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/games(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leaderboard",
+      "regex": "^/dashboard/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leaderboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/math-challenge",
+      "regex": "^/dashboard/math\\-challenge(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/math\\-challenge(?:/)?$"
+    },
+    {
+      "page": "/dashboard/missions",
+      "regex": "^/dashboard/missions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/missions(?:/)?$"
+    },
+    {
+      "page": "/dashboard/notifications",
+      "regex": "^/dashboard/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/notifications(?:/)?$"
+    },
+    {
+      "page": "/dashboard/profile",
+      "regex": "^/dashboard/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/profile(?:/)?$"
+    },
+    {
+      "page": "/dashboard/referral",
+      "regex": "^/dashboard/referral(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/referral(?:/)?$"
+    },
+    {
+      "page": "/dashboard/rewards",
+      "regex": "^/dashboard/rewards(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/rewards(?:/)?$"
+    },
+    {
+      "page": "/dashboard/scratch",
+      "regex": "^/dashboard/scratch(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/scratch(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings",
+      "regex": "^/dashboard/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/dashboard/transactions",
+      "regex": "^/dashboard/transactions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/transactions(?:/)?$"
+    },
+    {
+      "page": "/dashboard/wallet",
+      "regex": "^/dashboard/wallet(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/wallet(?:/)?$"
+    },
+    {
+      "page": "/faq",
+      "regex": "^/faq(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/faq(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/forgot-password",
+      "regex": "^/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/games",
+      "regex": "^/games(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/games(?:/)?$"
+    },
+    {
+      "page": "/how-it-works",
+      "regex": "^/how\\-it\\-works(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/how\\-it\\-works(?:/)?$"
+    },
+    {
+      "page": "/leaderboard",
+      "regex": "^/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/leaderboard(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/register",
+      "regex": "^/register(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/register(?:/)?$"
+    },
+    {
+      "page": "/rewards",
+      "regex": "^/rewards(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/rewards(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
