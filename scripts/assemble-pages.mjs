@@ -8,7 +8,7 @@ const dist = join(openNext, "pages-dist");
 if (existsSync(dist)) rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
-cpSync(join(openNext, "assets"), join(dist, "assets"), { recursive: true });
+cpSync(join(openNext, "assets"), dist, { recursive: true });
 copyFileSync(join(openNext, "worker.js"), join(dist, "_worker.js"));
 
 for (const dir of ["cloudflare", "middleware", ".build", "server-functions", "dynamodb-provider"]) {
@@ -16,7 +16,7 @@ for (const dir of ["cloudflare", "middleware", ".build", "server-functions", "dy
   if (existsSync(src)) cpSync(src, join(dist, dir), { recursive: true });
 }
 
-const count = readdirSync(join(dist, "assets"), { recursive: true }).filter((p) =>
-  statSync(join(dist, "assets", p)).isFile()
+const count = readdirSync(dist, { recursive: true }).filter((p) =>
+  statSync(join(dist, p)).isFile()
 ).length;
 console.log(`pages-dist assembled at ${dist} (${count} asset files)`);

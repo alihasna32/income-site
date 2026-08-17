@@ -7,6 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDateTime } from "@/lib/utils/format";
 import { TRANSACTION_TYPES } from "@/lib/constants/transactions";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Overview",
 };

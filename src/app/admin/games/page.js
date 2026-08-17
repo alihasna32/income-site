@@ -3,6 +3,8 @@ import { BackButton } from "@/components/shared/BackButton";
 import { GamesTable } from "@/components/admin/GamesTable";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Games",
 };
