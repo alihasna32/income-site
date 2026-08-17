@@ -22,17 +22,29 @@ static assets (JS/CSS/fonts) are served by the worker through the ASSETS binding
 npx opennextjs-cloudflare build -c wrangler.build.jsonc
 
 # 2. Assemble the Pages deploy directory (copy in the worker + sidecar dirs).
-Remove-Item -Recurse -Force .open-next/pages-dist -ErrorAction SilentlyContinue
-Copy-Item -Recurse .open-next/assets .open-next/pages-dist
-Copy-Item .open-next/worker.js .open-next/pages-dist/_worker.js
-foreach ($d in @("cloudflare","middleware",".build","server-functions","dynamodb-provider")) {
-  if (Test-Path ".open-next/$d") { Copy-Item -Recurse ".open-next/$d" ".open-next/pages-dist/$d" }
-}
+node scripts/assemble-pages.mjs
 
 # 3. Deploy to Cloudflare Pages.
 #    wrangler.jsonc (pages-safe config: no "assets" key — Pages rejects it) is read from cwd.
 npx wrangler pages deploy .open-next/pages-dist --project-name bd-income-site --branch main --commit-dirty true
 ```
+
+## Automatic deploys (CI/CD)
+
+Pushes to `main` are deployed automatically by GitHub Actions
+(`.github/workflows/deploy.yml`): `npm ci` → OpenNext build (`-c wrangler.build.jsonc`)
+→ `node scripts/assemble-pages.mjs` → `wrangler pages deploy`.
+
+Required GitHub repo secret (Actions → Settings → Secrets and variables):
+
+- `CLOUDFLARE_API_TOKEN` — API token with **Cloudflare Pages:Edit** permission
+  (dashboard → My Profile → API Tokens → Create Token → "Cloudflare Pages" → Edit).
+  Only this one secret is needed: the workflow hardcodes the account id and the
+  public `NEXT_PUBLIC_*` values come from the committed `.env.production`.
+  Runtime secrets (service role key, Resend) stay on the Pages project itself
+  and never enter the repo.
+
+Once the secret is added, the next push to `main` triggers a deploy automatically.
 
 ## Notes / gotchas
 

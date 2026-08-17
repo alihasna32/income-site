@@ -28,7 +28,7 @@ export default function ContactPage() {
       });
       if (res.ok) {
         setStatus("sent");
-        toast("Message sent â€” thanks for reaching out!", "success");
+        toast("Message sent — thanks for reaching out!", "success");
         e.currentTarget.reset();
       } else {
         setStatus("idle");
@@ -88,7 +88,7 @@ export default function ContactPage() {
               required
               rows="5"
               className="textarea textarea-bordered"
-              placeholder="Tell us everythingâ€¦"
+              placeholder="Tell us everything…"
             />
           </label>
           <button

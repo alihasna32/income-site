@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { WalletProvider } from "@/hooks/WalletProvider";
 import { getSession } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { SetupRequired } from "@/components/shared/SetupRequired";
 
@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }) {
   const user = await getSession();
   if (!user) redirect("/login");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let profile = null;
   let unreadCount = 0;
 

@@ -105,7 +105,7 @@ export default async function MissionsPage() {
         <EmptyState
           icon={Target}
           title="No missions yet"
-          description="Missions are on the way â€” check back soon!"
+          description="Missions are on the way — check back soon!"
         />
       )}
     </div>

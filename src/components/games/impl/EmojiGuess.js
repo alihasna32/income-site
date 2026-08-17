@@ -5,16 +5,16 @@ import { GameFrame } from "@/components/games/impl/GameFrame";
 import { cn } from "@/lib/utils/cn";
 
 const PUZZLES = [
-  { emoji: "ðŸŒžâ˜€ï¸", answer: "Sunny", options: ["Rainy", "Sunny", "Cloudy", "Windy"] },
-  { emoji: "ðŸš€ðŸŒ•", answer: "Moon landing", options: ["Space station", "Moon landing", "Alien visit", "Rocket race"] },
-  { emoji: "ðŸ•â¤ï¸", answer: "Love for pizza", options: ["Love for pizza", "Pizza party", "Italian food", "Cheese craving"] },
-  { emoji: "ðŸ±ðŸ’¤", answer: "Cat nap", options: ["Cat nap", "Sleeping cat", "Lazy day", "Bedtime"] },
-  { emoji: "ðŸŽ¬ðŸ¿", answer: "Movie night", options: ["Movie night", "Cinema date", "Popcorn time", "Film festival"] },
-  { emoji: "ðŸƒðŸ’¨", answer: "Running fast", options: ["Running fast", "Speed run", "Marathon", "Quick escape"] },
-  { emoji: "ðŸŒŠðŸ„", answer: "Surfing", options: ["Surfing", "Beach day", "Swimming", "Ocean fun"] },
-  { emoji: "ðŸ“šðŸ¦‰", answer: "Smart student", options: ["Smart student", "Night owl", "Book lover", "Study time"] },
-  { emoji: "â˜•ðŸŒ…", answer: "Morning coffee", options: ["Morning coffee", "Sunrise cafÃ©", "Wake up", "Breakfast time"] },
-  { emoji: "ðŸŽ‚ðŸŽ‰", answer: "Birthday party", options: ["Birthday party", "Cake celebration", "Party time", "Special day"] },
+  { emoji: "🌞☀️", answer: "Sunny", options: ["Rainy", "Sunny", "Cloudy", "Windy"] },
+  { emoji: "🚀🌕", answer: "Moon landing", options: ["Space station", "Moon landing", "Alien visit", "Rocket race"] },
+  { emoji: "🍕❤️", answer: "Love for pizza", options: ["Love for pizza", "Pizza party", "Italian food", "Cheese craving"] },
+  { emoji: "🐱💤", answer: "Cat nap", options: ["Cat nap", "Sleeping cat", "Lazy day", "Bedtime"] },
+  { emoji: "🎬🍿", answer: "Movie night", options: ["Movie night", "Cinema date", "Popcorn time", "Film festival"] },
+  { emoji: "🏃💨", answer: "Running fast", options: ["Running fast", "Speed run", "Marathon", "Quick escape"] },
+  { emoji: "🌊🏄", answer: "Surfing", options: ["Surfing", "Beach day", "Swimming", "Ocean fun"] },
+  { emoji: "📚🦉", answer: "Smart student", options: ["Smart student", "Night owl", "Book lover", "Study time"] },
+  { emoji: "☕🌅", answer: "Morning coffee", options: ["Morning coffee", "Sunrise café", "Wake up", "Breakfast time"] },
+  { emoji: "🎂🎉", answer: "Birthday party", options: ["Birthday party", "Cake celebration", "Party time", "Special day"] },
 ];
 
 export function EmojiGuess({ config, onFinish }) {

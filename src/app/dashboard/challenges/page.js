@@ -33,7 +33,7 @@ export default async function ChallengesPage() {
         <EmptyState
           icon={CalendarDays}
           title="No active challenge"
-          description="Check back soon â€” challenges rotate daily."
+          description="Check back soon — challenges rotate daily."
         />
       )}
 
@@ -50,7 +50,7 @@ export default async function ChallengesPage() {
               </span>
               <div>
                 <h3 className="font-bold text-plum group-hover:text-secondary">Daily Math</h3>
-                <p className="text-xs text-muted">One question a day Â· streak rewards</p>
+                <p className="text-xs text-muted">One question a day · streak rewards</p>
               </div>
             </div>
             <span className="btn btn-outline btn-sm mt-4 self-start">
@@ -67,7 +67,7 @@ export default async function ChallengesPage() {
               </span>
               <div>
                 <h3 className="font-bold text-plum group-hover:text-secondary">Math Challenge</h3>
-                <p className="text-xs text-muted">4 difficulties Â· timed Â· up to 120 coins</p>
+                <p className="text-xs text-muted">4 difficulties · timed · up to 120 coins</p>
               </div>
             </div>
             <span className="btn btn-outline btn-sm mt-4 self-start">
@@ -84,7 +84,7 @@ export default async function ChallengesPage() {
               </span>
               <div>
                 <h3 className="font-bold text-plum group-hover:text-secondary">Scratch Cards</h3>
-                <p className="text-xs text-muted">One daily card Â· server-picked prizes</p>
+                <p className="text-xs text-muted">One daily card · server-picked prizes</p>
               </div>
             </div>
             <span className="btn btn-outline btn-sm mt-4 self-start">

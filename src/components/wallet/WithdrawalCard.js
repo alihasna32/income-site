@@ -42,7 +42,7 @@ export function WithdrawalCard({ minAmount, coins, totalWithdrawn, pendingAmount
       if (res.ok) {
         setDone(data.withdrawal);
         refreshWallet();
-        toast("Withdrawal requested â€” pending review", "success");
+        toast("Withdrawal requested — pending review", "success");
       } else {
         toast(data.error || "Could not submit", "error");
       }
@@ -120,7 +120,7 @@ export function WithdrawalCard({ minAmount, coins, totalWithdrawn, pendingAmount
                 required
               />
               <p className="text-xs text-muted mt-1">
-                Minimum {minLabel} Â· you have {new Intl.NumberFormat("en-US").format(coins)} available
+                Minimum {minLabel} · you have {new Intl.NumberFormat("en-US").format(coins)} available
               </p>
             </div>
             <div>

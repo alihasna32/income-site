@@ -65,7 +65,7 @@ export function MathChallengeGame() {
             toast(`+${data.coins} coins earned!`, "success");
             refresh();
           } else {
-            toast("No reward this time â€” try again!", "info");
+            toast("No reward this time — try again!", "info");
           }
         } else {
           toast(data.error || "Could not submit", "error");
@@ -131,7 +131,7 @@ export function MathChallengeGame() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-plum">Math Challenge</h1>
           <p className="mt-1 text-sm text-muted">
             Timed arithmetic, percentages, sequences and logic. Answers are
-            validated on the server â€” no shortcuts.
+            validated on the server — no shortcuts.
           </p>
         </div>
 
@@ -161,10 +161,10 @@ export function MathChallengeGame() {
             <Timer className="size-4 text-secondary" /> Good to know
           </p>
           <ul className="mt-3 space-y-1.5 text-sm text-muted">
-            <li>â€¢ Each difficulty has a fixed time limit â€” answer as many as you can.</li>
-            <li>â€¢ Every correct answer earns coins and XP.</li>
-            <li>â€¢ You get a fair number of scoring sessions per day.</li>
-            <li>â€¢ Questions are generated and validated entirely on the server.</li>
+            <li>• Each difficulty has a fixed time limit — answer as many as you can.</li>
+            <li>• Every correct answer earns coins and XP.</li>
+            <li>• You get a fair number of scoring sessions per day.</li>
+            <li>• Questions are generated and validated entirely on the server.</li>
           </ul>
         </div>
       </div>
@@ -198,7 +198,7 @@ export function MathChallengeGame() {
               )}
               aria-label={`${timeLeft} seconds remaining`}
             >
-              â± {timeLeft}s
+              ⏱ {timeLeft}s
             </span>
             <span className="badge badge-lg bg-base-200 text-muted">
               {answeredCount}/{session.questions.length}
@@ -243,7 +243,7 @@ export function MathChallengeGame() {
     return (
       <div className="flex min-h-64 flex-col items-center justify-center gap-3">
         <Loader2 className="size-8 animate-spin text-secondary" />
-        <p className="text-sm font-semibold text-muted">Validating your answersâ€¦</p>
+        <p className="text-sm font-semibold text-muted">Validating your answers…</p>
       </div>
     );
   }
@@ -313,7 +313,7 @@ export function MathChallengeGame() {
                 <div>
                   <p className="font-medium text-plum">{session?.questions[i]?.text}</p>
                   <p className="text-xs text-muted mt-0.5">
-                    Your answer: {answers[detail.id] ?? "â€”"} Â· Correct: {detail.answer}
+                    Your answer: {answers[detail.id] ?? "—"} · Correct: {detail.answer}
                   </p>
                 </div>
               </div>

@@ -69,7 +69,7 @@ export default async function DashboardOverview() {
           Welcome back, {profile?.display_name || "player"}!
         </h1>
         <p className="text-sm text-muted">
-          You're doing great â€” here's what's waiting for you today.
+          You're doing great — here's what's waiting for you today.
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export default async function DashboardOverview() {
         />
         <StatCard
           icon={Sparkles}
-          label={`Level ${level.level.level} Â· ${level.level.title}`}
+          label={`Level ${level.level.level} · ${level.level.title}`}
           value={`${new Intl.NumberFormat("en-US").format(profile?.xp || 0)} XP`}
           sub={
             level.next
@@ -154,7 +154,7 @@ export default async function DashboardOverview() {
             <div className="mt-4 card bg-base-100 border border-base-300 p-5 shadow-card">
               {data.missions.length === 0 ? (
                 <p className="text-sm text-muted text-center py-4">
-                  All missions complete â€” you're on fire! ðŸ”¥
+                  All missions complete — you're on fire! 🔥
                 </p>
               ) : (
                 <div className="space-y-4">

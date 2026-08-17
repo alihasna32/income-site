@@ -34,7 +34,7 @@ export default async function AchievementsPage() {
     <div className="space-y-8">
       <PageHeader
         title="Achievements"
-        description={`${unlocked.length} of ${achievements.length} unlocked â€” keep going!`}
+        description={`${unlocked.length} of ${achievements.length} unlocked — keep going!`}
       />
 
       {achievements.length === 0 ? (

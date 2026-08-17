@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 export const metadata = {
   title: "Challenges",
   description:
-    "Daily challenges, math challenges and scratch cards on CoinQuest. New puzzles every day â€” free to play.",
+    "Daily challenges, math challenges and scratch cards on CoinQuest. New puzzles every day — free to play.",
 };
 
 const CHALLENGE_TYPES = [
@@ -34,7 +34,7 @@ const CHALLENGE_TYPES = [
     icon: Ticket,
     title: "Scratch Cards",
     description:
-      "One free scratch card per day. Scratch, reveal and claim your prize. Outcomes are decided server-side â€” always fair.",
+      "One free scratch card per day. Scratch, reveal and claim your prize. Outcomes are decided server-side — always fair.",
     points: "Up to 500 coins",
     cta: "Scratch today's card",
     href: "/dashboard/scratch",

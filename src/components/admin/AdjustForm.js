@@ -34,7 +34,7 @@ export function AdjustForm() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast(`Adjusted â€” new balance ${data.newBalance}`, "success");
+        toast(`Adjusted — new balance ${data.newBalance}`, "success");
         setAmount(0);
         setReason("");
       } else {
@@ -51,7 +51,7 @@ export function AdjustForm() {
     <section className="card bg-base-100 border border-base-300 shadow-card p-6">
       <h2 className="font-bold text-plum">Manual adjustment</h2>
       <p className="mt-1 text-sm text-muted">
-        Use sparingly â€” every adjustment is written to the user's audit trail.
+        Use sparingly — every adjustment is written to the user's audit trail.
       </p>
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <input

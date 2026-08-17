@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 export const metadata = {
   title: "Rewards",
   description:
-    "See how CoinQuest rewards work â€” coins, XP, achievements, streaks and what you can do with them.",
+    "See how CoinQuest rewards work — coins, XP, achievements, streaks and what you can do with them.",
 };
 
 const REWARD_SYSTEMS = [
@@ -25,7 +25,7 @@ const REWARD_SYSTEMS = [
       "Your progression points. Every activity awards XP. As XP grows, you climb from Beginner to Living Legend with 10 levels in between.",
     tone: "bg-secondary/15 text-secondary",
     stat: "Levels",
-    statValue: "1 â†’ 10",
+    statValue: "1 → 10",
   },
   {
     icon: Trophy,

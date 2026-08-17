@@ -24,8 +24,8 @@ import { avatarGradient, initials } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 
 const AVATARS = [
-  "ðŸ¦Š", "ðŸ¼", "ðŸ¦", "ðŸ¸", "ðŸ™", "ðŸ¦„", "ðŸ¯", "ðŸ¨",
-  "ðŸ¦‰", "ðŸ¹", "ðŸº", "ðŸ¦œ", "ðŸ¢", "ðŸ³", "ðŸ¦‹", "ðŸ",
+  "🦊", "🐼", "🦁", "🐸", "🐙", "🦄", "🐯", "🐨",
+  "🦉", "🐹", "🐺", "🦜", "🐢", "🐳", "🦋", "🐝",
 ];
 
 export default function ProfilePage() {
@@ -49,7 +49,7 @@ export default function ProfilePage() {
           displayName: data.profile?.displayName || "",
           username: data.profile?.username || "",
           bio: data.profile?.bio || "",
-          avatarEmoji: data.profile?.avatarEmoji || "ðŸ¦Š",
+          avatarEmoji: data.profile?.avatarEmoji || "🦊",
         });
       })
       .catch(() => {})
@@ -142,7 +142,7 @@ export default function ProfilePage() {
               {profile?.displayName || "Player"}
             </h2>
             <p className="text-sm text-muted truncate">
-              @{profile?.username || "â€”"}
+              @{profile?.username || "—"}
             </p>
           </div>
 
@@ -278,7 +278,7 @@ export default function ProfilePage() {
               maxLength={160}
               rows={3}
               className="textarea textarea-bordered w-full mt-1"
-              placeholder="Tell the community something about youâ€¦"
+              placeholder="Tell the community something about you…"
             />
             <p className="text-right text-xs text-muted mt-1">{form.bio.length}/160</p>
           </div>

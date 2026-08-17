@@ -38,7 +38,7 @@ const EARN_OPTIONS = [
     href: "/dashboard/math-challenge",
     icon: Calculator,
     title: "Math challenge",
-    description: "Timed sessions in 4 difficulties â€” earn per correct answer.",
+    description: "Timed sessions in 4 difficulties — earn per correct answer.",
     color: "bg-secondary/15 text-secondary",
   },
   {
@@ -52,7 +52,7 @@ const EARN_OPTIONS = [
     href: "/dashboard/",
     icon: CalendarDays,
     title: "Daily reward",
-    description: "Claim once per day â€” streaks unlock bigger bonuses.",
+    description: "Claim once per day — streaks unlock bigger bonuses.",
     color: "bg-plum/10 text-plum",
   },
   {
@@ -79,7 +79,7 @@ export default async function RewardsPage() {
     <div className="space-y-8">
       <PageHeader
         title="Rewards"
-        description="Every path to earning coins â€” and what the future holds."
+        description="Every path to earning coins — and what the future holds."
       />
 
       <section className="card bg-base-100 border border-base-300 shadow-card overflow-hidden">
@@ -91,7 +91,7 @@ export default async function RewardsPage() {
             </span>
           </div>
           <p className="mt-2 text-sm text-muted">
-            Virtual coins â€” no cash value. Build streaks, climb levels and rank up.
+            Virtual coins — no cash value. Build streaks, climb levels and rank up.
           </p>
         </div>
       </section>
@@ -124,7 +124,7 @@ export default async function RewardsPage() {
         </h2>
         <p className="mt-2 text-sm text-muted max-w-2xl">
           We believe in compliant, transparent rewards. A virtual marketplace where
-          coins can be traded for digital perks is on the roadmap â€” no cash payouts,
+          coins can be traded for digital perks is on the roadmap — no cash payouts,
           ever. Get notified when it launches by watching your notifications.
         </p>
         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
