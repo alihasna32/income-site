@@ -1,0 +1,58 @@
+import {
+  Award,
+  Brain,
+  Calculator,
+  CircleDollarSign,
+  Coins,
+  Crown,
+  Disc,
+  Flag,
+  Flame,
+  Gamepad2,
+  Gift,
+  Hand,
+  Hash,
+  Layers,
+  Palette,
+  Pointer,
+  Rocket,
+  Smile,
+  Star,
+  Target,
+  Ticket,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react";
+
+const ICONS = {
+  Award,
+  Brain,
+  Calculator,
+  CircleDollarSign,
+  Coins,
+  Crown,
+  Disc,
+  Flag,
+  Flame,
+  Gamepad2,
+  Gift,
+  Hand,
+  Hash,
+  Layers,
+  Palette,
+  Pointer,
+  Rocket,
+  Smile,
+  Star,
+  Target,
+  Ticket,
+  Trophy,
+  Users,
+  Zap,
+};
+
+export function GameIcon({ name, className }) {
+  const Icon = ICONS[name] || Gamepad2;
+  return <Icon className={className} aria-hidden="true" />;
+}
