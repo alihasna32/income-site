@@ -25,6 +25,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getSession } from "@/lib/auth/session";
 import { supabaseReady } from "@/lib/supabase/env";
 import { GameIcon } from "@/components/games/GameIcon";
+import { ExternalGameCard } from "@/components/games/ExternalGameCard";
 import { TodayChallengeCard } from "@/components/dashboard/TodayChallengeCard";
 import { formatDateTime } from "@/lib/utils/format";
 import { TRANSACTION_TYPES } from "@/lib/constants/transactions";
@@ -124,7 +125,10 @@ export default async function DashboardOverview() {
               </Link>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {games.map((game) => (
+              {games.map((game) =>
+                game.embed_url ? (
+                  <ExternalGameCard key={game.slug} game={game} variant="tile" />
+                ) : (
                 <Link
                   key={game.slug}
                   href={`/dashboard/games/${game.slug}`}
@@ -138,7 +142,8 @@ export default async function DashboardOverview() {
                     +{game.config?.thresholds?.[0]?.coins || game.reward_coins} max
                   </p>
                 </Link>
-              ))}
+                )
+              )}
             </div>
           </section>
 

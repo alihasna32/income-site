@@ -124,6 +124,23 @@ export function GameShell({ game, children }) {
   }, [game.slug, refresh, toast]);
 
   const renderStage = () => {
+    if (game.embed_url) {
+      const src = `${game.embed_url.split("?")[0]}?gd_sdk_referrer_url=${encodeURIComponent(
+        typeof window !== "undefined" ? window.location.href : ""
+      )}`;
+      return (
+        <div className="h-[calc(100dvh-10rem)] min-h-[28rem] overflow-hidden rounded-box border border-base-300 bg-black">
+          <iframe
+            src={src}
+            title={game.title}
+            className="h-full w-full border-0"
+            allow="autoplay; fullscreen; gamepad"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+
     if (status === "loading") {
       return <div className="skeleton h-72 w-full rounded-box" />;
     }

@@ -2,6 +2,7 @@ export const GAME_CATEGORIES = {
   mini: "Mini Games",
   funny: "Fun & Silly",
   brain: "Brain Games",
+  arcade: "Popular Online Games",
 };
 
 export const GAMES = [

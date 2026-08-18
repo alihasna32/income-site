@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Coins, Play, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { GameIcon } from "@/components/games/GameIcon";
+import { ExternalGameCard } from "@/components/games/ExternalGameCard";
 import { getActiveGames } from "@/services/catalogService";
 import { GAME_CATEGORIES } from "@/lib/constants/games";
 
@@ -34,7 +35,10 @@ export default async function DashboardGamesPage() {
             {group.label}
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {group.games.map((game) => (
+            {group.games.map((game) =>
+              game.embed_url ? (
+                <ExternalGameCard key={game.slug} game={game} variant="full" />
+              ) : (
               <Link
                 key={game.slug}
                 href={`/dashboard/games/${game.slug}`}
@@ -67,7 +71,8 @@ export default async function DashboardGamesPage() {
                   </span>
                 </div>
               </Link>
-            ))}
+              )
+            )}
           </div>
         </section>
       ))}

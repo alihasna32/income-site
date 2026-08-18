@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Coins, Play } from "lucide-react";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { GameIcon } from "@/components/games/GameIcon";
+import { ExternalGameCard } from "@/components/games/ExternalGameCard";
 
 export function FeaturedGamesSection({ games }) {
   return (
@@ -20,7 +21,10 @@ export function FeaturedGamesSection({ games }) {
         </div>
 
         <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
-          {games.slice(0, 6).map((game) => (
+          {games.slice(0, 6).map((game) =>
+            game.embed_url ? (
+              <ExternalGameCard key={game.slug} game={game} variant="featured" />
+            ) : (
             <Link
               key={game.slug}
               href={`/games/${game.slug}`}
@@ -50,7 +54,8 @@ export function FeaturedGamesSection({ games }) {
                 </span>
               </div>
             </Link>
-          ))}
+            )
+          )}
         </div>
       </div>
     </section>

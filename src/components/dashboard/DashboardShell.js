@@ -199,7 +199,7 @@ export function DashboardShell({ children, profile, unreadCount, userId }) {
                 <MenuIcon className="size-5" />
               </button>
               <span className="lg:hidden">
-                <Logo light />
+                <Logo light to="/dashboard" />
               </span>
             </div>
 

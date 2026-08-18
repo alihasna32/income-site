@@ -33,7 +33,17 @@ export async function middleware(request) {
     }
   );
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const path = request.nextUrl.pathname;
+  const marketingGameMatch = path.match(/^\/games\/([^/]+)$/);
+  if (marketingGameMatch) {
+    if (user) {
+      const url = new URL(`/dashboard/games/${marketingGameMatch[1]}`, request.url);
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.redirect(new URL("/games", request.url));
+  }
 
   return response;
 }
