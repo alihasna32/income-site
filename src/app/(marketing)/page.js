@@ -26,7 +26,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const games = await getActiveGames({ limit: 6 });
+  const games = await getActiveGames();
 
   return (
     <>

@@ -3,13 +3,8 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Play, X } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
+import { externalGameSrc } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
-
-function externalGameSrc(embedUrl) {
-  const base = (embedUrl || "").split("?")[0];
-  const referrer = typeof window !== "undefined" ? window.location.href : "";
-  return `${base}?gd_sdk_referrer_url=${encodeURIComponent(referrer)}`;
-}
 
 export function ExternalGameCard({ game, variant = "full" }) {
   const [open, setOpen] = useState(false);

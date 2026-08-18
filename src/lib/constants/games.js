@@ -3,6 +3,9 @@ export const GAME_CATEGORIES = {
   funny: "Fun & Silly",
   brain: "Brain Games",
   arcade: "Popular Online Games",
+  puzzle: "Puzzle Games",
+  driving: "Driving & Racing",
+  action: "Action Games",
 };
 
 export const GAMES = [

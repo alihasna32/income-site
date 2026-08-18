@@ -19,6 +19,7 @@ import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { GameIcon } from "@/components/games/GameIcon";
 import { getGameComponent } from "@/components/games/registry";
+import { externalGameSrc } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
 
 export function GameShell({ game, children }) {
@@ -125,13 +126,10 @@ export function GameShell({ game, children }) {
 
   const renderStage = () => {
     if (game.embed_url) {
-      const src = `${game.embed_url.split("?")[0]}?gd_sdk_referrer_url=${encodeURIComponent(
-        typeof window !== "undefined" ? window.location.href : ""
-      )}`;
       return (
         <div className="h-[calc(100dvh-10rem)] min-h-[28rem] overflow-hidden rounded-box border border-base-300 bg-black">
           <iframe
-            src={src}
+            src={externalGameSrc(game.embed_url)}
             title={game.title}
             className="h-full w-full border-0"
             allow="autoplay; fullscreen; gamepad"

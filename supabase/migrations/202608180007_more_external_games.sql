@@ -1,0 +1,10 @@
+insert into public.games (slug, title, description, category, component, icon, difficulty, min_score, reward_coins, reward_xp, max_plays_per_day, config, is_active, sort_order, embed_url)
+values
+  ('sudoku-classic', 'Sudoku Classic', 'Classic 9x9 sudoku with three difficulty levels — sharpen your logic.', 'puzzle', 'External', 'Hash', 'medium', 1, 0, 0, 999, '{}', true, 16, 'https://html5.gamedistribution.com/1dc177bea99a4450ba95ffb2a22bccfd/'),
+  ('water-sort-puzzle', 'Water Sort Puzzle', 'Sort the colored water into tubes — a satisfying logic puzzle.', 'puzzle', 'External', 'Layers', 'easy', 1, 0, 0, 999, '{}', true, 17, 'https://html5.gamedistribution.com/f794fe4f28e646678b1e7f45158c470d/'),
+  ('drift-boss', 'Drift Boss', 'Drift endlessly around corners — how far can you slide?', 'driving', 'External', 'Rocket', 'easy', 1, 0, 0, 999, '{}', true, 18, 'https://html5.gamedistribution.com/0a8b51e5eaee42e7b4db83ca00afc92e/'),
+  ('moto-rush', 'Moto Rush', 'Race your motorbike, dodge traffic and beat the clock.', 'driving', 'External', 'Zap', 'medium', 1, 0, 0, 999, '{}', true, 19, 'https://html5.gamedistribution.com/4e737c5f76974ffa9b2cac498efdd506/'),
+  ('speed-racer', 'Speed Racer', 'High-speed lane racing with nitro boosts and quick reflexes.', 'driving', 'External', 'Flag', 'easy', 1, 0, 0, 999, '{}', true, 20, 'https://html5.gamedistribution.com/14246e5aca0d4bfa8a8d5607c63deb7b/'),
+  ('rooftop-snipers', 'Rooftop Snipers', 'Duel a friend on the rooftops — chaos, physics and fun.', 'action', 'External', 'Target', 'medium', 1, 0, 0, 999, '{}', true, 21, 'https://html5.gamedistribution.com/c3a70ae98547407a92ebedca8b79fdfa/'),
+  ('torture-the-trollface', 'Torture The Trollface', 'Take out your frustration on the trollface with crazy weapons.', 'action', 'External', 'Smile', 'fun', 1, 0, 0, 999, '{}', true, 22, 'https://html5.gamedistribution.com/f59427cdde1a4cecb1390ad705df9c54/')
+on conflict (slug) do nothing;
