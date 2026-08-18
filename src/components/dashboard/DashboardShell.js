@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Award,
+  Bell,
   Calculator,
   Flag,
   Gamepad2,
