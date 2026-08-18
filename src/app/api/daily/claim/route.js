@@ -6,16 +6,9 @@ import { checkRateLimit } from "@/lib/security/rateLimit";
 import { creditReward } from "@/lib/rewards/credit";
 import { createNotification } from "@/services/notificationsService";
 import { refreshProgress } from "@/services/progressService";
+import { localDateKey } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
-
-function localDateKey(date = new Date()) {
-  return new Date(
-    date.getTime() - date.getTimezoneOffset() * 60000
-  )
-    .toISOString()
-    .slice(0, 10);
-}
 
 function yesterdayKey() {
   const d = new Date();

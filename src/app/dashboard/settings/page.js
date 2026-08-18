@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, Coins, LogOut, LockKeyhole, Mail, Shield, ShieldCheck, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -115,7 +116,7 @@ export default function SettingsPage() {
         </div>
         <p className="mt-3 text-xs text-muted">
           Coins are virtual and have no cash value. See the{" "}
-          <a href="/how-it-works" className="underline hover:text-secondary">fair play guide</a>.
+          <Link href="/how-it-works" className="underline hover:text-secondary">fair play guide</Link>.
         </p>
       </section>
 

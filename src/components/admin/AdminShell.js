@@ -10,6 +10,7 @@ import {
   Gamepad2,
   History,
   LayoutDashboard,
+  Mail,
   Menu as MenuIcon,
   Settings,
   Users,
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/admin/games", label: "Games", icon: Gamepad2 },
   { href: "/admin/rewards", label: "Rewards & Ledger", icon: Coins },
   { href: "/admin/withdrawals", label: "Withdrawals", icon: Banknote },
+  { href: "/admin/messages", label: "Messages", icon: Mail },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

@@ -20,13 +20,13 @@ import {
   Wallet,
   History,
   Share2,
-  Bell,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { CoinValue } from "@/components/shared/CoinValue";
 import { useWallet } from "@/hooks/WalletProvider";
 import { Logo } from "@/components/shared/Logo";
+import { BellDropdown } from "@/components/notifications/BellDropdown";
 
 
 const NAV_GROUPS = [
@@ -147,7 +147,7 @@ function SidebarContent({ profile, onNavigate }) {
   );
 }
 
-export function DashboardShell({ children, profile, unreadCount }) {
+export function DashboardShell({ children, profile, unreadCount, userId }) {
   const pathname = usePathname();
   const { wallet } = useWallet();
   const [drawerOpen, setDrawerOpen] = useState();
@@ -209,18 +209,7 @@ export function DashboardShell({ children, profile, unreadCount }) {
               >
                 <CoinValue value={wallet?.coins} className="text-gold" />
               </Link>
-              <Link
-                href="/dashboard/notifications"
-                className="relative btn btn-ghost btn-sm btn-circle text-neutral-content hover:bg-white/10"
-                aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ""}`}
-              >
-                <Bell className="size-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-              </Link>
+              <BellDropdown initialUnread={unreadCount} userId={userId} />
               <Link
                 href="/dashboard/profile"
                 className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-gold to-orange text-lg shadow-card"

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { notificationReadSchema } from "@/lib/validations";
+import { localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,9 @@ export async function POST(request) {
     .eq("user_id", user.id)
     .eq("read", false);
 
-  if (!parsed.data.all && parsed.data.ids.length) {
+  if (parsed.data.olderThan) {
+    query = query.lt("created_at", localDayRange().start);
+  } else if (!parsed.data.all && parsed.data.ids.length) {
     query = query.in("id", parsed.data.ids);
   }
 

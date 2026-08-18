@@ -169,6 +169,13 @@ export function ScratchCardGame() {
     const percent = scratchAt(x, y);
     if (percent >= 65) {
       isScratching.current = false;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      setScratchPercent(100);
       setStatus("claiming-ui");
       claim();
     }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
+import { localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
 
@@ -28,13 +29,14 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const { start, end } = localDayRange();
   const { count } = await admin
     .from("game_sessions")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
     .eq("game_id", game.id)
-    .eq("created_at::date", today);
+    .gte("created_at", start)
+    .lt("created_at", end);
 
   return NextResponse.json({
     playsToday: count || 0,

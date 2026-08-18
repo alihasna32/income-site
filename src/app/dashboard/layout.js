@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <WalletProvider>
-      <DashboardShell profile={profile} unreadCount={unreadCount}>
+      <DashboardShell profile={profile} unreadCount={unreadCount} userId={user.id}>
         {children}
       </DashboardShell>
     </WalletProvider>

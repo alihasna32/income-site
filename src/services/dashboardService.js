@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
+import { getChallengeSchedule } from "@/services/challengeScheduleService";
 
 export async function getOverviewData(userId) {
   if (!supabaseReady()) return null;
@@ -70,23 +71,7 @@ export async function getOverviewData(userId) {
 }
 
 export async function getTodayChallenge(userId) {
-  const data = await getOverviewData(userId);
-  if (!data || !data.challenges.length) return null;
-
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
-  );
-  const challenge = data.challenges[dayOfYear % data.challenges.length];
-
-  const admin = createAdminClient();
-  const today = new Date().toISOString().slice(0, 10);
-  const { data: attempt } = await admin
-    .from("challenge_attempts")
-    .select("score, correct_answers")
-    .eq("user_id", userId)
-    .eq("challenge_id", challenge.id)
-    .eq("created_at::date", today)
-    .maybeSingle();
-
-  return { challenge, solvedToday: Boolean(attempt), wasCorrect: attempt?.correct_answers > 0 };
+  const { today } = await getChallengeSchedule(userId);
+  if (!today) return null;
+  return today;
 }

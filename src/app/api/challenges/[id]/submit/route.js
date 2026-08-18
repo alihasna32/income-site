@@ -6,14 +6,9 @@ import { checkRateLimit } from "@/lib/security/rateLimit";
 import { creditReward } from "@/lib/rewards/credit";
 import { refreshProgress } from "@/services/progressService";
 import { createNotification } from "@/services/notificationsService";
+import { localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
-
-function todayStart() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString();
-}
 
 export async function POST(request, { params }) {
   const { id } = await params;
@@ -66,7 +61,7 @@ export async function POST(request, { params }) {
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
     .eq("challenge_id", challenge.id)
-    .gte("created_at", todayStart());
+    .gte("created_at", localDayRange().start);
 
   if (count > 0) {
     return NextResponse.json(

@@ -31,7 +31,7 @@ export function ResetPasswordModal({ open, onClose, triggerRef, successHref }) {
     setLoading(true);
     try {
       const supabase = createClient();
-      const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || "https://bd-income-site.pages.dev"}/reset-password`;
+      const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/reset-password`;
       const { error: sendError } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
       if (sendError) throw new Error(sendError.message);
       setSent(true);

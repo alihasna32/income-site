@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
 import { checkRateLimit } from "@/lib/security/rateLimit";
-import { weightedPick } from "@/lib/utils/format";
+import { localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
 
@@ -32,13 +32,14 @@ export async function GET() {
     return NextResponse.json({ campaign: null, result: null });
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const { start, end } = localDayRange();
   const { data: result } = await admin
     .from("scratch_results")
     .select("prize_label, reward_coins, created_at")
     .eq("user_id", user.id)
     .eq("campaign_id", campaign.id)
-    .eq("created_at::date", today)
+    .gte("created_at", start)
+    .lt("created_at", end)
     .maybeSingle();
 
   const { data: todayCount } = await admin
@@ -46,7 +47,8 @@ export async function GET() {
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
     .eq("campaign_id", campaign.id)
-    .eq("created_at::date", today);
+    .gte("created_at", start)
+    .lt("created_at", end);
 
   return NextResponse.json({
     campaign: {

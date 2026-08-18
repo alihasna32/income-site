@@ -6,6 +6,7 @@ import { checkRateLimit } from "@/lib/security/rateLimit";
 import { creditReward } from "@/lib/rewards/credit";
 import { refreshProgress } from "@/services/progressService";
 import { weightedPick } from "@/lib/utils/format";
+import { localDateKey, localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,6 @@ export async function POST() {
 
   const admin = createAdminClient();
   const now = new Date().toISOString();
-  const today = now.slice(0, 10);
 
   const { data: campaign } = await admin
     .from("scratch_campaigns")
@@ -45,12 +45,14 @@ export async function POST() {
     return NextResponse.json({ error: "No active scratch campaign" }, { status: 404 });
   }
 
+  const { start, end } = localDayRange();
   const { count } = await admin
     .from("scratch_results")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
     .eq("campaign_id", campaign.id)
-    .eq("created_at::date", today);
+    .gte("created_at", start)
+    .lt("created_at", end);
 
   if (count >= campaign.daily_limit) {
     return NextResponse.json({ error: "You've used all your cards for today" }, { status: 429 });
@@ -70,6 +72,7 @@ export async function POST() {
       campaign_id: campaign.id,
       prize_label: prize.label,
       reward_coins: prize.coins,
+      claim_date: localDateKey(),
     })
     .select("id, prize_label, reward_coins")
     .single();

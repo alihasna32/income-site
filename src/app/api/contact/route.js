@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/security/rateLimit";
+import { getSession } from "@/lib/auth/session";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { supabaseReady } from "@/lib/supabase/env";
+import { notifyMany } from "@/services/notificationsService";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -8,6 +12,8 @@ const contactSchema = z.object({
   subject: z.string().trim().min(3).max(120),
   message: z.string().trim().min(10).max(4000),
 });
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   const ip =
@@ -42,15 +48,43 @@ export async function POST(request) {
     );
   }
 
-  console.info(
-    "[contact]",
-    JSON.stringify({
-      name: parsed.data.name,
-      email: parsed.data.email,
-      subject: parsed.data.subject,
-      messageLength: parsed.data.message.length,
-    })
-  );
+  if (!supabaseReady()) {
+    return NextResponse.json({ error: "Message storage unavailable" }, { status: 503 });
+  }
+
+  const user = await getSession();
+  const admin = createAdminClient();
+
+  const { error } = await admin.from("contact_messages").insert({
+    user_id: user?.id || null,
+    name: parsed.data.name,
+    email: parsed.data.email,
+    subject: parsed.data.subject,
+    message: parsed.data.message,
+  });
+
+  if (error) {
+    console.error("[contact]", error.message);
+    return NextResponse.json({ error: "Could not save your message" }, { status: 500 });
+  }
+
+  try {
+    const { data: admins } = await admin
+      .from("profiles")
+      .select("id")
+      .eq("role", "admin")
+      .limit(10);
+    await notifyMany(
+      (admins || []).map((a) => a.id),
+      {
+        type: "system",
+        title: "New contact message",
+        message: `${parsed.data.name}: ${parsed.data.subject}`,
+      }
+    );
+  } catch {
+    // admin notification is best-effort
+  }
 
   return NextResponse.json({ ok: true });
 }

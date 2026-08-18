@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
 import { GAMES } from "@/lib/constants/games";
+import { ensureChallengeSchedule } from "@/services/challengeScheduleService";
 
 export async function getActiveGames({ limit } = {}) {
   if (!supabaseReady()) {
@@ -24,6 +25,7 @@ export async function getActiveGames({ limit } = {}) {
 
 export async function getActiveChallenges() {
   if (!supabaseReady()) return [];
+  await ensureChallengeSchedule();
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("challenges")

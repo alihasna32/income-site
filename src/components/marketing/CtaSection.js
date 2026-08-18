@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { getSession } from "@/lib/auth/session";
 
-export function CtaSection() {
+export async function CtaSection() {
+  const user = await getSession();
+  const primaryHref = user ? "/dashboard" : "/register";
+  const primaryLabel = user ? "Open your dashboard" : "Create free account";
+
   return (
     <section className="py-16 sm:py-20">
       <div className="container-page">
@@ -23,8 +28,8 @@ export function CtaSection() {
               achieve. Your streak starts now.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/register" className="btn btn-primary btn-lg shadow-card w-full sm:w-auto">
-                Create free account <ArrowRight className="size-5" />
+              <Link href={primaryHref} className="btn btn-primary btn-lg shadow-card w-full sm:w-auto">
+                {primaryLabel} <ArrowRight className="size-5" />
               </Link>
               <Link
                 href="/games"

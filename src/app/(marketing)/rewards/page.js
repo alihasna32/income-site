@@ -1,6 +1,7 @@
 ﻿import Link from "next/link";
 import { ArrowRight, Coins, Gift, Sparkles, Trophy } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { getSession } from "@/lib/auth/session";
 
 export const metadata = {
   title: "Rewards",
@@ -47,7 +48,11 @@ const REWARD_SYSTEMS = [
   },
 ];
 
-export default function RewardsPage() {
+export default async function RewardsPage() {
+  const user = await getSession();
+  const ctaHref = user ? "/dashboard" : "/register";
+  const ctaLabel = user ? "Open your dashboard" : "Start earning";
+
   return (
     <div className="py-10 sm:py-14">
       <div className="container-page">
@@ -81,8 +86,8 @@ export default function RewardsPage() {
               Create your free account and claim your day-1 reward in under a minute.
             </p>
           </div>
-          <Link href="/register" className="btn btn-primary shrink-0">
-            Start earning <ArrowRight className="size-4" />
+          <Link href={ctaHref} className="btn btn-primary shrink-0">
+            {ctaLabel} <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>

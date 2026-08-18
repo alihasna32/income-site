@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
+import { localDateKey } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function GET() {
   }
 
   const admin = createAdminClient();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateKey();
 
   const [loginRes, streakRes, daysRes] = await Promise.all([
     admin

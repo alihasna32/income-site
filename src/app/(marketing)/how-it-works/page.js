@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Coins, Flame, Gamepad2, ShieldCheck, Sparkles, Trophy } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { getSession } from "@/lib/auth/session";
 
 export const metadata = {
   title: "How It Works",
@@ -42,7 +43,11 @@ const STEPS = [
   },
 ];
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const user = await getSession();
+  const ctaHref = user ? "/dashboard" : "/register";
+  const ctaLabel = user ? "Go to your dashboard" : "Get started for free";
+
   return (
     <div className="py-10 sm:py-14">
       <div className="container-page max-w-3xl">
@@ -82,8 +87,8 @@ export default function HowItWorksPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <Link href="/register" className="btn btn-primary btn-lg">
-            Get started for free <ArrowRight className="size-5" />
+          <Link href={ctaHref} className="btn btn-primary btn-lg">
+            {ctaLabel} <ArrowRight className="size-5" />
           </Link>
         </div>
       </div>

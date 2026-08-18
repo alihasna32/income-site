@@ -69,6 +69,12 @@ export const dailyClaimSchema = z.object({});
 export const notificationReadSchema = z.object({
   ids: z.array(z.string().uuid()).optional().default([]),
   all: z.boolean().optional().default(false),
+  olderThan: z.boolean().optional().default(false),
+});
+
+export const contactMessageAdminSchema = z.object({
+  status: z.enum(["new", "read", "replied", "archived"]),
+  note: z.string().trim().max(1000).optional().default(""),
 });
 
 export const scratchClaimSchema = z.object({});

@@ -1,9 +1,8 @@
 ﻿import Link from "next/link";
-import { ArrowRight, Brain, Calculator, CalendarDays, Ticket } from "lucide-react";
+import { ArrowRight, Brain, Calculator, CalendarDays, CalendarClock, Ticket } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TodayChallengeCard } from "@/components/dashboard/TodayChallengeCard";
-import { getTodayChallenge } from "@/services/dashboardService";
-import { getActiveChallenges } from "@/services/catalogService";
+import { getChallengeSchedule } from "@/services/challengeScheduleService";
 import { getSession } from "@/lib/auth/session";
 import { EmptyState } from "@/components/ui/EmptyState";
 
@@ -11,14 +10,22 @@ export const metadata = {
   title: "Challenges",
 };
 
+function formatScheduleDate(dateStr) {
+  const date = new Date(`${dateStr}T00:00:00`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((date.getTime() - today.getTime()) / 86400000);
+  if (diffDays === 1) return "Tomorrow";
+  if (diffDays === 2) return "In 2 days";
+  if (diffDays === 3) return "In 3 days";
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export default async function ChallengesPage() {
   const user = await getSession();
   if (!user) return null;
 
-  const [today, allChallenges] = await Promise.all([
-    getTodayChallenge(user.id),
-    getActiveChallenges(),
-  ]);
+  const { today, upcoming } = await getChallengeSchedule(user.id);
 
   return (
     <div className="space-y-8">
@@ -94,14 +101,14 @@ export default async function ChallengesPage() {
         </div>
       </section>
 
-      {allChallenges.length > 1 && (
+      {upcoming.length > 0 && (
         <section>
-          <h2 className="text-lg font-bold text-plum">Upcoming rotation</h2>
+          <h2 className="text-lg font-bold text-plum">Upcoming challenges</h2>
           <p className="mt-1 text-sm text-muted">
-            These challenges appear in the daily rotation. One new one each day!
+            These challenges are scheduled automatically — one activates each day, no admin needed.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {allChallenges.map((challenge) => (
+            {upcoming.map((challenge) => (
               <div key={challenge.id} className="card bg-base-100 border border-base-300 p-4 shadow-card">
                 <div className="flex items-center justify-between">
                   <span className="badge badge-sm bg-base-200 text-muted capitalize">
@@ -113,6 +120,10 @@ export default async function ChallengesPage() {
                 </div>
                 <h3 className="mt-3 text-sm font-bold text-plum">{challenge.title}</h3>
                 <p className="mt-1 text-xs text-muted line-clamp-2">{challenge.description}</p>
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-secondary">
+                  <CalendarClock className="size-3.5" />
+                  {formatScheduleDate(challenge.scheduledFor)}
+                </p>
               </div>
             ))}
           </div>

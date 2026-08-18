@@ -7,14 +7,9 @@ import { creditReward } from "@/lib/rewards/credit";
 import { refreshProgress } from "@/services/progressService";
 import { gameSessionSchema } from "@/lib/validations";
 import { rewardForScore } from "@/lib/constants/games";
+import { localDayRange } from "@/lib/utils/date";
 
 export const dynamic = "force-dynamic";
-
-function todayStart() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString();
-}
 
 export async function POST(request, { params }) {
   const { slug } = await params;
@@ -87,7 +82,7 @@ export async function POST(request, { params }) {
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
     .eq("game_id", game.id)
-    .gte("created_at", todayStart());
+    .gte("created_at", localDayRange().start);
 
   if (count >= game.max_plays_per_day) {
     return NextResponse.json(
