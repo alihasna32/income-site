@@ -119,7 +119,7 @@ export function TodayChallengeCard({ challenge }) {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Your answer…"
-                className="input input-bordered flex-1 bg-white/10 border-white/25 text-neutral-content placeholder:text-neutral-content/50 focus:border-gold"
+                className="input input-bordered h-14 flex-1 bg-white/10 border-white/25 text-base text-neutral-content placeholder:text-neutral-content/50 focus:border-gold sm:h-12 sm:text-sm"
                 aria-label="Your answer"
                 autoComplete="off"
               />

@@ -87,7 +87,7 @@ export function AdminShell({ children }) {
             </div>
             <div className="flex h-full flex-col">
               <div className="px-5 py-6">
-                <Logo light />
+                <Logo light to="/admin" />
                 <span className="badge badge-sm mt-3 bg-gold text-plum font-bold">Admin</span>
               </div>
               <nav className="flex-1 overflow-y-auto px-4 pb-6 space-y-1" aria-label="Admin navigation">
@@ -115,7 +115,7 @@ export function AdminShell({ children }) {
                 <MenuIcon className="size-5" />
               </button>
               <span className="lg:hidden">
-                <Logo light />
+                <Logo light to="/admin" />
               </span>
             </div>
             <Link href="/dashboard" className="btn btn-ghost btn-sm text-neutral-content hover:bg-white/10">

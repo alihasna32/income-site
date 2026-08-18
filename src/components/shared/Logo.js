@@ -1,21 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Coins } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
-export function Logo({ light = false, className }) {
-  const pathname = usePathname();
-  const home = pathname.startsWith("/dashboard")
-    ? "/dashboard"
-    : pathname.startsWith("/admin")
-    ? "/admin"
-    : "/";
-
+export function Logo({ light = false, className, to = "/" }) {
   return (
     <Link
-      href={home}
+      href={to}
       className={cn("flex items-center gap-2 font-extrabold tracking-tight", className)}
       aria-label="CoinQuest home"
     >
