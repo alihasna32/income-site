@@ -105,7 +105,7 @@ export function BellDropdown({ initialUnread = 0, userId }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-box bg-base-100 text-plum shadow-soft border border-base-300">
+        <div className="fixed inset-x-2 top-16 z-50 overflow-hidden rounded-box bg-base-100 text-plum shadow-soft border border-base-300 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
           <div className="flex items-center justify-between border-b border-base-200 px-4 py-3">
             <p className="text-sm font-bold">Notifications</p>
             <button
@@ -117,7 +117,7 @@ export function BellDropdown({ initialUnread = 0, userId }) {
             </button>
           </div>
 
-          <div className="max-h-96 overflow-y-auto divide-y divide-base-200">
+          <div className="max-h-[calc(100dvh-11rem)] overflow-y-auto divide-y divide-base-200 sm:max-h-96">
             {loading && (
               <p className="flex items-center justify-center gap-2 px-4 py-8 text-sm text-muted">
                 <Loader2 className="size-4 animate-spin" /> Loading…

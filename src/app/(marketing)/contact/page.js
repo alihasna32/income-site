@@ -1,16 +1,19 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Mail, MessageSquare, Send } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function ContactPage() {
   const [status, setStatus] = useState("idle");
+  const submittingRef = useRef(false);
   const { toast } = useToast();
 
   const submit = async (e) => {
     e.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     const form = new FormData(e.currentTarget);
     const payload = {
       name: form.get("name"),
@@ -44,6 +47,8 @@ export default function ContactPage() {
     } catch {
       setStatus("idle");
       toast("Could not send your message right now", "error");
+    } finally {
+      submittingRef.current = false;
     }
   };
 
