@@ -32,7 +32,14 @@ export default function ContactPage() {
         e.currentTarget.reset();
       } else {
         setStatus("idle");
-        toast("Could not send your message right now", "error");
+        let message = "Could not send your message right now";
+        try {
+          const data = await res.json();
+          if (data?.error) message = data.error;
+        } catch {
+          // keep default
+        }
+        toast(message, "error");
       }
     } catch {
       setStatus("idle");
