@@ -117,6 +117,7 @@ export function ExternalGameCard({ game, variant = "full" }) {
               src={src}
               title={game.title}
               className="h-full w-full border-0"
+              scrolling="no"
               allow="autoplay; fullscreen; gamepad"
               allowFullScreen
             />

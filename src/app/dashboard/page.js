@@ -125,25 +125,9 @@ export default async function DashboardOverview() {
               </Link>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {games.map((game) =>
-                game.embed_url ? (
-                  <ExternalGameCard key={game.slug} game={game} variant="tile" />
-                ) : (
-                <Link
-                  key={game.slug}
-                  href={`/dashboard/games/${game.slug}`}
-                  className="card bg-base-100 border border-base-300 p-4 text-center shadow-card hover:shadow-soft hover:-translate-y-0.5 transition-all"
-                >
-                  <span className="mx-auto flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-orange text-plum">
-                    <GameIcon name={game.icon} className="size-5" />
-                  </span>
-                  <p className="mt-2 text-xs font-bold text-plum truncate">{game.title}</p>
-                  <p className="coin text-gold-dark text-[10px] mt-0.5">
-                    +{game.config?.thresholds?.[0]?.coins || game.reward_coins} max
-                  </p>
-                </Link>
-                )
-              )}
+              {games.filter((game) => game.embed_url).map((game) => (
+                <ExternalGameCard key={game.slug} game={game} variant="tile" />
+              ))}
             </div>
           </section>
 

@@ -13,9 +13,9 @@ export const MISSION_TEMPLATES = [
   {
     slug: "win-2-games",
     title: "Winning Streak",
-    description: "Score above the threshold in 2 games",
+    description: "Score above the threshold in 1 game",
     type: "win_games",
-    target: 2,
+    target: 1,
     reward_coins: 35,
     reward_xp: 20,
     icon: "Trophy",

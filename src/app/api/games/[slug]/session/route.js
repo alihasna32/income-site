@@ -91,7 +91,18 @@ export async function POST(request, { params }) {
     );
   }
 
-  const reward = rewardForScore(game, parsed.data.score);
+  const { count: dailyRewardCount } = await admin
+    .from("game_sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("game_id", game.id)
+    .gte("created_at", localDayRange().start)
+    .gt("reward_coins", 0);
+
+  const dailyRewardClaimed = dailyRewardCount > 0;
+  const reward = dailyRewardClaimed
+    ? { coins: 0, xp: 0, tier: "claimed" }
+    : rewardForScore(game, parsed.data.score);
 
   const { data: session, error: sessionError } = await admin
     .from("game_sessions")
@@ -132,6 +143,7 @@ export async function POST(request, { params }) {
     coins: reward.coins,
     xp: reward.xp,
     earned: reward.coins > 0,
+    dailyRewardClaimed,
     dailyPlaysLeft: Math.max(0, game.max_plays_per_day - count - 1),
   });
 }

@@ -63,17 +63,27 @@ export async function POST(request, { params }) {
     );
   }
 
+  const { count: dailyRewardCount } = await admin
+    .from("game_sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("game_id", game.id)
+    .eq("created_at::date", today)
+    .gt("reward_coins", 0);
+
+  const dailyRewardClaimed = dailyRewardCount > 0;
   const outcome = weightedPick(config.outcomes);
-  const xp = Math.max(1, Math.round(outcome.coins / 5));
+  const coins = dailyRewardClaimed ? 0 : outcome.coins;
+  const xp = dailyRewardClaimed ? 0 : Math.max(1, Math.round(outcome.coins / 5));
 
   const { data: session, error: sessionError } = await admin
     .from("game_sessions")
     .insert({
       user_id: user.id,
       game_id: game.id,
-      score: outcome.coins,
+      score: coins,
       status: "completed",
-      reward_coins: outcome.coins,
+      reward_coins: coins,
       reward_xp: xp,
       idempotency_key: `luck:${user.id}:${slug}:${today}:${crypto.randomUUID()}`,
       metadata: { luck: true, prize_label: outcome.label },
@@ -85,25 +95,28 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: "Could not record session" }, { status: 500 });
   }
 
-  await creditReward({
-    userId: user.id,
-    type: "game_reward",
-    amount: outcome.coins,
-    xp,
-    description: `Lucky ${game.title}: ${outcome.label}`,
-    idempotencyKey: `game:${session.id}`,
-    metadata: { game_id: game.id, game_slug: game.slug, prize_label: outcome.label },
-  });
+  if (coins > 0) {
+    await creditReward({
+      userId: user.id,
+      type: "game_reward",
+      amount: coins,
+      xp,
+      description: `Lucky ${game.title}: ${outcome.label}`,
+      idempotencyKey: `game:${session.id}`,
+      metadata: { game_id: game.id, game_slug: game.slug, prize_label: outcome.label },
+    });
 
-  await refreshProgress(user.id);
+    await refreshProgress(user.id);
+  }
 
   return NextResponse.json({
     sessionId: session.id,
     prizeLabel: outcome.label,
-    score: outcome.coins,
-    coins: outcome.coins,
+    score: coins,
+    coins,
     xp,
-    earned: true,
+    earned: coins > 0,
+    dailyRewardClaimed,
     luck: true,
     dailyPlaysLeft: Math.max(0, game.max_plays_per_day - count - 1),
   });

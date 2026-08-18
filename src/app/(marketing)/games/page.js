@@ -26,7 +26,7 @@ export default async function GamesPage() {
       <div className="container-page">
         <PageHeader
           title="Explore games"
-          description="Every game is free, lightweight and mobile-friendly. Rewards are skill-based and fairly limited per day."
+          description="Every game is free, lightweight and mobile-friendly. No login needed — just tap and play."
         />
 
         {grouped.map((group) => (

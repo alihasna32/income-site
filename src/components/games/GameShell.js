@@ -77,6 +77,8 @@ export function GameShell({ game, children }) {
           if (data.earned) {
             toast(`+${data.coins} coins earned!`, "success");
             refresh();
+          } else if (data.dailyRewardClaimed) {
+            toast("Daily reward already claimed today — play again for fun!", "info");
           } else if (data.duplicate) {
             toast("Already recorded — nice play!", "info");
           } else {
@@ -110,7 +112,11 @@ export function GameShell({ game, children }) {
 
       if (res.ok) {
         setResult(data);
-        toast(`${data.prizeLabel} — nice luck!`, "success");
+        if (data.dailyRewardClaimed) {
+          toast("Daily reward already claimed today — play again for fun!", "info");
+        } else {
+          toast(`${data.prizeLabel} — nice luck!`, "success");
+        }
         refresh();
       } else {
         setResult({ error: data.error, earned: false });
@@ -127,11 +133,12 @@ export function GameShell({ game, children }) {
   const renderStage = () => {
     if (game.embed_url) {
       return (
-        <div className="h-[calc(100dvh-10rem)] min-h-[28rem] overflow-hidden rounded-box border border-base-300 bg-black">
+        <div className="h-[calc(100vh-11rem)] supports-[height:100dvh]:h-[calc(100dvh-10rem)] min-h-[28rem] overflow-hidden rounded-box border border-base-300 bg-black">
           <iframe
             src={externalGameSrc(game.embed_url)}
             title={game.title}
             className="h-full w-full border-0"
+            scrolling="no"
             allow="autoplay; fullscreen; gamepad"
             allowFullScreen
           />
