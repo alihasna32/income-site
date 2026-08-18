@@ -42,7 +42,7 @@ Fill in:
 | `NEXT_PUBLIC_SUPABASE_URL` | Project Settings → API → Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Project Settings → API → anon key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Project Settings → API → service_role key (**server only, never expose**) |
-| `NEXT_PUBLIC_SITE_URL` | Your deployed URL, e.g. `https://coinquest.example.com` |
+| `NEXT_PUBLIC_SITE_URL` | Your deployed URL, e.g. `[https://coinquest.example.com](https://bd-income-site.pages.dev/)` |
 
 ### 3. Run
 
