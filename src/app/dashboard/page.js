@@ -126,7 +126,7 @@ export default async function DashboardOverview() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {games.filter((game) => game.embed_url).map((game) => (
-                <ExternalGameCard key={game.slug} game={game} variant="tile" />
+                <ExternalGameCard key={game.slug} game={game} variant="tile" claimable />
               ))}
             </div>
           </section>

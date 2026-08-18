@@ -30,17 +30,31 @@ export async function GET(request, { params }) {
   }
 
   const { start, end } = localDayRange();
-  const { count } = await admin
-    .from("game_sessions")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("game_id", game.id)
-    .gte("created_at", start)
-    .lt("created_at", end);
+  const [playsRes, rewardRes] = await Promise.all([
+    admin
+      .from("game_sessions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("game_id", game.id)
+      .gte("created_at", start)
+      .lt("created_at", end),
+    admin
+      .from("game_sessions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("game_id", game.id)
+      .gte("created_at", start)
+      .lt("created_at", end)
+      .gt("reward_coins", 0),
+  ]);
+
+  const count = playsRes.count || 0;
+  const rewardCount = rewardRes.count || 0;
 
   return NextResponse.json({
-    playsToday: count || 0,
+    playsToday: count,
     maxPlays: game.max_plays_per_day,
-    playsLeft: Math.max(0, game.max_plays_per_day - (count || 0)),
+    playsLeft: Math.max(0, game.max_plays_per_day - count),
+    dailyRewardClaimed: rewardCount > 0,
   });
 }

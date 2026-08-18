@@ -1,5 +1,9 @@
 export function externalGameSrc(embedUrl) {
-  const raw = (embedUrl || "").split("?")[0];
+  return (embedUrl || "").split("?")[0];
+}
+
+export function externalPlayerSrc(embedUrl) {
+  const raw = externalGameSrc(embedUrl);
   const referrer = typeof window !== "undefined" ? window.location.href : "";
   return `https://embed.gamedistribution.com/?url=${encodeURIComponent(
     raw

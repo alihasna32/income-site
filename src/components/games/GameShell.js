@@ -19,7 +19,8 @@ import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { GameIcon } from "@/components/games/GameIcon";
 import { getGameComponent } from "@/components/games/registry";
-import { externalGameSrc } from "@/lib/games/external";
+import { externalGameSrc, externalPlayerSrc } from "@/lib/games/external";
+import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
 import { cn } from "@/lib/utils/cn";
 
 export function GameShell({ game, children }) {
@@ -141,16 +142,27 @@ export function GameShell({ game, children }) {
             <h1 className="text-xl font-extrabold text-plum">{game.title}</h1>
             <p className="mt-1 max-w-md text-sm text-muted">{game.description}</p>
           </div>
-          <a
-            href={externalGameSrc(game.embed_url)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary btn-lg shadow-card"
-          >
-            <Play className="size-5" /> Play now
-          </a>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <a
+              href={externalGameSrc(game.embed_url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-lg shadow-card"
+            >
+              <Play className="size-5" /> Play now
+            </a>
+            <a
+              href={externalPlayerSrc(game.embed_url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline"
+            >
+              Trouble playing? Try the player page
+            </a>
+          </div>
+          <ClaimRewardButton game={game} />
           <p className="text-xs text-muted">
-            Games open in a new tab so they run smoothly on any device.
+            Play a level, then come back and claim your daily coins.
           </p>
         </div>
       );
