@@ -17,13 +17,6 @@ export const registerSchema = authSchema.extend({
     .regex(/^[a-zA-Z0-9 _-]+$/, "Only letters, numbers, spaces, _ and - are allowed"),
 });
 
-export const resetPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(72, "Password is too long"),
-});
-
 export const profileUpdateSchema = z.object({
   displayName: z
     .string()
@@ -82,23 +75,6 @@ export const scratchClaimSchema = z.object({});
 
 export const referralEmailSchema = z.object({
   email: z.string().trim().email("Enter a valid email address"),
-});
-
-export const resetRequestSchema = z.object({
-  email: z.string().trim().email("Enter a valid email address"),
-});
-
-export const resetVerifySchema = z.object({
-  email: z.string().trim().email("Enter a valid email address"),
-  code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code"),
-});
-
-export const resetUpdateSchema = z.object({
-  resetToken: z.string().trim().min(20, "Invalid reset session").max(500),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(72, "Password is too long"),
 });
 
 export const mathDailySubmitSchema = z.object({

@@ -14,7 +14,7 @@ export function EmailResetForm({ email, onEmailChange, onSubmit, loading, error,
       <div>
         <h3 className="text-lg font-bold text-plum">Reset your password</h3>
         <p className="mt-1 text-sm text-muted">
-          We'll send a 6-digit code to your email. It expires in 10 minutes.
+          We'll email you a secure link to reset your password. It expires after a short time.
         </p>
       </div>
 
@@ -41,7 +41,7 @@ export function EmailResetForm({ email, onEmailChange, onSubmit, loading, error,
 
       <button type="submit" className="btn btn-primary w-full" disabled={loading || !email.trim()}>
         {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
-        {loading ? "Sending code…" : "Continue"}
+        {loading ? "Sending…" : "Send reset link"}
       </button>
     </form>
   );
