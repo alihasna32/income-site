@@ -72,7 +72,7 @@ export default function NotificationsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ all: true }),
     });
-    setItems((prev) => (prev || []).map((n) => ({ ...n, is_read: true })));
+    setItems((prev) => (prev || []).map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
   };
 
@@ -156,7 +156,7 @@ export default function NotificationsPage() {
               key={notification.id}
               className={cn(
                 "flex items-start gap-3 px-4 sm:px-5 py-4",
-                !notification.is_read && "bg-primary/5"
+                !notification.read && "bg-primary/5"
               )}
             >
               <span
@@ -184,7 +184,7 @@ export default function NotificationsPage() {
                 <p className="mt-0.5 text-sm text-muted">{notification.message}</p>
                 <p className="mt-1 text-xs text-muted/80">{timeAgo(notification.created_at)}</p>
               </div>
-              {!notification.is_read && (
+              {!notification.read && (
                 <span className="mt-1 size-2.5 shrink-0 rounded-full bg-secondary" aria-label="Unread" />
               )}
             </div>

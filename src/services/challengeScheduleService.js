@@ -58,6 +58,8 @@ export async function ensureChallengeSchedule({ horizon = SCHEDULE_HORIZON_DAYS 
     });
     if (error && !error.message.includes("duplicate")) {
       console.error("[challenge-schedule]", error.message);
+    } else {
+      existingMap.set(today, { challenge_id: chosen.id, scheduled_for: today, status: "active" });
     }
   } else if (todayRow.status !== "active") {
     await admin.from("challenge_schedule").update({ status: "active" }).eq("id", todayRow.id);
@@ -79,6 +81,8 @@ export async function ensureChallengeSchedule({ horizon = SCHEDULE_HORIZON_DAYS 
     });
     if (error && !error.message.includes("duplicate")) {
       console.error("[challenge-schedule]", error.message);
+    } else {
+      existingMap.set(date, { challenge_id: chosen.id, scheduled_for: date, status: "upcoming" });
     }
   }
 }

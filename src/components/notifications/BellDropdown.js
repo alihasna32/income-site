@@ -74,7 +74,7 @@ export function BellDropdown({ initialUnread = 0, userId }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ all: true }),
     });
-    setItems((prev) => (prev || []).map((n) => ({ ...n, is_read: true })));
+    setItems((prev) => (prev || []).map((n) => ({ ...n, read: true })));
     setUnread(0);
   };
 
@@ -134,13 +134,13 @@ export function BellDropdown({ initialUnread = 0, userId }) {
                   key={notification.id}
                   className={cn(
                     "flex items-start gap-3 px-4 py-3",
-                    !notification.is_read && "bg-primary/5"
+                    !notification.read && "bg-primary/5"
                   )}
                 >
                   <span
                     className={cn(
                       "mt-0.5 size-2 shrink-0 rounded-full",
-                      notification.is_read ? "bg-base-300" : "bg-secondary"
+                      notification.read ? "bg-base-300" : "bg-secondary"
                     )}
                     aria-hidden="true"
                   />
