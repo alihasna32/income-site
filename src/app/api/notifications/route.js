@@ -22,7 +22,7 @@ export async function GET(request) {
 
   const { searchParams } = new URL(request.url);
   const page = Math.max(1, Number(searchParams.get("page") || 1));
-  const limit = Math.min(50, Math.max(5, Number(searchParams.get("limit") || 20)));
+  const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit") || 20)));
   const type = searchParams.get("type") || null;
 
   const supabase = await createClient();

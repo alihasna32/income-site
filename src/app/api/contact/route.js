@@ -23,7 +23,7 @@ export async function POST(request) {
 
   const allowed = await checkRateLimit({
     key: `contact:${ip}`,
-    max: 5,
+    max: 10,
     windowSeconds: 3600,
   });
   if (!allowed) {

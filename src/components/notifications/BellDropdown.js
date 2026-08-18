@@ -32,7 +32,7 @@ export function BellDropdown({ initialUnread = 0, userId }) {
           if (!notification || notification.user_id !== userId) return;
           setUnread((count) => count + 1);
           setItems((prev) =>
-            prev ? [notification, ...prev].slice(0, 10) : prev
+            prev ? [notification, ...prev].slice(0, 3) : prev
           );
         }
       )
@@ -55,7 +55,7 @@ export function BellDropdown({ initialUnread = 0, userId }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ olderThan: true }),
       });
-      const res = await fetch("/api/notifications?limit=10", { cache: "no-store" });
+      const res = await fetch("/api/notifications?limit=3", { cache: "no-store" });
       const data = await res.json();
       if (res.ok) {
         setItems(data.notifications || []);
