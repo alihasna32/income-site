@@ -133,15 +133,25 @@ export function GameShell({ game, children }) {
   const renderStage = () => {
     if (game.embed_url) {
       return (
-        <div className="h-[calc(100vh-11rem)] supports-[height:100dvh]:h-[calc(100dvh-10rem)] min-h-[28rem] overflow-hidden rounded-box border border-base-300 bg-black">
-          <iframe
-            src={externalGameSrc(game.embed_url)}
-            title={game.title}
-            className="h-full w-full border-0"
-            scrolling="no"
-            allow="autoplay; fullscreen; gamepad"
-            allowFullScreen
-          />
+        <div className="flex min-h-[24rem] flex-col items-center justify-center gap-5 rounded-box border border-dashed border-base-300 bg-base-100 p-8 text-center">
+          <span className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-orange text-plum shadow-card">
+            <GameIcon name={game.icon} className="size-8" />
+          </span>
+          <div>
+            <h1 className="text-xl font-extrabold text-plum">{game.title}</h1>
+            <p className="mt-1 max-w-md text-sm text-muted">{game.description}</p>
+          </div>
+          <a
+            href={externalGameSrc(game.embed_url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary btn-lg shadow-card"
+          >
+            <Play className="size-5" /> Play now
+          </a>
+          <p className="text-xs text-muted">
+            Games open in a new tab so they run smoothly on any device.
+          </p>
         </div>
       );
     }
