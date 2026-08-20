@@ -43,15 +43,44 @@ export function GameShell({ game, children }) {
       ? Math.max(...game.config.outcomes.map((o) => o.coins || 0))
       : game.config?.thresholds?.[0]?.coins || game.reward_coins;
 
-  useEffect(() => {
-    fetch(`/api/games/${game.slug}/status`, { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        setPlaysLeft(data?.playsLeft ?? null);
-        setStatus("ready");
-      })
-      .catch(() => setStatus("ready"));
+  const loadStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/games/${game.slug}/status`, { cache: "no-store" });
+      const data = res.ok ? await res.json() : null;
+      setPlaysLeft(data?.playsLeft ?? null);
+      setStatus("ready");
+    } catch {
+      setStatus("ready");
+    }
   }, [game.slug]);
+
+  useEffect(() => {
+    loadStatus();
+  }, [loadStatus]);
+
+  useEffect(() => {
+    let timer;
+    const schedule = () => {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(24, 0, 0, 0);
+      timer = setTimeout(() => {
+        loadStatus();
+        schedule();
+      }, Math.max(1000, next.getTime() - now.getTime() + 500));
+    };
+    schedule();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") loadStatus();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [loadStatus]);
 
   const start = useCallback(() => {
     finishedRef.current = false;
@@ -136,6 +165,11 @@ export function GameShell({ game, children }) {
         refresh();
         setStatus("ready");
       } else {
+        if (res.status === 429 && /limit reached/i.test(data.error || "")) {
+          setPlaysLeft(0);
+          toast("3 spins used — the wheel is locked until tomorrow!", "info");
+          return;
+        }
         setResult({ error: data.error, earned: false });
         toast(data.error || "Could not record your result", "error");
       }

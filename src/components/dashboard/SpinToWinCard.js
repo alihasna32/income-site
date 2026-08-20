@@ -9,14 +9,23 @@ export function SpinToWinCard() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/games/spin-to-win/status", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!cancelled) setPlaysLeft(data?.playsLeft ?? null);
-      })
-      .catch(() => {});
+    const loadStatus = () =>
+      fetch("/api/games/spin-to-win/status", { cache: "no-store" })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!cancelled) setPlaysLeft(data?.playsLeft ?? null);
+        })
+        .catch(() => {});
+    loadStatus();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") loadStatus();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
     };
   }, []);
 
