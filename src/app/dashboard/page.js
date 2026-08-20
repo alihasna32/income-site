@@ -62,7 +62,7 @@ export default async function DashboardOverview() {
 
   const { profile, wallet, streak, stats } = data;
   const level = levelProgress(profile?.xp || 0);
-  const quickGames = games.filter((game) => game.embed_url).slice(0, 4);
+  const quickGames = games.filter((game) => game.embed_url).slice(0, 6);
 
   return (
     <div className="space-y-6">
@@ -128,13 +128,14 @@ export default async function DashboardOverview() {
               </Link>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 min-[425px]:grid-cols-2 min-[639px]:grid-cols-3 min-[850px]:grid-cols-4 min-[1024px]:grid-cols-2 min-[1440px]:grid-cols-3">
-              {quickGames.map((game) => (
-                <ExternalGameCard
-                  key={game.slug}
-                  game={game}
-                  // variant="tile"
-                  claimable
-                />
+{quickGames.map((game, i) => (
+                <div key={game.slug} className={i >= 4 ? "max-[1439px]:hidden" : ""}>
+                  <ExternalGameCard
+                    game={game}
+                    variant="tile"
+                    claimable
+                  />
+                </div>
               ))}
             </div>
           </section>
