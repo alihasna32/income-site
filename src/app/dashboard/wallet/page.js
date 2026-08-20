@@ -65,7 +65,7 @@ export default async function WalletPage() {
     <div className="space-y-8">
       <PageHeader
         title="Your wallet"
-        description="Virtual coins for fun and progress — tracked transparently in every detail."
+        description="Here you can convert your coins as real money. All the withdrawals will be reviewed by an admin. And will be processed off-platform through your chosen method."
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

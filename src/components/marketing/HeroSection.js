@@ -54,7 +54,7 @@ export async function HeroSection() {
             <p className="mt-5 max-w-xl text-base sm:text-lg text-neutral-content/80 leading-relaxed">
               CoinQuest is a fun rewards platform. Play mini-games, solve math
               challenges, scratch cards, complete daily missions and build
-              streaks to earn virtual coins and XP. Come back every day —
+              streaks to earn coins and XP. Also the coins will be converted as real money. Come back every day —
               there's always something new to do.
             </p>
 

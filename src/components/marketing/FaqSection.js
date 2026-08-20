@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils/cn";
 const FAQS = [
   {
     q: "Is CoinQuest free to play?",
-    a: "Yes, completely free. There's no purchase required and no real money involved. All rewards are virtual coins and XP designed for fun.",
+    a: "Yes, completely free. There's no purchase required and coins will be converted as real money",
   },
   {
     q: "Can I earn real money here?",
-    a: "Yes! Coins are virtual rewards for playing. We keep things honest — this is about fun, challenges and friendly competition, not income.",
+    a: "Yes. You can earn coins by completing eligible activities on the platform. Once you reach the required minimum balance, your coins can be converted into real money and withdrawn using the available withdrawal methods. Earnings vary based on your activity, and there is no guaranteed income or fixed earning amount.",
   },
   {
     q: "How do daily streaks work?",

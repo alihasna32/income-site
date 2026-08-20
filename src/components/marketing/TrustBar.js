@@ -11,7 +11,7 @@ import {
 
 const TRUST_ITEMS = [
   { icon: Gift, text: "Free to play — no purchase needed" },
-  { icon: Coins, text: "Virtual coins, just for fun" },
+  { icon: Coins, text: "Income generated with fun" },
   { icon: Flame, text: "Streaks that keep it exciting" },
   { icon: Ticket, text: "Daily scratch cards" },
   { icon: Users, text: "Friendly community leaderboards" },

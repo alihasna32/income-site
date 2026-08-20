@@ -6,7 +6,7 @@ export function SectionHeader({ eyebrow, title, description, align = "center" })
           {eyebrow}
         </p>
       )}
-      <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-plum">
+      <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-content/70">
         {title}
       </h2>
       {description && (

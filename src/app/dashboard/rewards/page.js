@@ -91,7 +91,7 @@ export default async function RewardsPage() {
             </span>
           </div>
           <p className="mt-2 text-sm text-muted">
-            Virtual coins — no cash value. Build streaks, climb levels and rank up.
+            The coins will be converted as real money.
           </p>
         </div>
       </section>
@@ -124,8 +124,7 @@ export default async function RewardsPage() {
         </h2>
         <p className="mt-2 text-sm text-muted max-w-2xl">
           We believe in compliant, transparent rewards. A virtual marketplace where
-          coins can be traded for digital perks is on the roadmap — no cash payouts,
-          ever. Get notified when it launches by watching your notifications.
+          coins can be traded for digital perks is on the roadmap. Get notified when it launches by watching your notifications.
         </p>
         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {["Digital badges", "Exclusive avatars", "Team perks"].map((perk) => (

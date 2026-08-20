@@ -38,13 +38,11 @@ export function Footer() {
           <div className="lg:col-span-2 max-w-sm">
             <Logo light />
             <p className="mt-4 text-sm leading-relaxed text-neutral-content/70">
-              Play mini-games, complete challenges, scratch cards and build
-              streaks to earn virtual coins and XP. Free to play, always fun,
-              no real money required.
+              Turn your skills and free time into rewards. Play fun games, solve math challenges, and spin the lucky wheel to earn coins and convert them into Taka.
             </p>
             <div className="mt-5 flex items-center gap-2 text-xs font-medium text-neutral-content/60">
               <ShieldCheck className="size-4 text-gold" />
-              Rewards are virtual coins for fun — not a money-making scheme.
+              Play • Solve • Spin • Earn
             </div>
             <div className="mt-5 flex gap-2">
               <a
@@ -87,12 +85,11 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-neutral-content/50">
           <p>
-            © {new Date().getFullYear()} CoinQuest. Virtual rewards only — have
-            fun, no purchase necessary.
+            © {new Date().getFullYear()} All rights reserved by CoinQuest.
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
-              <Mail className="size-3.5" /> hello@coinquest.example
+              <Mail className="size-3.5" /> hello_coinquest@gmail.com
             </span>
             <span className="flex items-center gap-1.5">
               <MapPin className="size-3.5" /> Played worldwide

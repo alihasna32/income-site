@@ -41,7 +41,7 @@ export async function GET() {
   const { data } = await admin.from("admin_settings").select("key, value");
 
   const settings = {
-    referrals: { bonusCoins: 30, inviteBonusCoins: 30 },
+    referrals: { bonusCoins: 30, inviteBonusCoins: 60 },
     withdrawals: { minAmount: 1000 },
     mathDaily: { rewardCoins: 20 },
     streaks: { graceDays: 0 },

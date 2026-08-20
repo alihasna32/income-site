@@ -23,6 +23,7 @@ function RegisterFormInner() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [avatarEmoji, setAvatarEmoji] = useState(EMOJIS[Math.floor(Math.random() * EMOJIS.length)]);
+  const [referralCode, setReferralCode] = useState(refCode);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -46,7 +47,7 @@ function RegisterFormInner() {
         data: {
           display_name: displayName,
           avatar_emoji: avatarEmoji,
-          ref_code: refCode,
+          ref_code: referralCode || "",
           phone: phone || "",
         },
         emailRedirectTo: `${window.location.origin}/dashboard`,
@@ -184,6 +185,24 @@ function RegisterFormInner() {
             {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
+      </label>
+
+      <label className="form-control">
+        <span className="label-text mb-1.5 text-sm font-semibold">
+          Referral code <span className="font-normal text-muted">(optional)</span>
+        </span>
+        <input
+          name="referralCode"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.trim())}
+          maxLength={8}
+          autoComplete="off"
+          className="input input-bordered w-full"
+          placeholder="Friend's code — e.g. a1b2c3d4"
+        />
+        <p className="text-xs text-muted mt-1">
+          Use a friend's code and you both earn a bonus — you get 60 coins, they get 30.
+        </p>
       </label>
 
       <fieldset>

@@ -32,7 +32,7 @@ export function HowItWorksSection() {
         <SectionHeader
           eyebrow="How it works"
           title="Three steps to start earning virtual rewards"
-          description="Simple, transparent and fun. No hidden catches, no real money involved."
+          description="Simple, transparent and fun. No hidden catches, coins will be converted as real money"
         />
         <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-3">
           {STEPS.map((step) => (

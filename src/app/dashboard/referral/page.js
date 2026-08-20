@@ -107,6 +107,7 @@ export default function ReferralPage() {
                 <Users className="size-4 text-secondary" /> Fair play rules
               </p>
               <ul className="mt-2 space-y-1.5">
+                <li>• Your friend will got 60 coins and you will got 30 coins as reward.</li>
                 <li>• Self-referrals are blocked automatically.</li>
                 <li>• Each email can only be counted once.</li>
                 <li>• Suspicious signups are flagged and rejected.</li>
