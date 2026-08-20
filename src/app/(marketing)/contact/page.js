@@ -53,53 +53,53 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="py-10 sm:py-14">
-      <div className="container-page max-w-2xl">
+    <div className="py-8 min-[425px]:py-10 sm:py-14">
+      <div className="container-page max-w-2xl min-w-0">
         <PageHeader
           title="Contact us"
           description="Questions, feedback or a game idea? We read every message."
         />
 
-        <form onSubmit={submit} className="card bg-base-100 border border-base-300 shadow-card p-6 mt-8">
+        <form onSubmit={submit} className="card mt-6 min-w-0 overflow-hidden border border-base-300 bg-base-100 p-4 shadow-card min-[425px]:mt-8 min-[425px]:p-5 sm:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <label className="form-control">
+            <label className="form-control min-w-0">
               <span className="label-text mb-1.5 text-sm font-semibold">Name</span>
               <input
                 name="name"
                 required
-                className="input input-bordered"
+                className="input input-bordered w-full min-w-0 text-base sm:text-sm"
                 placeholder="Your name"
                 autoComplete="name"
               />
             </label>
-            <label className="form-control">
+            <label className="form-control min-w-0">
               <span className="label-text mb-1.5 text-sm font-semibold">Email</span>
               <input
                 name="email"
                 type="email"
                 required
-                className="input input-bordered"
+                className="input input-bordered w-full min-w-0 text-base sm:text-sm"
                 placeholder="you@example.com"
                 autoComplete="email"
               />
             </label>
           </div>
-          <label className="form-control mt-4">
+          <label className="form-control mt-4 min-w-0">
             <span className="label-text mb-1.5 text-sm font-semibold">Subject</span>
             <input
               name="subject"
               required
-              className="input input-bordered"
+              className="input input-bordered w-full min-w-0 text-base sm:text-sm"
               placeholder="How can we help?"
             />
           </label>
-          <label className="form-control mt-4">
+          <label className="form-control mt-4 min-w-0">
             <span className="label-text mb-1.5 text-sm font-semibold">Message</span>
             <textarea
               name="message"
               required
               rows="5"
-              className="textarea textarea-bordered"
+              className="textarea textarea-bordered w-full min-w-0 text-base sm:text-sm"
               placeholder="Tell us everything…"
             />
           </label>
@@ -116,12 +116,12 @@ export default function ContactPage() {
             Send message
           </button>
 
-          <div className="mt-6 flex flex-col gap-3 text-sm text-muted">
-            <span className="flex items-center gap-2">
-              <Mail className="size-4 text-secondary" /> hello@coinquest.example
+          <div className="mt-6 flex min-w-0 flex-col gap-3 text-sm text-muted">
+            <span className="flex min-w-0 items-start gap-2 break-words">
+              <Mail className="mt-0.5 size-4 shrink-0 text-secondary" /> hello@coinquest.example
             </span>
-            <span className="flex items-center gap-2">
-              <MessageSquare className="size-4 text-secondary" /> Community channel: coming soon
+            <span className="flex min-w-0 items-start gap-2 break-words">
+              <MessageSquare className="mt-0.5 size-4 shrink-0 text-secondary" /> Community channel: coming soon
             </span>
           </div>
         </form>

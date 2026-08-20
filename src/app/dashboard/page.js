@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { DailyRewardBanner } from "@/components/dashboard/DailyRewardBanner";
+import { SpinToWinCard } from "@/components/dashboard/SpinToWinCard";
 import { StatCard } from "@/components/ui/StatCard";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -76,6 +77,8 @@ export default async function DashboardOverview() {
 
       <DailyRewardBanner />
 
+      <SpinToWinCard />
+
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={Coins}
@@ -126,7 +129,12 @@ export default async function DashboardOverview() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {games.filter((game) => game.embed_url).map((game) => (
-                <ExternalGameCard key={game.slug} game={game} variant="tile" claimable />
+                <ExternalGameCard
+                  key={game.slug}
+                  game={game}
+                  variant="tile"
+                  claimable
+                />
               ))}
             </div>
           </section>

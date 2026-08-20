@@ -3,6 +3,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { ExternalGameCard } from "@/components/games/ExternalGameCard";
 import { GAME_CATEGORIES } from "@/lib/constants/games";
 import { getActiveGames } from "@/services/catalogService";
+import { getSession } from "@/lib/auth/session";
+import { supabaseConfigured } from "@/lib/supabase/env";
 
 export const metadata = {
   title: "Games",
@@ -12,6 +14,15 @@ export const metadata = {
 
 export default async function GamesPage() {
   const games = (await getActiveGames()).filter((game) => game.embed_url);
+  let canEarnRewards = false;
+
+  if (supabaseConfigured()) {
+    try {
+      canEarnRewards = Boolean(await getSession());
+    } catch {
+      // Guests can still play; reward controls remain hidden until sign-in is available.
+    }
+  }
 
   const grouped = Object.keys(GAME_CATEGORIES)
     .map((key) => ({
@@ -26,7 +37,11 @@ export default async function GamesPage() {
       <div className="container-page">
         <PageHeader
           title="Explore games"
-          description="Every game is free, lightweight and mobile-friendly. No login needed — just tap and play."
+          description={
+            canEarnRewards
+              ? "Play any game, stay in for one full minute, then claim your daily coins."
+              : "Every game is free, lightweight and mobile-friendly. Sign in to earn coins after you play."
+          }
         />
 
         {grouped.map((group) => (
@@ -37,7 +52,12 @@ export default async function GamesPage() {
             </h2>
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {group.games.map((game) => (
-                <ExternalGameCard key={game.slug} game={game} variant="full" />
+                <ExternalGameCard
+                  key={game.slug}
+                  game={game}
+                  variant="full"
+                  claimable={canEarnRewards}
+                />
               ))}
             </div>
           </section>

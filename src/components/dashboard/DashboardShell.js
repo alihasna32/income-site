@@ -7,6 +7,7 @@ import {
   Award,
   Bell,
   Calculator,
+  Disc,
   Flag,
   Gamepad2,
   Gift,
@@ -102,7 +103,7 @@ function SidebarContent({ profile, onNavigate }) {
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-neutral-content">
-              {profile?.displayName || "Player"}
+              {profile?.display_name || profile?.username || "Player"}
             </p>
             <p className="truncate text-xs text-neutral-content/60">
               @{profile?.username || "—"}
@@ -151,7 +152,7 @@ function SidebarContent({ profile, onNavigate }) {
 export function DashboardShell({ children, profile, unreadCount, userId }) {
   const pathname = usePathname();
   const { wallet } = useWallet();
-  const [drawerOpen, setDrawerOpen] = useState();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   
   return (
     <div className="min-h-dvh bg-base-200/50">
@@ -234,7 +235,8 @@ export function DashboardShell({ children, profile, unreadCount, userId }) {
         <div className="grid grid-cols-5">
           {[
             { href: "/dashboard", label: "Home", icon: Home, match: "/dashboard" },
-            { href: "/dashboard/games", label: "Games", icon: Gamepad2 },
+{ href: "/dashboard/games", label: "Games", icon: Gamepad2 },
+      { href: "/dashboard/spin", label: "Spin & Win", icon: Disc },
             { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
             { href: "/dashboard/leaderboard", label: "Ranks", icon: Trophy },
             { href: "/dashboard/missions", label: "Missions", icon: Gift },

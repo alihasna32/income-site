@@ -19,7 +19,7 @@ import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { GameIcon } from "@/components/games/GameIcon";
 import { getGameComponent } from "@/components/games/registry";
-import { externalGameSrc, externalPlayerSrc } from "@/lib/games/external";
+import { externalPlayerSrc, startExternalGame } from "@/lib/games/external";
 import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
 import { cn } from "@/lib/utils/cn";
 
@@ -35,6 +35,11 @@ export function GameShell({ game, children }) {
   const finishedRef = useRef(false);
 
   const GameComponent = getGameComponent(game.component);
+
+  const maxCoins =
+    game.config?.luck && Array.isArray(game.config.outcomes) && game.config.outcomes.length
+      ? Math.max(...game.config.outcomes.map((o) => o.coins || 0))
+      : game.config?.thresholds?.[0]?.coins || game.reward_coins;
 
   useEffect(() => {
     fetch(`/api/games/${game.slug}/status`, { cache: "no-store" })
@@ -133,6 +138,8 @@ export function GameShell({ game, children }) {
 
   const renderStage = () => {
     if (game.embed_url) {
+      const playerSrc = externalPlayerSrc(game.embed_url);
+
       return (
         <div className="flex min-h-[24rem] flex-col items-center justify-center gap-5 rounded-box border border-dashed border-base-300 bg-base-100 p-8 text-center">
           <span className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-orange text-plum shadow-card">
@@ -142,27 +149,20 @@ export function GameShell({ game, children }) {
             <h1 className="text-xl font-extrabold text-plum">{game.title}</h1>
             <p className="mt-1 max-w-md text-sm text-muted">{game.description}</p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div>
             <a
-              href={externalGameSrc(game.embed_url)}
+              href={playerSrc}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => void startExternalGame(game.slug)}
               className="btn btn-primary btn-lg shadow-card"
             >
               <Play className="size-5" /> Play now
             </a>
-            <a
-              href={externalPlayerSrc(game.embed_url)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-outline"
-            >
-              Trouble playing? Try the player page
-            </a>
           </div>
           <ClaimRewardButton game={game} />
           <p className="text-xs text-muted">
-            Play a level, then come back and claim your daily coins.
+            The game opens on its official provider page. Play for one minute to unlock your daily coins.
           </p>
         </div>
       );
@@ -185,7 +185,7 @@ export function GameShell({ game, children }) {
           <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="badge bg-base-200 text-muted capitalize">{game.difficulty}</span>
             <span className="coin badge bg-primary/15 text-gold-dark">
-              <Coins className="size-3.5" /> up to {game.config?.thresholds?.[0]?.coins || game.reward_coins}
+              <Coins className="size-3.5" /> up to {maxCoins}
             </span>
             {playsLeft !== null && (
               <span className="badge bg-base-200 text-muted">

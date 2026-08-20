@@ -20,6 +20,7 @@ export async function HeroSection() {
   const user = await getSession();
   const playHref = user ? "/dashboard/games" : "/register";
   const featured = GAMES[0];
+  const FeaturedIcon = featured.icon;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-plum-dark via-plum to-plum-light text-neutral-content">
@@ -92,7 +93,7 @@ export async function HeroSection() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="flex size-9 items-center justify-center rounded-xl bg-gold text-plum">
-                    <featured.icon className="size-5" />
+                    <FeaturedIcon className="size-5" />
                   </span>
                   <div>
                     <p className="text-sm font-bold">{featured.title}</p>

@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/marketing/HeroSection";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { HowItWorksSection } from "@/components/marketing/HowItWorksSection";
 import { FeaturedGamesSection } from "@/components/marketing/FeaturedGamesSection";
-import { DailyRewardsSection } from "@/components/marketing/DailyRewardsSection";
+import { SpinToWinSection } from "@/components/marketing/SpinToWinSection";
 import { TopPlayersSection } from "@/components/marketing/TopPlayersSection";
 import { WhyLoveItSection } from "@/components/marketing/WhyLoveItSection";
 import { FaqSection } from "@/components/marketing/FaqSection";
@@ -34,7 +34,7 @@ export default async function HomePage() {
       <TrustBar />
       <HowItWorksSection />
       <FeaturedGamesSection games={games} />
-      <DailyRewardsSection />
+      <SpinToWinSection />
       <TopPlayersSection />
       <WhyLoveItSection />
       <FaqSection />

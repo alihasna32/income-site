@@ -28,7 +28,7 @@ export function NewPasswordForm({ onSubmit, loading, error }) {
         e.preventDefault();
         submit();
       }}
-      className="space-y-4"
+      className="space-y-5"
     >
       <div>
         <h3 className="text-lg font-bold text-plum">Set a new password</h3>
@@ -84,7 +84,7 @@ export function NewPasswordForm({ onSubmit, loading, error }) {
         />
       </div>
 
-      <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+      <button type="submit" className="btn btn-primary mt-2 w-full" disabled={loading}>
         {loading ? <Loader2 className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
         {loading ? "Updating…" : "Update password"}
       </button>

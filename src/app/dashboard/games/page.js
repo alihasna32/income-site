@@ -34,7 +34,12 @@ export default async function DashboardGamesPage() {
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {group.games.map((game) => (
-              <ExternalGameCard key={game.slug} game={game} variant="full" claimable />
+              <ExternalGameCard
+                key={game.slug}
+                game={game}
+                variant="full"
+                claimable
+              />
             ))}
           </div>
         </section>

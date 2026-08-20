@@ -63,6 +63,7 @@ export async function POST(request, { params }) {
     );
   }
 
+  const dailyRewardOnce = config.dailyRewardOnce !== false;
   const { count: dailyRewardCount } = await admin
     .from("game_sessions")
     .select("id", { count: "exact", head: true })
@@ -71,7 +72,7 @@ export async function POST(request, { params }) {
     .eq("created_at::date", today)
     .gt("reward_coins", 0);
 
-  const dailyRewardClaimed = dailyRewardCount > 0;
+  const dailyRewardClaimed = dailyRewardOnce && dailyRewardCount > 0;
   const outcome = weightedPick(config.outcomes);
   const coins = dailyRewardClaimed ? 0 : outcome.coins;
   const xp = dailyRewardClaimed ? 0 : Math.max(1, Math.round(outcome.coins / 5));

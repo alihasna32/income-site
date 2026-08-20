@@ -2,12 +2,13 @@
 
 import { ExternalLink, Play } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
-import { externalGameSrc } from "@/lib/games/external";
+import { externalPlayerSrc, startExternalGame } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
 import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
 
 export function ExternalGameCard({ game, variant = "full", claimable = false }) {
-  const src = externalGameSrc(game.embed_url);
+  // Direct provider pages are more reliable on mobile than raw game-file embeds.
+  const src = externalPlayerSrc(game.embed_url);
 
   return (
     <div
@@ -22,6 +23,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false }) 
         href={src}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={claimable ? () => void startExternalGame(game.slug) : undefined}
         className="block text-left"
         aria-label={`Play ${game.title}`}
       >
