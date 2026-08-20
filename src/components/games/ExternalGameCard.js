@@ -66,7 +66,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
         )}
         <h3
           className={cn(
-            "font-bold text-plum text-center group-hover:text-secondary transition-colors",
+            "font-bold text-plum group-hover:text-secondary transition-colors",
             variant === "full" && "mt-4",
             variant === "featured" && "mt-4 text-sm sm:text-base",
             variant === "tile" && "mt-2 text-xs truncate"
@@ -86,9 +86,6 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
         )}
         {variant !== "tile" && (
           <div className="mt-4 flex items-center justify-between">
-            <span className="flex items-center gap-1 text-xs font-semibold text-secondary">
-              <ExternalLink className="size-3.5" /> Opens in new tab
-            </span>
             {locked ? (
               <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
                 <Lock className="size-3.5" /> Play
