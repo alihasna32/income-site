@@ -42,14 +42,14 @@ const REASONS = [
 
 export function WhyLoveItSection() {
   return (
-    <section className="py-16 sm:py-20 bg-base-200/60">
+    <section className="py-10 sm:py-12 bg-base-200/60">
       <div className="container-page">
         <SectionHeader
           eyebrow="Why players like it"
           title="Built for fun, designed with respect"
           description="No dark patterns, no fake promises — just honest, enjoyable earning mechanics."
         />
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {REASONS.map((reason) => (
             <div key={reason.title} className="card bg-base-100 border border-base-300 p-5 sm:p-6">
               <span className="flex size-10 items-center justify-center rounded-xl bg-primary/15 text-gold-dark">

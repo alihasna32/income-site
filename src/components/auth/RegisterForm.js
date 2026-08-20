@@ -145,12 +145,13 @@ function RegisterFormInner() {
 
       <label className="form-control">
         <span className="label-text mb-1.5 text-sm font-semibold">
-          Phone number <span className="font-normal text-muted">(optional)</span>
+          Phone number 
         </span>
         <input
           name="phone"
           type="tel"
           inputMode="tel"
+          required
           minLength={7}
           maxLength={15}
           autoComplete="tel"

@@ -130,8 +130,8 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
           </span>
           <h3 className="mt-4 text-lg font-extrabold text-plum">{game.title}</h3>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Create a free account to unlock every game and start earning coins.
-            It takes under a minute!
+            You want to play games for income? Please registration first! It
+            takes under a minute and unlocks every game.
           </p>
           <div className="mt-6 space-y-2">
             <Link href="/register" className="btn btn-primary w-full">

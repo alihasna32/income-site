@@ -27,14 +27,14 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-10 sm:py-12">
       <div className="container-page">
         <SectionHeader
           eyebrow="How it works"
           title="Three steps to start earning virtual rewards"
           description="Simple, transparent and fun. No hidden catches, no real money involved."
         />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-3">
           {STEPS.map((step) => (
             <div
               key={step.step}

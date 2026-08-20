@@ -36,14 +36,14 @@ export function FaqSection() {
   const [open, setOpen] = useState(0);
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-10 sm:py-12">
       <div className="container-page max-w-3xl">
         <SectionHeader
           eyebrow="FAQ"
           title="Questions, answered"
           description="Everything you need to know about playing and earning on CoinQuest."
         />
-        <div className="mt-10 space-y-3">
+        <div className="mt-8 space-y-2.5">
           {FAQS.map((faq, i) => (
             <div
               key={faq.q}

@@ -25,9 +25,9 @@ export async function TopPlayersSection() {
   const medals = ["text-gold", "text-muted", "text-orange"];
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-10 sm:py-12">
       <div className="container-page">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             eyebrow="Leaderboard"
             title="Top players this season"
@@ -39,7 +39,7 @@ export async function TopPlayersSection() {
           </Link>
         </div>
 
-        <div className="mt-10 grid gap-3">
+        <div className="mt-8 grid gap-2.5">
           {players.map((player, i) => (
             <div
               key={player.username || i}

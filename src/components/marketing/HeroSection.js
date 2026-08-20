@@ -17,7 +17,7 @@ import { getSession } from "@/lib/auth/session";
 
 export async function HeroSection() {
   const user = await getSession();
-  const playHref = user ? "/dashboard/games" : "/register";
+  const playHref = user ? "/dashboard/games" : "/games";
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-plum-dark via-plum to-plum-light text-neutral-content">

@@ -9,9 +9,9 @@ export async function FeaturedGamesSection({ games }) {
   const featured = games.filter((game) => game.embed_url).slice(0, 6);
 
   return (
-    <section className="py-16 sm:py-20 bg-base-200/60">
+    <section className="py-10 sm:py-12 bg-base-200/60">
       <div className="container-page">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             eyebrow="Games"
             title="Pick a game, any game"
@@ -23,7 +23,7 @@ export async function FeaturedGamesSection({ games }) {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {featured.map((game) => (
             <ExternalGameCard
               key={game.slug}

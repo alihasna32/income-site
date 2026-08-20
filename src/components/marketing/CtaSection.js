@@ -8,9 +8,9 @@ export async function CtaSection() {
   const primaryLabel = user ? "Open your dashboard" : "Create free account";
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-10 sm:py-12">
       <div className="container-page">
-        <div className="relative overflow-hidden rounded-box bg-gradient-to-br from-plum via-plum-light to-plum-dark p-8 sm:p-14 text-center text-neutral-content shadow-soft">
+        <div className="relative overflow-hidden rounded-box bg-gradient-to-br from-plum via-plum-light to-plum-dark p-6 sm:p-10 text-center text-neutral-content shadow-soft">
           <div
             className="pointer-events-none absolute inset-0 opacity-30"
             style={{
@@ -27,7 +27,7 @@ export async function CtaSection() {
               Join free in seconds, claim your day-1 reward and see what you can
               achieve. Your streak starts now.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href={primaryHref} className="btn btn-primary btn-lg shadow-card w-full sm:w-auto">
                 {primaryLabel} <ArrowRight className="size-5" />
               </Link>
