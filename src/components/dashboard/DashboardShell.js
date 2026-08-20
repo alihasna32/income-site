@@ -142,7 +142,7 @@ function SidebarContent({ profile, onNavigate }) {
 
       <div className="border-t border-white/10 p-4">
         <p className="text-[10px] text-neutral-content/40 leading-relaxed">
-          Virtual coins only — have fun, play fair.
+          Have fun and play fair.
         </p>
       </div>
     </div>

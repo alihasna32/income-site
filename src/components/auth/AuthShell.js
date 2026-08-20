@@ -34,7 +34,7 @@ export function AuthShell({ children }) {
         </div>
         <p className="flex items-center gap-2 text-xs text-neutral-content/60">
           <Flame className="size-4 text-orange" />
-          Virtual coins only. No real money, no purchases, ever.
+          Fun with income.
         </p>
       </aside>
 
