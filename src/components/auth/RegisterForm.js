@@ -10,6 +10,10 @@ import { cn } from "@/lib/utils/cn";
 
 const EMOJIS = ["😀", "😎", "🤓", "🦊", "🐼", "🦁", "🚀", "🌟", "🎮", "🏆"];
 
+export function normalizePhone(value) {
+  return String(value || "").replace(/[^0-9]/g, "");
+}
+
 function RegisterFormInner() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref") || "";
@@ -29,6 +33,7 @@ function RegisterFormInner() {
     const form = new FormData(e.currentTarget);
     const displayName = form.get("displayName").trim();
     const email = form.get("email").trim();
+    const phone = normalizePhone(form.get("phone"));
     const password = form.get("password");
 
     const supabase = createClient();
@@ -41,6 +46,7 @@ function RegisterFormInner() {
           display_name: displayName,
           avatar_emoji: avatarEmoji,
           ref_code: refCode,
+          phone: phone || "",
         },
         emailRedirectTo: `${window.location.origin}/dashboard`,
       },
@@ -129,6 +135,25 @@ function RegisterFormInner() {
           className="input input-bordered w-full"
           placeholder="you@example.com"
         />
+      </label>
+
+      <label className="form-control">
+        <span className="label-text mb-1.5 text-sm font-semibold">
+          Phone number <span className="font-normal text-muted">(optional)</span>
+        </span>
+        <input
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          minLength={7}
+          maxLength={15}
+          autoComplete="tel"
+          className="input input-bordered w-full"
+          placeholder="e.g. 01712345678"
+        />
+        <p className="text-xs text-muted mt-1">
+          Add a number to log in with either your email or phone.
+        </p>
       </label>
 
       <label className="form-control">

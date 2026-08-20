@@ -39,7 +39,7 @@ export function EmailResetForm({ email, onEmailChange, onSubmit, loading, error,
         />
       </label>
 
-      <button type="submit" className="btn btn-primary w-full" disabled={loading || !email.trim()}>
+      <button type="submit" className="btn btn-primary w-full mt-2 md:mt-4" disabled={loading || !email.trim()}>
         {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         {loading ? "Sending…" : "Send reset link"}
       </button>

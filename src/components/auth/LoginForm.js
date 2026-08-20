@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, KeyRound, Loader2, LogIn } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
+import { normalizePhone } from "@/components/auth/RegisterForm";
 
 export function LoginForm() {
   const router = useRouter();
@@ -20,11 +21,34 @@ export function LoginForm() {
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
+    const identifier = String(form.get("identifier") || "").trim();
+    const password = form.get("password");
     const supabase = createClient();
 
+    let email = identifier;
+    if (!identifier.includes("@")) {
+      const phone = normalizePhone(identifier);
+      try {
+        const res = await fetch("/api/auth/resolve-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone }),
+        });
+        const data = await res.json();
+        email = data.email || "";
+      } catch {
+        email = "";
+      }
+      if (!email) {
+        setLoading(false);
+        setError("No account found for that email or phone. Try again.");
+        return;
+      }
+    }
+
     const { error: authError } = await supabase.auth.signInWithPassword({
-      email: form.get("email"),
-      password: form.get("password"),
+      email,
+      password,
     });
 
     setLoading(false);
@@ -33,7 +57,7 @@ export function LoginForm() {
       if (authError.message.includes("not confirmed")) {
         setError("Please verify your email first — check your inbox for the confirmation link.");
       } else if (authError.message.includes("Invalid login")) {
-        setError("Incorrect email or password. Try again.");
+        setError("Incorrect email/phone or password. Try again.");
       } else {
         setError(authError.message);
       }
@@ -59,14 +83,14 @@ export function LoginForm() {
       )}
 
       <label className="form-control">
-        <span className="label-text mb-1.5 text-sm font-semibold">Email</span>
+        <span className="label-text mb-1.5 text-sm font-semibold">Email or phone number</span>
         <input
-          name="email"
-          type="email"
+          name="identifier"
+          type="text"
           required
           autoComplete="email"
           className="input input-bordered w-full"
-          placeholder="you@example.com"
+          placeholder="you@example.com or 01712345678"
         />
       </label>
 

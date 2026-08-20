@@ -28,11 +28,13 @@ export async function GET() {
 
   return NextResponse.json({
     profile: {
+      id: user.id,
       displayName: profile?.display_name || "",
       username: profile?.username || "",
       bio: profile?.bio || "",
       avatarEmoji: profile?.avatar_emoji || "",
       email: user.email || "",
+      phone: profile?.phone || "",
       referralCode: profile?.referral_code || "",
       createdAt: profile?.created_at || new Date().toISOString(),
       xp: profile?.xp || 0,
@@ -86,6 +88,21 @@ export async function PATCH(request) {
     username = await findUniqueUsername(admin, parsed.data.displayName);
   }
 
+  const phone = parsed.data.phone || null;
+  if (phone) {
+    const { data: phoneOwner } = await admin
+      .from("profiles")
+      .select("id")
+      .eq("phone", phone)
+      .maybeSingle();
+    if (phoneOwner && phoneOwner.id !== user.id) {
+      return NextResponse.json(
+        { error: "That phone number is already in use" },
+        { status: 409 }
+      );
+    }
+  }
+
   const { data, error } = await admin
     .from("profiles")
     .update({
@@ -93,20 +110,28 @@ export async function PATCH(request) {
       username,
       bio: parsed.data.bio,
       avatar_emoji: parsed.data.avatarEmoji,
+      phone,
     })
     .eq("id", user.id)
-    .select("display_name, username, bio, avatar_emoji")
+    .select("display_name, username, bio, avatar_emoji, phone")
     .single();
 
   if (error) {
     if (error.message.includes("username")) {
       return NextResponse.json({ error: "That username is already taken" }, { status: 409 });
     }
+    if (error.message.includes("phone")) {
+      return NextResponse.json({ error: "That phone number is already in use" }, { status: 409 });
+    }
     return NextResponse.json({ error: "Could not update profile" }, { status: 500 });
   }
 
   await admin.auth.admin.updateUserById(user.id, {
-    user_metadata: { display_name: parsed.data.displayName, avatar_emoji: parsed.data.avatarEmoji },
+    user_metadata: {
+      display_name: parsed.data.displayName,
+      avatar_emoji: parsed.data.avatarEmoji,
+      phone: phone || "",
+    },
   });
 
   return NextResponse.json({ profile: data });

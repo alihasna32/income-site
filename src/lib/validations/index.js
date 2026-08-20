@@ -30,11 +30,18 @@ export const profileUpdateSchema = z.object({
     .min(3, "Username must be at least 3 characters")
     .max(24, "Username is too long")
     .regex(/^[a-z0-9_]+$/, "Lowercase letters, numbers and _ only"),
-  bio: z.string().trim().max(160, "Bio must be under 160 characters"),
+  bio: z.string().trim().max(20, "Bio must be under 20 characters"),
   avatarEmoji: z
     .string()
     .trim()
     .max(4, "Pick a valid emoji")
+    .optional()
+    .default(""),
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/[^0-9]/g, ""))
+    .pipe(z.string().max(15, "Phone number is too long").optional().or(z.literal("")))
     .optional()
     .default(""),
 });

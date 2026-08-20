@@ -250,7 +250,7 @@ export function GameShell({ game, children }) {
           </div>
           <div className="flex justify-between gap-2">
   <button onClick={start} className="btn btn-primary shadow-card" disabled={playsLeft === 0}>
-    <Play className="size-5" /> Play now
+    <Play className="size-5" /> Play no
   </button>
 
   <button

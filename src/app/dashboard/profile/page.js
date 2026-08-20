@@ -7,8 +7,10 @@ import {
   Cake,
   Coins,
   Gem,
+  IdCard,
   Loader2,
   Mail,
+  Phone,
   Save,
   Settings,
   Sparkles,
@@ -36,7 +38,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
-  const [form, setForm] = useState({ displayName: "", username: "", bio: "", avatarEmoji: "" });
+  const [form, setForm] = useState({ displayName: "", username: "", bio: "", phone: "", avatarEmoji: "" });
 
   useEffect(() => {
     fetch("/api/profile/update", { cache: "no-store" })
@@ -49,12 +51,15 @@ export default function ProfilePage() {
           displayName: data.profile?.displayName || "",
           username: data.profile?.username || "",
           bio: data.profile?.bio || "",
+          phone: data.profile?.phone || "",
           avatarEmoji: data.profile?.avatarEmoji || "🦊",
         });
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const bioTooLong = form.bio.length > 20;
 
   const save = async () => {
     setSaving(true);
@@ -65,7 +70,8 @@ export default function ProfilePage() {
         body: JSON.stringify({
           displayName: form.displayName.trim(),
           username: form.username.trim(),
-          bio: form.bio.trim().slice(0, 160),
+          bio: form.bio.trim().slice(0, 20),
+          phone: form.phone,
           avatarEmoji: form.avatarEmoji,
         }),
       });
@@ -111,6 +117,13 @@ export default function ProfilePage() {
       <div className="card bg-base-100 border border-base-300 shadow-card overflow-hidden">
         <div className="h-24 bg-gradient-to-r from-plum via-[#5d4065] to-plum relative">
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_50%,#F2C230_0,transparent_40%),radial-gradient(circle_at_80%_50%,#F2921D_0,transparent_40%)]" />
+          {form.bio && (
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center px-4">
+              <p className="max-w-full truncate rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm sm:text-base font-semibold italic text-gold backdrop-blur drop-shadow">
+                “{form.bio.slice(0, 20)}”
+              </p>
+            </div>
+          )}
         </div>
         <div className="px-5 sm:px-8 pb-6">
           <div className="flex flex-wrap items-end justify-between gap-4 -mt-10">
@@ -234,6 +247,27 @@ export default function ProfilePage() {
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-field bg-base-200 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2 text-sm">
+              <Phone className="size-4 text-muted shrink-0" />
+              {profile.phone ? (
+                <span className="font-semibold text-plum break-all">{profile.phone}</span>
+              ) : (
+                <span className="text-muted">No number added</span>
+              )}
+            </div>
+            {profile.phone && (
+              <span className="badge badge-sm bg-secondary/15 text-secondary text-xs">Login with it</span>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-field bg-base-200 px-4 py-3">
+            <div className="flex min-w-0 items-center gap-2 text-sm">
+              <IdCard className="size-4 text-muted shrink-0" />
+              <span className="text-muted">User ID</span>
+              <code className="font-mono font-bold text-plum break-all">{profile.id}</code>
+            </div>
+            <CopyButton value={profile.id} label="Copy" />
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-field bg-base-200 px-4 py-3">
+            <div className="flex min-w-0 items-center gap-2 text-sm">
               <Ticket className="size-4 text-muted shrink-0" />
               <span className="text-muted">Referral code</span>
               <code className="font-mono font-bold text-plum break-all">{profile.referralCode}</code>
@@ -275,14 +309,47 @@ export default function ProfilePage() {
             <textarea
               value={form.bio}
               onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-              maxLength={160}
-              rows={3}
+              maxLength={40}
+              rows={2}
               className="textarea textarea-bordered w-full mt-1"
               placeholder="Tell the community something about you…"
             />
-            <p className="text-right text-xs text-muted mt-1">{form.bio.length}/160</p>
+            <div className="flex items-center justify-between mt-1 gap-2">
+              <span
+                className={cn(
+                  "text-xs",
+                  bioTooLong ? "text-error font-semibold" : "text-muted"
+                )}
+              >
+                {bioTooLong && "⚠️ Bio is too long — max 20 letters."}
+              </span>
+              <span
+                className={cn(
+                  "text-xs",
+                  bioTooLong ? "text-error font-bold" : "text-muted"
+                )}
+              >
+                {form.bio.length}/20
+              </span>
+            </div>
           </div>
-          <button onClick={save} className="btn btn-primary" disabled={saving}>
+          <div>
+            <label className="label-text font-semibold text-plum">Phone number</label>
+            <input
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value.replace(/[^0-9]/g, "") }))}
+              inputMode="tel"
+              maxLength={15}
+              className="input input-bordered w-full mt-1"
+              placeholder="e.g. 01712345678"
+            />
+            <p className="text-xs text-muted mt-1">Used for logging in with your number.</p>
+          </div>
+          <button
+            onClick={save}
+            className="btn btn-primary"
+            disabled={saving || bioTooLong}
+          >
             {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
             Save profile
           </button>
