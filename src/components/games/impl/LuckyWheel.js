@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Coins, Loader2 } from "lucide-react";
+import { Coins, Loader2, Lock } from "lucide-react";
 import { GameFrame } from "@/components/games/impl/GameFrame";
 import { cn } from "@/lib/utils/cn";
 
-export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
+export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete, playsLeft }) {
   const segments = config.segments || 8;
   const outcomes = Array.isArray(config.outcomes) ? config.outcomes : [];
   const segmentAngle = 360 / segments;
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const targetedRef = useRef(null);
+  const locked = playsLeft !== null && playsLeft <= 0;
 
   const labelFor = (i) => {
     const outcome = outcomes[i];
@@ -19,7 +20,7 @@ export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
     return outcome.coins > 0 ? `+${outcome.coins}` : "0";
   };
 
-  const isWinner = (i) => !outcomes[i] || outcomes[i].coins > 0;
+  const isDark = (i) => i % 2 === 1;
 
   useEffect(() => {
     if (spinTarget === null || spinTarget === undefined) {
@@ -44,7 +45,7 @@ export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
   };
 
   const spin = () => {
-    if (spinning) return;
+    if (spinning || locked) return;
     setSpinning(true);
     onLuck?.();
   };
@@ -73,7 +74,7 @@ export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
                 <span
                   className={cn(
                     "absolute left-1/2 top-7 sm:top-9 -translate-x-1/2 text-lg sm:text-2xl font-extrabold drop-shadow",
-                    isWinner(i) ? "text-plum" : "text-neutral-content/40"
+                    isDark(i) ? "text-neutral-content" : "text-plum"
                   )}
                 >
                   {labelFor(i)}
@@ -83,6 +84,14 @@ export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
             <div className="absolute left-1/2 top-1/2 flex size-14 sm:size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-gold to-orange text-plum shadow-card">
               <Coins className="size-7" />
             </div>
+            {locked && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full bg-plum/70 backdrop-blur-sm">
+                <Lock className="size-10 text-gold" />
+                <span className="text-sm font-bold text-neutral-content">
+                  Wheel locked — come back tomorrow
+                </span>
+              </div>
+            )}
           </div>
           <div
             className="absolute left-1/2 -top-2 z-10 -translate-x-1/2 border-x-[14px] border-x-transparent border-t-[26px] border-t-gold drop-shadow-lg"
@@ -90,13 +99,19 @@ export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
           />
         </div>
 
-        <button onClick={spin} disabled={spinning} className="btn btn-primary btn-lg shadow-card">
+        <button
+          onClick={spin}
+          disabled={spinning || locked}
+          className="btn btn-primary btn-lg shadow-card"
+        >
           {spinning ? (
             <Loader2 className="size-5 animate-spin" />
+          ) : locked ? (
+            <Lock className="size-5" />
           ) : (
             <Coins className="size-5" />
           )}
-          {spinning ? "Spinning…" : "Spin the wheel"}
+          {spinning ? "Spinning…" : locked ? "Come back tomorrow" : "Spin the wheel"}
         </button>
         <p className="text-xs text-muted max-w-xs text-center">
           Where the wheel stops is your reward — decided on the server for

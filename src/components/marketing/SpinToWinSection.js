@@ -30,7 +30,7 @@ export async function SpinToWinSection() {
                   >
                     <span
                       className="absolute left-1/2 top-7 sm:top-9 -translate-x-1/2 text-lg sm:text-2xl font-extrabold drop-shadow"
-                      style={{ color: value === 0 ? "#8A7A99" : "#46334F" }}
+                      style={{ color: i % 2 === 1 ? "#FFF8EE" : "#46334F" }}
                     >
                       {value === 0 ? "0" : `+${value}`}
                     </span>

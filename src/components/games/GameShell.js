@@ -120,6 +120,7 @@ export function GameShell({ game, children }) {
       const data = await res.json();
 
       if (res.ok) {
+        if (data.dailyPlaysLeft !== undefined) setPlaysLeft(data.dailyPlaysLeft);
         if (data.segment !== undefined && data.segment !== null) {
           setPendingResult(data);
           setSpinTarget(data.segment);
@@ -243,6 +244,7 @@ export function GameShell({ game, children }) {
           onLuck={isLuck ? handleLuck : undefined}
           spinTarget={spinTarget}
           onSpinComplete={handleSpinComplete}
+          playsLeft={playsLeft}
           disabled={false}
         />
       );
