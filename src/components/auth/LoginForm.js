@@ -7,6 +7,7 @@ import { Eye, EyeOff, KeyRound, Loader2, LogIn } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
 import { normalizePhone } from "@/components/auth/RegisterForm";
+import { claimGuestPrize } from "@/lib/utils/guestSpin";
 
 export function LoginForm() {
   const router = useRouter();
@@ -64,7 +65,12 @@ export function LoginForm() {
       return;
     }
 
-    toast("Welcome back!", "success");
+    const won = await claimGuestPrize();
+    if (won) {
+      toast(`Welcome back! Your free-spin +${won} coins were added.`, "success");
+    } else {
+      toast("Welcome back!", "success");
+    }
     router.push("/dashboard");
     router.refresh();
   };

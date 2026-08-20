@@ -1,14 +1,27 @@
 "use client";
 
-import { ExternalLink, Play } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { ExternalLink, Lock, Play } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
 import { externalPlayerSrc, startExternalGame } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
 import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
+import { Modal } from "@/components/ui/Modal";
 
-export function ExternalGameCard({ game, variant = "full", claimable = false }) {
+export function ExternalGameCard({ game, variant = "full", claimable = false, locked = false }) {
   // Direct provider pages are more reliable on mobile than raw game-file embeds.
   const src = externalPlayerSrc(game.embed_url);
+  const [lockedOpen, setLockedOpen] = useState(false);
+
+  const handleClick = (e) => {
+    if (locked) {
+      e.preventDefault();
+      setLockedOpen(true);
+      return;
+    }
+    if (claimable) void startExternalGame(game.slug);
+  };
 
   return (
     <div
@@ -23,9 +36,9 @@ export function ExternalGameCard({ game, variant = "full", claimable = false }) 
         href={src}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={claimable ? () => void startExternalGame(game.slug) : undefined}
+        onClick={handleClick}
         className="block text-left"
-        aria-label={`Play ${game.title}`}
+        aria-label={locked ? `Sign up to play ${game.title}` : `Play ${game.title}`}
       >
         {variant !== "tile" && (
           <div className="flex items-start justify-between">
@@ -67,14 +80,28 @@ export function ExternalGameCard({ game, variant = "full", claimable = false }) 
             <span className="flex items-center gap-1 text-xs font-semibold text-secondary">
               <ExternalLink className="size-3.5" /> Opens in new tab
             </span>
-            <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
-              <Play className="size-3.5" /> Play
-            </span>
+            {locked ? (
+              <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
+                <Lock className="size-3.5" /> Sign up to play
+              </span>
+            ) : (
+              <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
+                <Play className="size-3.5" /> Play
+              </span>
+            )}
           </div>
         )}
         {variant === "tile" && (
           <p className="mt-0.5 flex items-center justify-center gap-1 text-[10px] font-semibold text-secondary">
-            <ExternalLink className="size-3" /> Free play
+            {locked ? (
+              <>
+                <Lock className="size-3" /> Sign up to play
+              </>
+            ) : (
+              <>
+                <ExternalLink className="size-3" /> Free play
+              </>
+            )}
           </p>
         )}
       </a>
@@ -90,6 +117,32 @@ export function ExternalGameCard({ game, variant = "full", claimable = false }) 
           <ClaimRewardButton game={game} size={variant === "tile" ? "sm" : "md"} />
         </div>
       )}
+
+      <Modal
+        open={lockedOpen}
+        onClose={() => setLockedOpen(false)}
+        title="Join CoinQuest to play"
+        size="sm"
+      >
+        <div className="text-center py-2">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-gold/15 text-gold-dark">
+            <Lock className="size-7" />
+          </span>
+          <h3 className="mt-4 text-lg font-extrabold text-plum">{game.title}</h3>
+          <p className="mt-2 text-sm text-muted leading-relaxed">
+            Create a free account to unlock every game and start earning coins.
+            It takes under a minute!
+          </p>
+          <div className="mt-6 space-y-2">
+            <Link href="/register" className="btn btn-primary w-full">
+              Create free account
+            </Link>
+            <Link href="/login" className="btn btn-outline w-full text-muted">
+              I already have an account
+            </Link>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

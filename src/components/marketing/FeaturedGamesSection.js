@@ -2,8 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ExternalGameCard } from "@/components/games/ExternalGameCard";
+import { getSession } from "@/lib/auth/session";
 
-export function FeaturedGamesSection({ games }) {
+export async function FeaturedGamesSection({ games }) {
+  const user = await getSession();
   const featured = games.filter((game) => game.embed_url).slice(0, 6);
 
   return (
@@ -23,7 +25,12 @@ export function FeaturedGamesSection({ games }) {
 
         <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
           {featured.map((game) => (
-            <ExternalGameCard key={game.slug} game={game} variant="featured" />
+            <ExternalGameCard
+              key={game.slug}
+              game={game}
+              variant="featured"
+              locked={!user}
+            />
           ))}
         </div>
       </div>

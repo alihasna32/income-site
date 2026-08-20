@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Gift, Loader2, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
+import { claimGuestPrize } from "@/lib/utils/guestSpin";
 import { cn } from "@/lib/utils/cn";
 
 const EMOJIS = ["😀", "😎", "🤓", "🦊", "🐼", "🦁", "🚀", "🌟", "🎮", "🏆"];
@@ -64,7 +65,12 @@ function RegisterFormInner() {
     }
 
     if (data.session) {
-      toast(`Welcome to CoinQuest, ${displayName}! Your day-1 reward awaits.`, "success");
+      const won = await claimGuestPrize();
+      if (won) {
+        toast(`Welcome to CoinQuest, ${displayName}! Your free-spin +${won} coins are in your wallet.`, "success");
+      } else {
+        toast(`Welcome to CoinQuest, ${displayName}! Your day-1 reward awaits.`, "success");
+      }
       window.location.href = "/dashboard";
       return;
     }

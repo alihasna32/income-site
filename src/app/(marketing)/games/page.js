@@ -57,6 +57,7 @@ export default async function GamesPage() {
                   game={game}
                   variant="full"
                   claimable={canEarnRewards}
+                  locked={!canEarnRewards}
                 />
               ))}
             </div>

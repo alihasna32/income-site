@@ -8,19 +8,16 @@ import {
   Play,
   ShieldCheck,
   Sparkles,
-  Star,
   Ticket,
   Trophy,
   Zap,
 } from "lucide-react";
-import { GAMES } from "@/lib/constants/games";
+import { FreeSpinWheel } from "@/components/marketing/FreeSpinWheel";
 import { getSession } from "@/lib/auth/session";
 
 export async function HeroSection() {
   const user = await getSession();
   const playHref = user ? "/dashboard/games" : "/register";
-  const featured = GAMES[0];
-  const FeaturedIcon = featured.icon;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-plum-dark via-plum to-plum-light text-neutral-content">
@@ -90,42 +87,15 @@ export async function HeroSection() {
 
           <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
             <div className="relative mx-auto max-w-sm rounded-box bg-white/5 border border-white/10 p-5 shadow-soft backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-gold text-plum">
-                    <FeaturedIcon className="size-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-bold">{featured.title}</p>
-                    <p className="text-xs text-neutral-content/60">Featured today</p>
-                  </div>
-                </div>
-                <span className="badge badge-sm border-gold/50 text-gold gap-1">
-                  <Star className="size-3" /> Popular
-                </span>
+              <div className="mb-4 text-center">
+                <p className="text-xs font-bold uppercase tracking-widest text-gold">
+                  Spin to win
+                </p>
+                <p className="mt-1 text-sm text-neutral-content/80">
+                  Three spins a day · win 10–100 coins
+                </p>
               </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`flex aspect-[3/4] items-center justify-center rounded-lg border border-white/10 ${
-                      i < 2 ? "bg-gold/90" : "bg-plum-dark"
-                    }`}
-                    aria-hidden="true"
-                  >
-                    <span className={`text-2xl ${i < 2 ? "text-plum" : "opacity-0"}`}>
-                      ★
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex items-center justify-between rounded-lg bg-plum-dark px-4 py-3">
-                <span className="text-sm text-neutral-content/80">Match 6 pairs to win!</span>
-                <span className="coin text-gold">
-                  <Coins className="size-4" /> up to 20
-                </span>
-              </div>
+              <FreeSpinWheel isLoggedIn={Boolean(user)} />
             </div>
 
             <div className="absolute -left-4 top-8 hidden sm:block animate-coin-burst" style={{ animationIterationCount: "infinite", animationDuration: "3s" }}>
