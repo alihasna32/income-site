@@ -127,7 +127,7 @@ export default async function DashboardOverview() {
                 All games <ArrowRight className="size-4" />
               </Link>
             </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 min-[425px]:grid-cols-2 min-[639px]:grid-cols-3 min-[850px]:grid-cols-4">
+            <div className="mt-4 grid grid-cols-1 gap-3 min-[425px]:grid-cols-2 min-[639px]:grid-cols-3 min-[850px]:grid-cols-4 min-[1024px]:grid-cols-2 min-[1440px]:grid-cols-3">
               {quickGames.map((game) => (
                 <ExternalGameCard
                   key={game.slug}
