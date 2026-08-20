@@ -35,7 +35,9 @@ export function useExternalClaim(game) {
     fetch(`/api/games/${game.slug}/status`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (!cancelled) applyData(data);
+        if (cancelled) return;
+        if (data?.dailyRewardClaimed) setState("claimed");
+        else setState("locked");
       })
       .catch(() => {
         if (!cancelled) setState("locked");
@@ -43,7 +45,7 @@ export function useExternalClaim(game) {
     return () => {
       cancelled = true;
     };
-  }, [game.slug, applyData]);
+  }, [game.slug]);
 
   useEffect(() => {
     const handler = (event) => {
