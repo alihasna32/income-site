@@ -82,7 +82,7 @@ export async function SpinToWinSection() {
               {!user && (
                 <Link
                   href="/login"
-                  className="btn btn-outline border-white/30 text-neutral-content hover:bg-white/10 hover:border-white/40"
+                  className="btn btn-outline btn-lg border-white/30 text-neutral-content hover:bg-white/10 hover:border-white/40"
                 >
                   <LogIn className="size-4" /> Log in
                 </Link>

@@ -220,10 +220,10 @@ export function GameShell({ game, children }) {
             </button>
             <button
               onClick={() => setShowInstructions(true)}
-              className="btn btn-outline"
+              className="btn btn-outline btn-lg"
               disabled={playsLeft === 0}
             >
-              <Info className="size-4" /> How to play
+              <Info className="size-5" /> How to play
             </button>
           </div>
           {playsLeft === 0 && (

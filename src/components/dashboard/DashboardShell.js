@@ -239,7 +239,6 @@ export function DashboardShell({ children, profile, unreadCount, userId }) {
       { href: "/dashboard/spin", label: "Spin & Win", icon: Disc },
             { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
             { href: "/dashboard/leaderboard", label: "Ranks", icon: Trophy },
-            { href: "/dashboard/missions", label: "Missions", icon: Gift },
           ].map((item) => {
             const active =
               item.match === "/dashboard"
