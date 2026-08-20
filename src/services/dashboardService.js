@@ -53,6 +53,19 @@ export async function getOverviewData(userId) {
         .eq("is_active", true),
     ]);
 
+  const missionProgress = missionsRes.data || [];
+  let missionsMap = new Map();
+  if (missionProgress.length) {
+    const { data: missionRows } = await admin
+      .from("missions")
+      .select("id, title, description, icon, target, reward_coins")
+      .in(
+        "id",
+        missionProgress.map((m) => m.mission_id)
+      );
+    missionsMap = new Map((missionRows || []).map((m) => [m.id, m]));
+  }
+
   return {
     profile: profileRes.data,
     wallet: walletRes.data,
@@ -64,7 +77,7 @@ export async function getOverviewData(userId) {
       scratchCards: scratchRes.count || 0,
       achievementsUnlocked: unlockedRes.count || 0,
     },
-    missions: missionsRes.data || [],
+    missions: missionProgress.map((m) => ({ ...m, mission: missionsMap.get(m.mission_id) })),
     recentTransactions: txRes.data || [],
     challenges: challengeRes.data || [],
   };

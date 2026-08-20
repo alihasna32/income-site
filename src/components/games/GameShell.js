@@ -248,18 +248,19 @@ export function GameShell({ game, children }) {
               </span>
             )}
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button onClick={start} className="btn btn-primary btn-lg shadow-card" disabled={playsLeft === 0}>
-              <Play className="size-5" /> Play now
-            </button>
-            <button
-              onClick={() => setShowInstructions(true)}
-              className="btn btn-outline btn-lg"
-              disabled={playsLeft === 0}
-            >
-              <Info className="size-5" /> How to play
-            </button>
-          </div>
+          <div className="flex justify-between gap-2">
+  <button onClick={start} className="btn btn-primary shadow-card" disabled={playsLeft === 0}>
+    <Play className="size-5" /> Play now
+  </button>
+
+  <button
+    onClick={() => setShowInstructions(true)}
+    className="btn btn-outline"
+    disabled={playsLeft === 0}
+  >
+    <Info className="size-5" /> How to play
+  </button>
+</div>
           {playsLeft === 0 && (
             <p className="text-xs text-muted">
               Daily limit reached for this game — try another game or come back tomorrow!
@@ -343,7 +344,7 @@ export function GameShell({ game, children }) {
                 </div>
               )}
             </div>
-            <div className="mt-6 flex flex-col sm:flex-row gap-2">
+            <div className="mt-6 flex flex-row gap-2">
               <button onClick={start} className="btn btn-primary flex-1">
                 <RotateCcw className="size-4" /> Play again
               </button>

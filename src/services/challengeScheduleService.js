@@ -4,6 +4,9 @@ import { localDateKey, addDays, localDayRange } from "@/lib/utils/date";
 
 export const SCHEDULE_HORIZON_DAYS = 3;
 
+let lastEnsuredAt = 0;
+const ENSURE_TTL_MS = 60 * 60 * 1000;
+
 export function pickChallengeIndex(challenges) {
   const dayOfYear = Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
@@ -21,21 +24,26 @@ export async function ensureChallengeSchedule({ horizon = SCHEDULE_HORIZON_DAYS 
   const admin = createAdminClient();
   const today = localDateKey();
 
-  // 1) Promote any upcoming challenges whose date has arrived.
+  // 1) Promote any upcoming challenges whose date has arrived. Always run (cheap).
   await admin
     .from("challenge_schedule")
     .update({ status: "active" })
     .eq("status", "upcoming")
     .lte("scheduled_for", today);
 
-  // 2) Load the active challenge pool.
+  // 2) The expensive fill-future-slots work only needs to run once per hour.
+  const now = Date.now();
+  if (now - lastEnsuredAt < ENSURE_TTL_MS) return;
+  lastEnsuredAt = now;
+
+  // 3) Load the active challenge pool.
   const { data: activeChallenges } = await admin
     .from("challenges")
     .select("id")
     .eq("is_active", true);
   if (!activeChallenges?.length) return;
 
-  // 3) Existing schedule rows in the horizon window.
+  // 4) Existing schedule rows in the horizon window.
   const dates = Array.from({ length: horizon + 1 }, (_, i) =>
     localDateKey(addDays(new Date(), i))
   );
@@ -47,7 +55,7 @@ export async function ensureChallengeSchedule({ horizon = SCHEDULE_HORIZON_DAYS 
 
   const existingMap = new Map((existing || []).map((row) => [row.scheduled_for, row]));
 
-  // 4) Guarantee today's slot (active). Deterministic pick keeps it stable.
+  // 5) Guarantee today's slot (active). Deterministic pick keeps it stable.
   const todayRow = existingMap.get(today);
   if (!todayRow) {
     const chosen = activeChallenges[pickChallengeIndex(activeChallenges)];
@@ -58,31 +66,33 @@ export async function ensureChallengeSchedule({ horizon = SCHEDULE_HORIZON_DAYS 
     });
     if (error && !error.message.includes("duplicate")) {
       console.error("[challenge-schedule]", error.message);
-    } else {
-      existingMap.set(today, { challenge_id: chosen.id, scheduled_for: today, status: "active" });
     }
   } else if (todayRow.status !== "active") {
     await admin.from("challenge_schedule").update({ status: "active" }).eq("id", todayRow.id);
   }
 
-  // 5) Fill future slots, avoiding the same challenge two days in a row.
+  // 6) Fill future slots in parallel, avoiding the same challenge two days in a row.
+  const picks = new Map();
   for (let i = 1; i <= horizon; i++) {
     const date = dates[i];
     if (existingMap.has(date)) continue;
-
-    const prevChallengeId = existingMap.get(dates[i - 1])?.challenge_id;
+    const prevChallengeId =
+      picks.get(dates[i - 1]) || existingMap.get(dates[i - 1])?.challenge_id;
     const pool = activeChallenges.filter((c) => c.id !== prevChallengeId);
-    const chosen = pool[randomInt(pool.length)] || activeChallenges[i % activeChallenges.length];
-
-    const { error } = await admin.from("challenge_schedule").insert({
-      challenge_id: chosen.id,
-      scheduled_for: date,
-      status: "upcoming",
-    });
-    if (error && !error.message.includes("duplicate")) {
-      console.error("[challenge-schedule]", error.message);
-    } else {
-      existingMap.set(date, { challenge_id: chosen.id, scheduled_for: date, status: "upcoming" });
+    picks.set(
+      date,
+      pool[randomInt(pool.length)] || activeChallenges[i % activeChallenges.length]
+    );
+  }
+  const inserts = [...picks].map(([date, challengeId]) =>
+    admin
+      .from("challenge_schedule")
+      .insert({ challenge_id: challengeId, scheduled_for: date, status: "upcoming" })
+  );
+  const results = await Promise.allSettled(inserts);
+  for (const result of results) {
+    if (result.status === "rejected" && !result.reason?.message?.includes("duplicate")) {
+      console.error("[challenge-schedule]", result.reason?.message);
     }
   }
 }

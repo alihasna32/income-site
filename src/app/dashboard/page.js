@@ -22,7 +22,6 @@ import { CoinValue } from "@/components/shared/CoinValue";
 import { levelProgress } from "@/lib/constants/levels";
 import { getOverviewData, getTodayChallenge } from "@/services/dashboardService";
 import { getActiveGames } from "@/services/catalogService";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { getSession } from "@/lib/auth/session";
 import { supabaseReady } from "@/lib/supabase/env";
 import { GameIcon } from "@/components/games/GameIcon";
@@ -156,7 +155,7 @@ export default async function DashboardOverview() {
               ) : (
                 <div className="space-y-4">
                   {data.missions.map((m) => (
-                    <MissionRow key={m.id} missionId={m.mission_id} progress={m.progress} />
+                    <MissionRow key={m.id} mission={m.mission} progress={m.progress} />
                   ))}
                 </div>
               )}
@@ -232,14 +231,7 @@ export default async function DashboardOverview() {
   );
 }
 
-async function MissionRow({ missionId, progress }) {
-  const admin = createAdminClient();
-  const { data: mission } = await admin
-    .from("missions")
-    .select("*")
-    .eq("id", missionId)
-    .single();
-
+async function MissionRow({ mission, progress }) {
   if (!mission) return null;
 
   return (
