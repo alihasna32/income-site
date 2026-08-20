@@ -35,7 +35,7 @@ export function ClaimRewardButton({ game, size = "md", claim }) {
         </>
       ) : state === "claimed" ? (
         <>
-          <Check className="size-4" /> Claimed today
+          <Check className="size-4" /> Claimed
         </>
       ) : state === "countdown" ? (
         <>
