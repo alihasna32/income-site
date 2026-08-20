@@ -1,18 +1,17 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Coins, Loader2 } from "lucide-react";
 import { GameFrame } from "@/components/games/impl/GameFrame";
 import { cn } from "@/lib/utils/cn";
 
-export function LuckyWheel({ config, onLuck }) {
+export function LuckyWheel({ config, onLuck, spinTarget, onSpinComplete }) {
   const segments = config.segments || 8;
   const outcomes = Array.isArray(config.outcomes) ? config.outcomes : [];
+  const segmentAngle = 360 / segments;
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const spinRef = useRef(null);
-
-  const segmentAngle = 360 / segments;
+  const targetedRef = useRef(null);
 
   const labelFor = (i) => {
     const outcome = outcomes[i];
@@ -22,15 +21,32 @@ export function LuckyWheel({ config, onLuck }) {
 
   const isWinner = (i) => !outcomes[i] || outcomes[i].coins > 0;
 
+  useEffect(() => {
+    if (spinTarget === null || spinTarget === undefined) {
+      targetedRef.current = null;
+      return;
+    }
+    if (targetedRef.current === spinTarget) return;
+    targetedRef.current = spinTarget;
+    setSpinning(true);
+    const base = (360 - spinTarget * segmentAngle) % 360;
+    const jitter = (Math.random() - 0.5) * (segmentAngle - 12);
+    setRotation((current) => {
+      const extra = (base + jitter - (current % 360) + 720) % 360;
+      return current + 1440 + extra;
+    });
+  }, [spinTarget, segmentAngle]);
+
+  const handleTransitionEnd = () => {
+    if (!spinning) return;
+    setSpinning(false);
+    onSpinComplete?.();
+  };
+
   const spin = () => {
     if (spinning) return;
     setSpinning(true);
-    const target = rotation + 1440 + Math.floor(Math.random() * 720);
-    spinRef.current = setTimeout(() => {
-      setRotation(target % 360);
-      setSpinning(false);
-      onLuck?.();
-    }, 2800);
+    onLuck?.();
   };
 
   return (
@@ -38,6 +54,7 @@ export function LuckyWheel({ config, onLuck }) {
       <div className="flex flex-col items-center gap-6">
         <div className="relative">
           <div
+            onTransitionEnd={handleTransitionEnd}
             className="relative size-72 sm:size-96 rounded-full border-[10px] border-plum shadow-glow overflow-hidden"
             style={{
               background:
@@ -73,11 +90,7 @@ export function LuckyWheel({ config, onLuck }) {
           />
         </div>
 
-        <button
-          onClick={spin}
-          disabled={spinning}
-          className="btn btn-primary btn-lg shadow-card"
-        >
+        <button onClick={spin} disabled={spinning} className="btn btn-primary btn-lg shadow-card">
           {spinning ? (
             <Loader2 className="size-5 animate-spin" />
           ) : (
@@ -86,8 +99,8 @@ export function LuckyWheel({ config, onLuck }) {
           {spinning ? "Spinning…" : "Spin the wheel"}
         </button>
         <p className="text-xs text-muted max-w-xs text-center">
-          The outcome is decided on the server for fairness — your luck is
-          always real luck.
+          Where the wheel stops is your reward — decided on the server for
+          fairness.
         </p>
       </div>
     </GameFrame>

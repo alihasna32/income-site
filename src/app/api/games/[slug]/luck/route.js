@@ -5,7 +5,6 @@ import { supabaseReady } from "@/lib/supabase/env";
 import { checkRateLimit } from "@/lib/security/rateLimit";
 import { creditReward } from "@/lib/rewards/credit";
 import { refreshProgress } from "@/services/progressService";
-import { weightedPick } from "@/lib/utils/format";
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +72,17 @@ export async function POST(request, { params }) {
     .gt("reward_coins", 0);
 
   const dailyRewardClaimed = dailyRewardOnce && dailyRewardCount > 0;
-  const outcome = weightedPick(config.outcomes);
+  const totalWeight = config.outcomes.reduce((sum, o) => sum + (o.weight || 1), 0);
+  let roll = Math.random() * totalWeight;
+  let segment = 0;
+  for (let i = 0; i < config.outcomes.length; i++) {
+    roll -= config.outcomes[i].weight || 1;
+    if (roll <= 0) {
+      segment = i;
+      break;
+    }
+  }
+  const outcome = config.outcomes[segment];
   const coins = dailyRewardClaimed ? 0 : outcome.coins;
   const xp = dailyRewardClaimed ? 0 : Math.max(1, Math.round(outcome.coins / 5));
 
@@ -113,6 +122,7 @@ export async function POST(request, { params }) {
   return NextResponse.json({
     sessionId: session.id,
     prizeLabel: outcome.label,
+    segment,
     score: coins,
     coins,
     xp,

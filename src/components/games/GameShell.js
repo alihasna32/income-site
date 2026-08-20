@@ -32,6 +32,8 @@ export function GameShell({ game, children }) {
   const [showInstructions, setShowInstructions] = useState(false);
   const [result, setResult] = useState(null);
   const [startedAt, setStartedAt] = useState(null);
+  const [spinTarget, setSpinTarget] = useState(null);
+  const [pendingResult, setPendingResult] = useState(null);
   const finishedRef = useRef(false);
 
   const GameComponent = getGameComponent(game.component);
@@ -54,6 +56,8 @@ export function GameShell({ game, children }) {
   const start = useCallback(() => {
     finishedRef.current = false;
     setResult(null);
+    setSpinTarget(null);
+    setPendingResult(null);
     setStartedAt(Date.now());
     setStatus("playing");
   }, []);
@@ -107,7 +111,6 @@ export function GameShell({ game, children }) {
   const handleLuck = useCallback(async () => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    setStatus("submitting");
 
     try {
       const res = await fetch(`/api/games/${game.slug}/luck`, {
@@ -117,6 +120,12 @@ export function GameShell({ game, children }) {
       const data = await res.json();
 
       if (res.ok) {
+        if (data.segment !== undefined && data.segment !== null) {
+          setPendingResult(data);
+          setSpinTarget(data.segment);
+          return;
+        }
+        setStatus("submitting");
         setResult(data);
         if (data.dailyRewardClaimed) {
           toast("Daily reward already claimed today — play again for fun!", "info");
@@ -124,6 +133,7 @@ export function GameShell({ game, children }) {
           toast(`${data.prizeLabel} — nice luck!`, "success");
         }
         refresh();
+        setStatus("ready");
       } else {
         setResult({ error: data.error, earned: false });
         toast(data.error || "Could not record your result", "error");
@@ -131,10 +141,20 @@ export function GameShell({ game, children }) {
     } catch {
       setResult({ error: "Could not record your result", earned: false });
       toast("Could not record your result", "error");
-    } finally {
-      setStatus("ready");
     }
   }, [game.slug, refresh, toast]);
+
+  const handleSpinComplete = useCallback(() => {
+    setResult(pendingResult);
+    setSpinTarget(null);
+    setPendingResult(null);
+    if (pendingResult?.dailyRewardClaimed) {
+      toast("Daily reward already claimed today — play again for fun!", "info");
+    } else {
+      toast(`${pendingResult?.prizeLabel || "Nice luck"} — nice luck!`, "success");
+    }
+    refresh();
+  }, [pendingResult, refresh, toast]);
 
   const renderStage = () => {
     if (game.embed_url) {
@@ -221,6 +241,8 @@ export function GameShell({ game, children }) {
           config={game.config || {}}
           onFinish={handleFinish}
           onLuck={isLuck ? handleLuck : undefined}
+          spinTarget={spinTarget}
+          onSpinComplete={handleSpinComplete}
           disabled={false}
         />
       );
