@@ -37,6 +37,7 @@ export function useExternalClaim(game) {
       .then((data) => {
         if (cancelled) return;
         if (data?.dailyRewardClaimed) setState("claimed");
+        else if (data?.canClaim) setState("ready");
         else setState("locked");
       })
       .catch(() => {
