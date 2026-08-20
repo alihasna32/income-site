@@ -116,7 +116,7 @@ export default async function DashboardOverview() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6 min-w-0">
-          {todayChallenge && <TodayChallengeCard challenge={todayChallenge}/>}
+          {todayChallenge && <TodayChallengeCard challenge={todayChallenge} />}
 
           <section>
             <div className="flex items-center justify-between">
@@ -128,11 +128,10 @@ export default async function DashboardOverview() {
               </Link>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 min-[425px]:grid-cols-2 min-[639px]:grid-cols-3 min-[850px]:grid-cols-4 min-[1024px]:grid-cols-2 min-[1440px]:grid-cols-3">
-{quickGames.map((game, i) => (
+              {quickGames.map((game, i) => (
                 <div key={game.slug} className={i >= 4 ? "max-[1439px]:hidden" : ""}>
                   <ExternalGameCard
                     game={game}
-                    variant="tile"
                     claimable
                   />
                 </div>
