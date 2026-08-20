@@ -23,15 +23,16 @@ export async function FeaturedGamesSection({ games }) {
           </Link>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          {featured.map((game) => (
-            <ExternalGameCard
-              key={game.slug}
-              game={game}
-              variant="featured"
-              locked={!user}
-              claimable={!!user}
-            />
+        <div className="mt-8 grid grid-cols-1 min-[576px]:grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+          {featured.map((game, i) => (
+            <div key={game.slug} className={i >= 3 ? "max-[575px]:hidden" : ""}>
+              <ExternalGameCard
+                game={game}
+                variant="featured"
+                locked={!user}
+                claimable={!!user}
+              />
+            </div>
           ))}
         </div>
       </div>

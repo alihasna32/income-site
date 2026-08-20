@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "Can I earn real money here?",
-    a: "No. Coins are virtual rewards for playing. We keep things honest — this is about fun, challenges and friendly competition, not income.",
+    a: "Yes! Coins are virtual rewards for playing. We keep things honest — this is about fun, challenges and friendly competition, not income.",
   },
   {
     q: "How do daily streaks work?",
