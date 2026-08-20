@@ -4,15 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Lock, Play } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
-import { externalPlayerSrc, startExternalGame } from "@/lib/games/external";
+import { externalPlayerSrc } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
 import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
 import { Modal } from "@/components/ui/Modal";
+import { useExternalClaim } from "@/hooks/useExternalClaim";
 
 export function ExternalGameCard({ game, variant = "full", claimable = false, locked = false }) {
   // Direct provider pages are more reliable on mobile than raw game-file embeds.
   const src = externalPlayerSrc(game.embed_url);
   const [lockedOpen, setLockedOpen] = useState(false);
+  const claim = useExternalClaim(game);
 
   const handleClick = (e) => {
     if (locked) {
@@ -20,7 +22,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
       setLockedOpen(true);
       return;
     }
-    if (claimable) void startExternalGame(game.slug);
+    if (claimable) void claim.start();
   };
 
   return (
@@ -114,7 +116,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
             variant === "tile" && "mt-2 border-t pt-2"
           )}
         >
-          <ClaimRewardButton game={game} size={variant === "tile" ? "sm" : "md"} />
+          <ClaimRewardButton game={game} size={variant === "tile" ? "sm" : "md"} claim={claim} />
         </div>
       )}
 

@@ -19,8 +19,9 @@ import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { GameIcon } from "@/components/games/GameIcon";
 import { getGameComponent } from "@/components/games/registry";
-import { externalPlayerSrc, startExternalGame } from "@/lib/games/external";
+import { externalPlayerSrc } from "@/lib/games/external";
 import { ClaimRewardButton } from "@/components/games/ClaimRewardButton";
+import { useExternalClaim } from "@/hooks/useExternalClaim";
 import { cn } from "@/lib/utils/cn";
 
 export function GameShell({ game, children }) {
@@ -37,6 +38,7 @@ export function GameShell({ game, children }) {
   const finishedRef = useRef(false);
 
   const GameComponent = getGameComponent(game.component);
+  const claim = useExternalClaim(game);
 
   const maxCoins =
     game.config?.luck && Array.isArray(game.config.outcomes) && game.config.outcomes.length
@@ -209,13 +211,13 @@ export function GameShell({ game, children }) {
               href={playerSrc}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => void startExternalGame(game.slug)}
+              onClick={() => void claim.start()}
               className="btn btn-primary btn-lg shadow-card"
             >
               <Play className="size-5" /> Play now
             </a>
           </div>
-          <ClaimRewardButton game={game} />
+          <ClaimRewardButton game={game} claim={claim} />
           <p className="text-xs text-muted">
             The game opens on its official provider page. Play for one minute to unlock your daily coins.
           </p>

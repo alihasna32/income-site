@@ -47,7 +47,7 @@ export default async function DashboardOverview() {
   const [data, todayChallenge, games] = await Promise.all([
     getOverviewData(user.id),
     getTodayChallenge(user.id),
-    getActiveGames({ limit: 4 }),
+    getActiveGames({ limit: 12 }),
   ]);
 
   if (!data) {
@@ -62,6 +62,7 @@ export default async function DashboardOverview() {
 
   const { profile, wallet, streak, stats } = data;
   const level = levelProgress(profile?.xp || 0);
+  const quickGames = games.filter((game) => game.embed_url).slice(0, 4);
 
   return (
     <div className="space-y-6">
@@ -127,7 +128,7 @@ export default async function DashboardOverview() {
               </Link>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {games.filter((game) => game.embed_url).map((game) => (
+              {quickGames.map((game) => (
                 <ExternalGameCard
                   key={game.slug}
                   game={game}
