@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { startExternalGame } from "@/lib/games/external";
@@ -11,6 +11,8 @@ export function useExternalClaim(game) {
   const [state, setState] = useState("loading"); // loading | locked | countdown | ready | claimed
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [claiming, setClaiming] = useState(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   const applyData = useCallback((data) => {
     if (!data) return;
@@ -30,21 +32,54 @@ export function useExternalClaim(game) {
     setState("locked");
   }, []);
 
+  const syncFromStatus = useCallback((data) => {
+    if (!data) return;
+    if (data.dailyRewardClaimed) {
+      setState("claimed");
+      return;
+    }
+    if (data.canClaim) {
+      setState("ready");
+      return;
+    }
+    if (stateRef.current !== "countdown") setState("locked");
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     fetch(`/api/games/${game.slug}/status`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (cancelled) return;
-        if (data?.dailyRewardClaimed) setState("claimed");
-        else if (data?.canClaim) setState("ready");
-        else setState("locked");
+        if (!cancelled) syncFromStatus(data);
       })
       .catch(() => {
-        if (!cancelled) setState("locked");
+        if (!cancelled && stateRef.current !== "countdown") setState("locked");
       });
     return () => {
       cancelled = true;
+    };
+  }, [game.slug, syncFromStatus]);
+
+  useEffect(() => {
+    const sync = () => {
+      if (stateRef.current === "countdown" || stateRef.current === "loading") return;
+      fetch(`/api/games/${game.slug}/status`, { cache: "no-store" })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.dailyRewardClaimed) setState("claimed");
+          else if (data?.canClaim) setState("ready");
+          else if (stateRef.current !== "countdown") setState("locked");
+        })
+        .catch(() => {});
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") sync();
+    };
+    window.addEventListener("focus", sync);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("focus", sync);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [game.slug]);
 

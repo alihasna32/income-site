@@ -69,11 +69,14 @@ export async function GET(request, { params }) {
     ? externalGameEligibility(startedRes.data?.created_at)
     : null;
 
-  return NextResponse.json({
-    playsToday: count,
-    maxPlays: game.max_plays_per_day,
-    playsLeft: Math.max(0, game.max_plays_per_day - count),
-    dailyRewardClaimed: rewardCount > 0,
-    ...(externalReward || {}),
-  });
+  return NextResponse.json(
+    {
+      playsToday: count,
+      maxPlays: game.max_plays_per_day,
+      playsLeft: Math.max(0, game.max_plays_per_day - count),
+      dailyRewardClaimed: rewardCount > 0,
+      ...(externalReward || {}),
+    },
+    { headers: { "Cache-Control": "no-store" } }
+  );
 }

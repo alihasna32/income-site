@@ -66,7 +66,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
         )}
         <h3
           className={cn(
-            "font-bold text-plum group-hover:text-secondary transition-colors",
+            "font-bold text-plum text-center group-hover:text-secondary transition-colors",
             variant === "full" && "mt-4",
             variant === "featured" && "mt-4 text-sm sm:text-base",
             variant === "tile" && "mt-2 text-xs truncate"
