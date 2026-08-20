@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ExternalLink, Lock, Play } from "lucide-react";
+import { ExternalLink, Lock, Play, Timer } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
 import { externalPlayerSrc } from "@/lib/games/external";
 import { cn } from "@/lib/utils/cn";
@@ -15,6 +15,8 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
   const src = externalPlayerSrc(game.embed_url);
   const [lockedOpen, setLockedOpen] = useState(false);
   const claim = useExternalClaim(game);
+  const counting = claimable && claim.state === "countdown";
+  const showClaim = claimable && (claim.state === "ready" || claim.state === "claimed");
 
   const handleClick = (e) => {
     if (locked) {
@@ -28,19 +30,24 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
   return (
     <div
       className={cn(
-        "card bg-base-100 border border-base-300 shadow-card hover:shadow-soft hover:-translate-y-1 transition-all duration-200 group",
+        "card relative bg-base-100 border border-base-300 shadow-card hover:shadow-soft hover:-translate-y-1 transition-all duration-200 group",
         variant === "full" && "p-5",
         variant === "featured" && "p-4 sm:p-5",
         variant === "tile" && "p-4 text-center hover:-translate-y-0.5"
       )}
     >
+      {counting && (
+        <span className="absolute left-1/2 top-3 z-10 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-plum/90 px-3 py-1.5 text-xs font-bold text-white shadow-card">
+          <Timer className="size-3.5" /> Claim in {claim.secondsLeft}s
+        </span>
+      )}
       <a
         href={src}
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
         className="block text-left"
-        aria-label={locked ? `Sign up to play ${game.title}` : `Play ${game.title}`}
+        aria-label={`Play ${game.title}`}
       >
         {variant !== "tile" && (
           <div className="flex items-start justify-between">
@@ -84,7 +91,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
             </span>
             {locked ? (
               <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
-                <Lock className="size-3.5" /> Sign up to play
+                <Lock className="size-3.5" /> Play
               </span>
             ) : (
               <span className="btn btn-primary btn-xs sm:btn-sm opacity-90 group-hover:opacity-100">
@@ -97,7 +104,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
           <p className="mt-0.5 flex items-center justify-center gap-1 text-[10px] font-semibold text-secondary">
             {locked ? (
               <>
-                <Lock className="size-3" /> Sign up to play
+                <Lock className="size-3" /> Play
               </>
             ) : (
               <>
@@ -108,7 +115,7 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
         )}
       </a>
 
-      {claimable && (
+      {showClaim && (
         <div
           className={cn(
             "border-base-200",

@@ -30,6 +30,7 @@ export async function FeaturedGamesSection({ games }) {
               game={game}
               variant="featured"
               locked={!user}
+              claimable={!!user}
             />
           ))}
         </div>
