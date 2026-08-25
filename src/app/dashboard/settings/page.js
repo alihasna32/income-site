@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Coins, LogOut, LockKeyhole, Mail, Shield, ShieldCheck, Sparkles } from "lucide-react";
+import { Bell, Coins, LogOut, LockKeyhole, Mail, Shield, ShieldCheck, Sparkles, CreditCard } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { ResetPasswordModal } from "@/components/auth/ResetPasswordModal";
+import dynamic from "next/dynamic";
+const IncomeModeModal = dynamic(() => import("@/components/settings/IncomeModeModal").then(m => m.IncomeModeModal), { ssr: false });
 import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsPage() {
@@ -19,6 +21,9 @@ export default function SettingsPage() {
   const [resetOpen, setResetOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminChecked, setAdminChecked] = useState(false);
+  const [incomeModalOpen, setIncomeModalOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [incomeStatus, setIncomeStatus] = useState("disabled");
   const resetTriggerRef = useRef(null);
 
   useEffect(() => {
@@ -33,6 +38,30 @@ export default function SettingsPage() {
       .finally(() => {
         if (!cancelled) setAdminChecked(true);
       });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const supabase = createClient();
+    // fetch profile and income_mode_status if present
+    (async () => {
+      try {
+        const userRes = await supabase.auth.getUser();
+        const userId = userRes?.data?.user?.id;
+        if (!userId) return;
+        const { data } = await supabase.from("profiles").select("id,display_name,phone,income_mode_status").eq("id", userId).maybeSingle();
+        if (cancelled) return;
+        if (data) {
+          setProfile(data);
+          setIncomeStatus(data.income_mode_status || "disabled");
+        }
+      } catch (e) {
+        // ignore — DB may not have column yet
+      }
+    })();
     return () => {
       cancelled = true;
     };
@@ -103,8 +132,8 @@ export default function SettingsPage() {
       </section>
 
       <section className="card bg-base-100 border border-base-300 shadow-card p-6">
-        <h2 className="flex items-center gap-2 font-bold text-plum">
-          <Coins className="size-5 text-gold-dark" /> Wallet
+        <h2 className="flex items-center gap-2 font-bold text-gold-dark">
+          <Coins className="size-5" /> Wallet
         </h2>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="badge badge-lg bg-primary/15 text-plum">
@@ -118,6 +147,34 @@ export default function SettingsPage() {
           Coins are virtual and have no cash value. See the{" "}
           <Link href="/how-it-works" className="underline hover:text-secondary">fair play guide</Link>.
         </p>
+      </section>
+
+      <section className="card bg-base-100 border border-base-300 shadow-card p-6">
+        <h2 className="flex items-center gap-2 font-bold text-plum">
+          <CreditCard className="size-5 text-secondary" /> Income Mode
+        </h2>
+        <div className="mt-4 max-w-lg">
+          <p className="text-sm text-muted">Income Mode lets you convert coins into Taka. Submit a payment transaction to request activation; an admin will review it.</p>
+
+          <div className="mt-4 flex items-center gap-3">
+            <span className="badge badge-md">
+              {incomeStatus === 'active' ? 'Active' : incomeStatus === 'pending' ? 'Pending' : incomeStatus === 'suspended' ? 'Suspended' : incomeStatus === 'blocked' ? 'Blocked' : 'Disabled'}
+            </span>
+            {incomeStatus === 'disabled' && (
+              <button className="btn btn-primary btn-sm" onClick={() => setIncomeModalOpen(true)}>
+                Activate Income Mode
+              </button>
+            )}
+            {incomeStatus === 'pending' && (
+              <button className="btn btn-ghost btn-sm" onClick={() => setIncomeModalOpen(true)}>
+                View request
+              </button>
+            )}
+            {incomeStatus === 'active' && (
+              <p className="text-sm text-success">Income Mode is active.</p>
+            )}
+          </div>
+        </div>
       </section>
 
       {adminChecked && isAdmin && (
@@ -158,6 +215,8 @@ export default function SettingsPage() {
           </button>
         </div>
       </section>
+
+      <IncomeModeModal open={incomeModalOpen} onClose={() => setIncomeModalOpen(false)} profile={profile} />
     </div>
   );
 }

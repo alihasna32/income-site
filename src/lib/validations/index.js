@@ -106,3 +106,16 @@ export const withdrawalAdminSchema = z.object({
   action: z.enum(["approve", "reject"]),
   note: z.string().trim().max(500).optional().default(""),
 });
+
+// Income Mode activation request schema
+export const incomeRequestSchema = z.object({
+  name: z.string().trim().min(2, "Name is required").max(100),
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/[^0-9+]/g, ""))
+    .refine((v) => v.replace(/[^0-9]/g, "").length >= 7 && v.replace(/[^0-9]/g, "").length <= 15, {
+      message: "Enter a valid phone number",
+    }),
+  transactionId: z.string().trim().min(3, "Transaction ID is required").max(200),
+});
