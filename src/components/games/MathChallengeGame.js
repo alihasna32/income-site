@@ -18,6 +18,7 @@ import {
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 import { cn } from "@/lib/utils/cn";
 
 const DIFFICULTIES = [
@@ -30,6 +31,7 @@ const DIFFICULTIES = [
 export function MathChallengeGame() {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
 
   const [phase, setPhase] = useState("pick"); // pick | playing | submitting | done
   const [difficulty, setDifficulty] = useState("easy");
@@ -62,6 +64,7 @@ export function MathChallengeGame() {
           setResult(data);
           setPhase("done");
           if (data.coins > 0) {
+            showReward(data.coins, "math_challenge");
             toast(`+${data.coins} coins earned!`, "success");
             refresh();
           } else {
@@ -76,7 +79,7 @@ export function MathChallengeGame() {
         setPhase("pick");
       }
     },
-    [answers, refresh, session, toast]
+    [answers, refresh, session, showReward, toast]
   );
 
   const start = async (key) => {

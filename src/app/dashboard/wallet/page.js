@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { CoinValue } from "@/components/shared/CoinValue";
 import { GameIcon } from "@/components/games/GameIcon";
 import { WithdrawalCard } from "@/components/wallet/WithdrawalCard";
+import { WalletPageClient } from "@/components/wallet/WalletPageClient";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSession } from "@/lib/auth/session";
 import { formatDateTime } from "@/lib/utils/format";
@@ -62,6 +63,7 @@ export default async function WalletPage() {
   const minAmount = Number(settingsRes.data?.value?.min_amount ?? 1000);
 
   return (
+    <WalletPageClient>
     <div className="space-y-8">
       <PageHeader
         title="Your wallet"
@@ -170,5 +172,6 @@ export default async function WalletPage() {
         </p>
       </div>
     </div>
+    </WalletPageClient>
   );
 }

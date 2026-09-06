@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { Brain, CheckCircle2, Loader2, Send, XCircle } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 import { cn } from "@/lib/utils/cn";
 
 export function TodayChallengeCard({ challenge }) {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
 
   const [answer, setAnswer] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -34,6 +36,7 @@ export function TodayChallengeCard({ challenge }) {
       if (res.ok) {
         setState(data.correct ? "correct" : "wrong");
         if (data.correct) {
+          showReward(data.coins, "daily_challenge");
           toast(`Correct! +${data.coins} coins`, "success");
           refresh();
         } else {

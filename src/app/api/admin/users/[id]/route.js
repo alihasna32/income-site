@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
   const { id } = await params;
 
   const admin = createAdminClient();
-  const [authRes, profileRes, walletRes, sessionsRes, streakRes] = await Promise.all([
+  const [authRes, profileRes, walletRes, sessionsRes, streakRes, restrictionRes] = await Promise.all([
     admin.auth.admin.getUserById(id),
     admin.from("profiles").select("*").eq("id", id).maybeSingle(),
     admin
@@ -30,9 +30,21 @@ export async function GET(request, { params }) {
       .select("current_streak, longest_streak")
       .eq("user_id", id)
       .maybeSingle(),
+    admin
+      .from("user_restrictions")
+      .select("id,type,start_time,end_time,reason,created_at")
+      .eq("user_id", id)
+      .order("created_at", { ascending: false })
+      .limit(10),
   ]);
 
   const profile = profileRes.data;
+
+  // Determine active restriction
+  const now = new Date();
+  const activeRestriction = (restrictionRes.data || []).find(
+    (r) => !r.end_time || new Date(r.end_time) > now
+  );
 
   return NextResponse.json({
     profile: {
@@ -53,6 +65,16 @@ export async function GET(request, { params }) {
       gamesPlayed: sessionsRes.count || 0,
       streak: streakRes.data?.current_streak || 0,
       longestStreak: streakRes.data?.longest_streak || 0,
+      incomeModeStatus: profile?.income_mode_status || "disabled",
+      activeRestriction: activeRestriction
+        ? {
+            id: activeRestriction.id,
+            type: activeRestriction.type,
+            startTime: activeRestriction.start_time,
+            endTime: activeRestriction.end_time,
+            reason: activeRestriction.reason,
+          }
+        : null,
     },
   });
 }

@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Mail,
   Menu as MenuIcon,
+  MessageCircle,
   Settings,
   Users,
   X,
@@ -26,6 +27,8 @@ const NAV_ITEMS = [
   { href: "/admin/rewards", label: "Rewards & Ledger", icon: Coins },
   { href: "/admin/withdrawals", label: "Withdrawals", icon: Banknote },
   { href: "/admin/messages", label: "Messages", icon: Mail },
+  { href: "/admin/income-requests", label: "Income Requests", icon: Coins },
+  { href: "/admin/feedback", label: "Feedback", icon: MessageCircle },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

@@ -1,7 +1,14 @@
 import { z } from "zod";
 
 export const authSchema = z.object({
-  email: z.string().trim().email("Enter a valid email address"),
+  email: z
+    .string()
+    .trim()
+    .email("Enter a valid email address")
+    .refine(
+      (v) => v.toLowerCase().endsWith("@gmail.com"),
+      "Only @gmail.com addresses are allowed"
+    ),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")

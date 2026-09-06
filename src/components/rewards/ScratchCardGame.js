@@ -12,10 +12,12 @@ import {
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 
 export function ScratchCardGame() {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
 
   const canvasRef = useRef(null);
   const [status, setStatus] = useState("loading"); // loading | ready | scratching | claimed
@@ -131,6 +133,7 @@ export function ScratchCardGame() {
         setResult(data);
         setStatus("claimed");
         setRevealed(true);
+        showReward(data.coins, "scratch_card");
         toast(`You won ${data.prizeLabel}!`, "success");
         refresh();
       } else if (res.status === 409) {

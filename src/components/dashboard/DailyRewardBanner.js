@@ -5,6 +5,7 @@ import { Check, Coins, Flame, Gift, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 
 const DEFAULT_DAYS = [
   { day: 1, coins: 10 },
@@ -19,6 +20,7 @@ const DEFAULT_DAYS = [
 export function DailyRewardBanner() {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
 
   const [status, setStatus] = useState("loading"); // loading | ready | claimed
   const [days, setDays] = useState(DEFAULT_DAYS);
@@ -54,6 +56,7 @@ export function DailyRewardBanner() {
         setStreak(data.currentStreak);
         if (data.days?.length) setDays(data.days);
         setCelebrate(true);
+        showReward(data.coins, "daily_reward");
         toast(
           `Day ${data.dayInStreak} claimed — +${data.coins} coins!`,
           "success"

@@ -17,6 +17,7 @@ import {
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 import { GameIcon } from "@/components/games/GameIcon";
 import { getGameComponent } from "@/components/games/registry";
 import { externalPlayerSrc } from "@/lib/games/external";
@@ -27,6 +28,7 @@ import { cn } from "@/lib/utils/cn";
 export function GameShell({ game, children }) {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
 
   const [status, setStatus] = useState("loading"); // loading | ready | playing | submitting
   const [playsLeft, setPlaysLeft] = useState(null);
@@ -116,6 +118,7 @@ export function GameShell({ game, children }) {
         if (res.ok) {
           setResult(data);
           if (data.earned) {
+            showReward(data.coins, "game_reward");
             toast(`+${data.coins} coins earned!`, "success");
             refresh();
           } else if (data.dailyRewardClaimed) {
@@ -162,6 +165,7 @@ export function GameShell({ game, children }) {
         if (data.dailyRewardClaimed) {
           toast("Daily reward already claimed today — play again for fun!", "info");
         } else {
+          if (data.rewardCoins > 0) showReward(data.rewardCoins, "spin_reward");
           toast(`${data.prizeLabel} — nice luck!`, "success");
         }
         refresh();
@@ -188,10 +192,11 @@ export function GameShell({ game, children }) {
     if (pendingResult?.dailyRewardClaimed) {
       toast("Daily reward already claimed today — play again for fun!", "info");
     } else {
+      if (pendingResult?.coins > 0) showReward(pendingResult.coins, "spin_reward");
       toast(`${pendingResult?.prizeLabel || "Nice luck"} — nice luck!`, "success");
     }
     refresh();
-  }, [pendingResult, refresh, toast]);
+  }, [pendingResult, refresh, showReward, toast]);
 
   const renderStage = () => {
     if (game.embed_url) {

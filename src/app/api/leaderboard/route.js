@@ -3,12 +3,15 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseReady } from "@/lib/supabase/env";
 import { startOfPeriod } from "@/lib/utils/format";
 
+const TOP_LIMIT = 10; // Top 10 only
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const period = searchParams.get("period") || "all";
   const metric = searchParams.get("metric") || "xp";
   const me = searchParams.get("me") || null;
-  const limit = Math.min(50, Math.max(5, Number(searchParams.get("limit") || 20)));
+  // Always cap at Top 10 for performance — ignore any requested limit
+  const limit = TOP_LIMIT;
 
   if (!supabaseReady()) {
     return NextResponse.json({ entries: [] });

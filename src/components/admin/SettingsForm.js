@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Save } from "lucide-react";
+import { Coins, Loader2, Save } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 
 export function SettingsForm() {
@@ -9,6 +9,9 @@ export function SettingsForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState(null);
+  const [conversionRate, setConversionRate] = useState(100);
+  const [savingRate, setSavingRate] = useState(false);
+  const [loadingRate, setLoadingRate] = useState(true);
 
   useEffect(() => {
     fetch("/api/admin/settings", { cache: "no-store" })
@@ -17,6 +20,39 @@ export function SettingsForm() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetch("/api/conversion-rate", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.conversion?.coins_per_taka) {
+          setConversionRate(data.conversion.coins_per_taka);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingRate(false));
+  }, []);
+
+  const saveConversionRate = async () => {
+    setSavingRate(true);
+    try {
+      const res = await fetch("/api/admin/conversion-rate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coins_per_taka: Number(conversionRate) }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast("Conversion rate updated", "success");
+      } else {
+        toast(data.error || "Could not update conversion rate", "error");
+      }
+    } catch {
+      toast("Could not update conversion rate", "error");
+    } finally {
+      setSavingRate(false);
+    }
+  };
 
   const set = (path, value) => {
     setSettings((prev) => {
@@ -117,6 +153,46 @@ export function SettingsForm() {
           <p className="text-xs text-muted mt-1">
             Requests below this amount are rejected automatically. Applies to all users.
           </p>
+        </div>
+      </section>
+
+      <section className="card bg-base-100 border border-base-300 shadow-card p-6">
+        <h2 className="flex items-center gap-2 font-bold text-plum">
+          <Coins className="size-5 text-secondary" /> Income / Wallet conversion
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          Set how many coins equal one Taka. This rate is used by all users when converting their coins.
+        </p>
+        <div className="mt-4 max-w-lg space-y-2">
+          <label className="label-text font-semibold text-plum">Coins per 1 Taka</label>
+          {loadingRate ? (
+            <Loader2 className="size-4 animate-spin text-secondary" />
+          ) : (
+            <>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min={1}
+                  value={conversionRate}
+                  onChange={(e) => setConversionRate(Math.max(1, Number(e.target.value)))}
+                  className="input input-bordered w-40 mt-1"
+                />
+                <span className="text-sm font-semibold text-plum">coins = 1 Taka</span>
+              </div>
+              <p className="text-xs text-muted">
+                Example: at {conversionRate} coins/Taka, a user with 1,000 coins can withdraw{" "}
+                <strong>{(1000 / conversionRate).toFixed(2)} Taka</strong>.
+              </p>
+              <button
+                onClick={saveConversionRate}
+                disabled={savingRate}
+                className="btn btn-primary btn-sm mt-2"
+              >
+                {savingRate ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                Save conversion rate
+              </button>
+            </>
+          )}
         </div>
       </section>
 

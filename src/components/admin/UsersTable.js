@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Copy, Eye, Loader2, Mail, Phone, Search, ShieldCheck, User as UserIcon } from "lucide-react";
+import { Copy, Eye, Loader2, Mail, Phone, Search, ShieldCheck, ShieldOff, User as UserIcon } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { Modal } from "@/components/ui/Modal";
 import { CopyButton } from "@/components/shared/CopyButton";
+import { RestrictionManager } from "@/components/admin/RestrictionManager";
 import { formatDateTime } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 
@@ -16,6 +17,7 @@ export function UsersTable({ initialUsers, totalCount }) {
   const [viewing, setViewing] = useState(null);
   const [viewingData, setViewingData] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const [restrictionFor, setRestrictionFor] = useState(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -160,6 +162,16 @@ export function UsersTable({ initialUsers, totalCount }) {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        setRestrictionFor(user);
+                      }}
+                      className="btn btn-xs btn-outline btn-warning"
+                      title="Manage restriction"
+                    >
+                      <ShieldOff className="size-3" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
                         toggleRole(user);
                       }}
                       disabled={updating === user.id}
@@ -193,6 +205,24 @@ export function UsersTable({ initialUsers, totalCount }) {
         onClose={() => setViewing(null)}
         title={loadingProfile ? "Loading profile…" : `${viewingData?.displayName || "User"}'s profile`}
         size="md"
+        footer={
+          viewingData ? (
+            <div className="flex justify-between items-center w-full">
+              <button
+                onClick={() => {
+                  setViewing(null);
+                  setRestrictionFor(viewingData);
+                }}
+                className="btn btn-warning btn-sm"
+              >
+                <ShieldOff className="size-4" /> Manage restriction
+              </button>
+              <button onClick={() => setViewing(null)} className="btn btn-primary btn-sm">
+                Close
+              </button>
+            </div>
+          ) : null
+        }
       >
         {loadingProfile || !viewingData ? (
           <div className="flex justify-center py-10">
@@ -210,22 +240,55 @@ export function UsersTable({ initialUsers, totalCount }) {
                 </p>
                 <p className="text-sm text-muted truncate">@{viewingData.username || "—"}</p>
               </div>
-              <span
-                className={cn(
-                  "badge badge-sm ml-auto shrink-0",
-                  viewingData.role === "admin"
-                    ? "bg-plum text-neutral-content"
-                    : "bg-base-200 text-muted"
+              <div className="ml-auto flex flex-col items-end gap-1 shrink-0">
+                <span
+                  className={cn(
+                    "badge badge-sm",
+                    viewingData.role === "admin"
+                      ? "bg-plum text-neutral-content"
+                      : "bg-base-200 text-muted"
+                  )}
+                >
+                  {viewingData.role === "admin" ? (
+                    <ShieldCheck className="size-3 mr-1" />
+                  ) : (
+                    <UserIcon className="size-3 mr-1" />
+                  )}
+                  {viewingData.role}
+                </span>
+                {viewingData.incomeModeStatus && viewingData.incomeModeStatus !== "disabled" && (
+                  <span
+                    className={cn(
+                      "badge badge-sm",
+                      viewingData.incomeModeStatus === "active"
+                        ? "bg-success/15 text-success"
+                        : viewingData.incomeModeStatus === "pending"
+                        ? "bg-warning/15 text-warning"
+                        : "bg-error/15 text-error"
+                    )}
+                  >
+                    Income: {viewingData.incomeModeStatus}
+                  </span>
                 )}
-              >
-                {viewingData.role === "admin" ? (
-                  <ShieldCheck className="size-3 mr-1" />
-                ) : (
-                  <UserIcon className="size-3 mr-1" />
-                )}
-                {viewingData.role}
-              </span>
+              </div>
             </div>
+
+            {viewingData.activeRestriction && (
+              <div className="rounded-field bg-error/10 border border-error/30 px-4 py-3 text-sm">
+                <p className="flex items-center gap-2 font-bold text-error">
+                  <ShieldOff className="size-4" />
+                  {viewingData.activeRestriction.type === "blocked" ? "Blocked" : "Suspended"}
+                </p>
+                {viewingData.activeRestriction.reason && (
+                  <p className="mt-1 text-plum">Reason: {viewingData.activeRestriction.reason}</p>
+                )}
+                {viewingData.activeRestriction.endTime && (
+                  <p className="mt-1 text-xs text-muted">
+                    Ends: {formatDateTime(viewingData.activeRestriction.endTime)}
+                  </p>
+                )}
+              </div>
+            )}
 
             {viewingData.bio && (
               <p className="rounded-field bg-base-200 px-4 py-3 text-sm italic text-plum text-center font-semibold">
@@ -298,6 +361,17 @@ export function UsersTable({ initialUsers, totalCount }) {
           </div>
         )}
       </Modal>
+
+      <RestrictionManager
+        open={Boolean(restrictionFor)}
+        onClose={() => setRestrictionFor(null)}
+        userId={restrictionFor?.id}
+        profile={restrictionFor}
+        onUpdated={() => {
+          setRestrictionFor(null);
+          if (viewing) viewProfile(viewing);
+        }}
+      />
     </div>
   );
 }

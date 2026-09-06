@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 import { startExternalGame } from "@/lib/games/external";
 
 export function useExternalClaim(game) {
   const { toast } = useToast();
   const { refresh } = useWallet();
+  const { showReward } = useReward();
   const [state, setState] = useState("loading"); // loading | locked | countdown | ready | claimed
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [claiming, setClaiming] = useState(false);
@@ -124,6 +126,7 @@ export function useExternalClaim(game) {
       if (res.ok && data.earned) {
         setState("claimed");
         toast(`+${data.coins} coins claimed!`, "success");
+        showReward(data.coins, "daily_reward");
         refresh();
       } else if (data.alreadyClaimed) {
         setState("claimed");

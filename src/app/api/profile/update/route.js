@@ -41,6 +41,7 @@ export async function GET() {
       coins: walletRes.data?.coins || 0,
       gamesPlayed: sessionsRes.count || 0,
       longestStreak: streakRes.data?.longest_streak || 0,
+      incomeModeStatus: profile?.income_mode_status || "disabled",
     },
     level: {
       title: progress.level.title,

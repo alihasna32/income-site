@@ -5,6 +5,7 @@ import { ArrowRight, Brain, CheckCircle2, Flame, Loader2, XCircle } from "lucide
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
+import { useReward } from "@/hooks/RewardProvider";
 import { cn } from "@/lib/utils/cn";
 
 const TIME_LIMIT_SECONDS = 60;
@@ -18,6 +19,7 @@ const DIFFICULTY_TONE = {
 export default function DailyMathChallenge() {
   const { toast } = useToast();
   const { refresh: refreshWallet } = useWallet();
+  const { showReward } = useReward();
 
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -88,6 +90,7 @@ export default function DailyMathChallenge() {
         setStatus(data);
         refreshWallet();
         if (data.correct) {
+          showReward(data.rewardCoins, "math_challenge");
           toast(`Correct! +${data.rewardCoins} coins`, "success");
         }
       } else {

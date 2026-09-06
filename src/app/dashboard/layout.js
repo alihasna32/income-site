@@ -1,7 +1,11 @@
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { RestrictedShell } from "@/components/dashboard/RestrictedShell";
 import { WalletProvider } from "@/hooks/WalletProvider";
+import { RewardProvider } from "@/hooks/RewardProvider";
+import { FeedbackButton } from "@/components/feedback/FeedbackButton";
 import { getSession } from "@/lib/auth/session";
+import { getActiveRestriction } from "@/lib/auth/restrictions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { SetupRequired } from "@/components/shared/SetupRequired";
@@ -17,6 +21,12 @@ export default async function DashboardLayout({ children }) {
 
   const user = await getSession();
   if (!user) redirect("/login");
+
+  // Server-side restriction check: blocked / suspended users cannot access dashboard.
+  const restriction = await getActiveRestriction(user.id);
+  if (restriction) {
+    return <RestrictedShell restriction={restriction} />;
+  }
 
   const supabase = createAdminClient();
   let profile = null;
@@ -38,10 +48,13 @@ export default async function DashboardLayout({ children }) {
   }
 
   return (
-    <WalletProvider>
-      <DashboardShell profile={profile} unreadCount={unreadCount} userId={user.id}>
-        {children}
-      </DashboardShell>
-    </WalletProvider>
+    <RewardProvider>
+      <WalletProvider>
+        <DashboardShell profile={profile} unreadCount={unreadCount} userId={user.id}>
+          {children}
+        </DashboardShell>
+        <FeedbackButton />
+      </WalletProvider>
+    </RewardProvider>
   );
 }

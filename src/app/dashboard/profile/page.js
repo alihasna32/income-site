@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   BadgeCheck,
+  Banknote,
   Cake,
   Coins,
   Gem,
@@ -97,6 +98,15 @@ export default function ProfilePage() {
     );
   }
 
+  const incomeStatus = profile?.incomeModeStatus || "disabled";
+  const incomeTone = {
+    active: { border: "border-success", ring: "ring-success/40", text: "text-success", label: "Income Mode active", sub: "Ready to convert coins to Taka" },
+    pending: { border: "border-warning", ring: "ring-warning/40", text: "text-warning", label: "Income Mode pending", sub: "Awaiting admin review" },
+    suspended: { border: "border-error", ring: "ring-error/40", text: "text-error", label: "Income Mode suspended", sub: "Contact support for details" },
+    blocked: { border: "border-error", ring: "ring-error/40", text: "text-error", label: "Income Mode blocked", sub: "Contact support for details" },
+    disabled: { border: "border-base-300", ring: "ring-base-300/40", text: "text-muted", label: "Income Mode off", sub: "Activate Income Mode to convert coins" },
+  }[incomeStatus];
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -114,7 +124,12 @@ export default function ProfilePage() {
         }
       />
 
-      <div className="card bg-base-100 border border-base-300 shadow-card overflow-hidden">
+      <div
+        className={cn(
+          "card bg-base-100 border-2 shadow-card overflow-hidden transition-colors",
+          incomeTone.border
+        )}
+      >
         <div className="h-24 bg-gradient-to-r from-plum via-[#5d4065] to-plum relative">
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_50%,#F2C230_0,transparent_40%),radial-gradient(circle_at_80%_50%,#F2921D_0,transparent_40%)]" />
           {form.bio && (
@@ -135,6 +150,7 @@ export default function ProfilePage() {
               <span
                 className={cn(
                   "flex size-20 items-center justify-center rounded-full text-4xl border-4 border-base-100 shadow-card",
+                  incomeStatus === "active" && "ring-2 ring-success ring-offset-2 ring-offset-base-100",
                   form.avatarEmoji ? "" : `bg-gradient-to-br ${avatarGradient(profile?.email || "user")}`
                 )}
               >
@@ -144,10 +160,33 @@ export default function ProfilePage() {
                 Change
               </span>
             </button>
-            <span className="flex items-center gap-2 badge badge-lg bg-plum text-neutral-content shadow-card">
-              <Trophy className="size-4 text-gold" />
-              {level?.title || "Beginner"}
-            </span>
+            <div className="flex flex-col items-end gap-2">
+              <span className="flex items-center gap-2 badge badge-lg bg-plum text-neutral-content shadow-card">
+                <Trophy className="size-4 text-gold" />
+                {level?.title || "Beginner"}
+              </span>
+              <Link
+                href="/dashboard/settings"
+                className={cn(
+                  "flex items-center gap-1.5 badge badge-lg shadow-card text-xs font-semibold border",
+                  incomeStatus === "active"
+                    ? "bg-success/15 border-success/40 text-success"
+                    : incomeStatus === "pending"
+                    ? "bg-warning/15 border-warning/40 text-warning"
+                    : incomeStatus === "suspended" || incomeStatus === "blocked"
+                    ? "bg-error/15 border-error/40 text-error"
+                    : "bg-base-200 border-base-300 text-muted"
+                )}
+              >
+                {incomeStatus === "active" ? (
+                  <><Banknote className="size-3.5" /> Income Mode active</>
+                ) : incomeStatus === "pending" ? (
+                  <><Loader2 className="size-3.5 animate-spin" /> Income Mode pending</>
+                ) : (
+                  <><Settings className="size-3.5" /> Activate Income Mode</>
+                )}
+              </Link>
+            </div>
           </div>
 
           <div className="mt-4 min-w-0">
