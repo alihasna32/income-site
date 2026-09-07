@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, ShieldAlert, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -15,7 +15,23 @@ export default function AuthCallbackPage() {
     const supabase = createClient();
     (async () => {
       try {
-        // Exchange code in URL for session (Supabase v2 client handles this automatically)
+        // Explicitly exchange the OAuth code for a session — required when the
+        // SSR client's auto-detection doesn't fire before getSession() is called.
+        const code = new URLSearchParams(window.location.search).get("code");
+        if (code) {
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) throw exchangeError;
+          if (data?.session) {
+            setState("success");
+            setTimeout(() => {
+              router.push("/dashboard");
+              router.refresh();
+            }, 600);
+            return;
+          }
+        }
+
+        // Fallback: try to get an existing session
         const { data, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
         if (data?.session) {

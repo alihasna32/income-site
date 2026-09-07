@@ -46,11 +46,13 @@ export default function SettingsPage() {
   useEffect(() => {
     let cancelled = false;
     const supabase = createClient();
+    let channel = null;
+    let userId = null;
     // fetch profile and income_mode_status if present
     (async () => {
       try {
         const userRes = await supabase.auth.getUser();
-        const userId = userRes?.data?.user?.id;
+        userId = userRes?.data?.user?.id;
         if (!userId) return;
         const { data } = await supabase.from("profiles").select("id,display_name,phone,income_mode_status").eq("id", userId).maybeSingle();
         if (cancelled) return;
@@ -58,12 +60,32 @@ export default function SettingsPage() {
           setProfile(data);
           setIncomeStatus(data.income_mode_status || "disabled");
         }
+
+        // Subscribe to live changes so admin actions (disable / enable) update the UI immediately
+        channel = supabase
+          .channel(`settings-income-status-${userId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "profiles",
+              filter: `id=eq.${userId}`,
+            },
+            (payload) => {
+              if (cancelled) return;
+              const next = payload?.new?.income_mode_status;
+              if (next) setIncomeStatus(next);
+            }
+          )
+          .subscribe();
       } catch (e) {
         // ignore — DB may not have column yet
       }
     })();
     return () => {
       cancelled = true;
+      if (channel) supabase.removeChannel(channel);
     };
   }, []);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Copy, Eye, Loader2, Mail, Phone, Search, ShieldCheck, ShieldOff, User as UserIcon } from "lucide-react";
+import { Copy, Eye, Loader2, Mail, Phone, Search, ShieldCheck, ShieldOff, Sparkles, User as UserIcon } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { Modal } from "@/components/ui/Modal";
 import { CopyButton } from "@/components/shared/CopyButton";
@@ -18,6 +18,8 @@ export function UsersTable({ initialUsers, totalCount }) {
   const [viewingData, setViewingData] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [restrictionFor, setRestrictionFor] = useState(null);
+  const [incomeModeUpdating, setIncomeModeUpdating] = useState(false);
+  const [confirmIncomeMode, setConfirmIncomeMode] = useState(null); // { user, action }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -72,6 +74,40 @@ export function UsersTable({ initialUsers, totalCount }) {
       toast("Could not update role", "error");
     } finally {
       setUpdating(null);
+    }
+  };
+
+  const applyIncomeModeChange = async () => {
+    if (!confirmIncomeMode) return;
+    const { user, action } = confirmIncomeMode;
+    setIncomeModeUpdating(true);
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}/income-mode`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        toast(
+          action === "enable"
+            ? "Income Mode enabled for user"
+            : "Income Mode disabled for user",
+          "success"
+        );
+        setViewingData((prev) =>
+          prev ? { ...prev, incomeModeStatus: data.profile.income_mode_status } : prev
+        );
+        // refresh profile so any related fields stay in sync
+        if (viewing) viewProfile(viewing);
+      } else {
+        toast(data?.error || "Could not update Income Mode", "error");
+      }
+    } catch {
+      toast("Could not update Income Mode", "error");
+    } finally {
+      setIncomeModeUpdating(false);
+      setConfirmIncomeMode(null);
     }
   };
 
@@ -207,16 +243,35 @@ export function UsersTable({ initialUsers, totalCount }) {
         size="md"
         footer={
           viewingData ? (
-            <div className="flex justify-between items-center w-full">
-              <button
-                onClick={() => {
-                  setViewing(null);
-                  setRestrictionFor(viewingData);
-                }}
-                className="btn btn-warning btn-sm"
-              >
-                <ShieldOff className="size-4" /> Manage restriction
-              </button>
+            <div className="flex justify-between items-center w-full gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setViewing(null);
+                    setRestrictionFor(viewingData);
+                  }}
+                  className="btn btn-warning btn-sm"
+                >
+                  <ShieldOff className="size-4" /> Manage restriction
+                </button>
+                {viewingData.incomeModeStatus !== "active" ? (
+                  <button
+                    onClick={() => setConfirmIncomeMode({ user: viewingData, action: "enable" })}
+                    className="btn btn-success btn-sm"
+                    disabled={incomeModeUpdating}
+                  >
+                    <Sparkles className="size-4" /> Enable Income
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setConfirmIncomeMode({ user: viewingData, action: "disable" })}
+                    className="btn btn-error btn-sm"
+                    disabled={incomeModeUpdating}
+                  >
+                    <ShieldOff className="size-4" /> Disable Income
+                  </button>
+                )}
+              </div>
               <button onClick={() => setViewing(null)} className="btn btn-primary btn-sm">
                 Close
               </button>
@@ -372,6 +427,68 @@ export function UsersTable({ initialUsers, totalCount }) {
           if (viewing) viewProfile(viewing);
         }}
       />
+
+      {/* Confirm Income Mode enable/disable */}
+      <Modal
+        open={Boolean(confirmIncomeMode)}
+        onClose={() => !incomeModeUpdating && setConfirmIncomeMode(null)}
+        title={confirmIncomeMode?.action === "enable" ? "Enable Income Mode?" : "Disable Income Mode?"}
+        size="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setConfirmIncomeMode(null)}
+              className="btn btn-ghost btn-sm"
+              disabled={incomeModeUpdating}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={applyIncomeModeChange}
+              className={cn("btn btn-sm", confirmIncomeMode?.action === "enable" ? "btn-success" : "btn-error")}
+              disabled={incomeModeUpdating}
+            >
+              {incomeModeUpdating ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : confirmIncomeMode?.action === "enable" ? (
+                <>
+                  <Sparkles className="size-4" /> Enable
+                </>
+              ) : (
+                <>
+                  <ShieldOff className="size-4" /> Disable
+                </>
+              )}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                "flex size-12 shrink-0 items-center justify-center rounded-full",
+                confirmIncomeMode?.action === "enable" ? "bg-success/10 text-success" : "bg-error/10 text-error"
+              )}
+            >
+              {confirmIncomeMode?.action === "enable" ? (
+                <Sparkles className="size-6" />
+              ) : (
+                <ShieldOff className="size-6" />
+              )}
+            </div>
+            <div>
+              <p className="font-semibold text-plum">{confirmIncomeMode?.user?.displayName || "User"}</p>
+              <p className="text-xs text-muted">@{confirmIncomeMode?.user?.username || "—"}</p>
+            </div>
+          </div>
+          <p className="text-sm text-muted">
+            {confirmIncomeMode?.action === "enable"
+              ? "This will allow this user to convert coins into Taka immediately without a payment request."
+              : "This will prevent this user from converting coins into Taka until Income Mode is enabled again."}
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 }

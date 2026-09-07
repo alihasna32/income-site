@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Check, Loader2, ShieldOff, X } from "lucide-react";
+import { Check, Loader2, ShieldOff, Sparkles, X } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { formatDateTime } from "@/lib/utils/format";
 import { Modal } from "@/components/ui/Modal";
@@ -11,6 +11,7 @@ const STATUS_TONE = {
   pending: "bg-warning/15 text-warning",
   approved: "bg-success/15 text-success",
   rejected: "bg-error/15 text-error",
+  cancelled: "bg-base-200 text-muted",
   active: "bg-success/15 text-success",
   inactive: "bg-muted/15 text-muted",
   restricted: "bg-error/15 text-error",
@@ -22,8 +23,8 @@ export function IncomeRequestsTable({ initialData = [] }) {
   const [rows, setRows] = useState(initialData || []);
   const [loading, setLoading] = useState(!initialData);
   const [actingId, setActingId] = useState(null);
-  const [disableFor, setDisableFor] = useState(null);
-  const [disableSubmitting, setDisableSubmitting] = useState(false);
+  const [incomeModeFor, setIncomeModeFor] = useState(null); // { row, action }
+  const [incomeModeSubmitting, setIncomeModeSubmitting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -72,27 +73,33 @@ export function IncomeRequestsTable({ initialData = [] }) {
     }
   };
 
-  const confirmDisable = async () => {
-    if (!disableFor) return;
-    setDisableSubmitting(true);
+  const applyIncomeModeChange = async () => {
+    if (!incomeModeFor) return;
+    const { row, action } = incomeModeFor;
+    setIncomeModeSubmitting(true);
     try {
-      const res = await fetch(`/api/admin/users/${disableFor.user_id}/income-mode`, {
+      const res = await fetch(`/api/admin/users/${row.user_id}/income-mode`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "disable" }),
+        body: JSON.stringify({ action }),
       });
       const data = await res.json().catch(() => null);
       if (res.ok) {
-        toast("Income Mode disabled for user", "success");
+        toast(
+          action === "enable"
+            ? "Income Mode enabled for user"
+            : "Income Mode disabled for user",
+          "success"
+        );
         await load();
       } else {
-        toast(data?.error || "Could not disable Income Mode", "error");
+        toast(data?.error || "Could not update Income Mode", "error");
       }
     } catch {
-      toast("Could not disable Income Mode", "error");
+      toast("Could not update Income Mode", "error");
     } finally {
-      setDisableSubmitting(false);
-      setDisableFor(null);
+      setIncomeModeSubmitting(false);
+      setIncomeModeFor(null);
     }
   };
 
@@ -105,7 +112,14 @@ export function IncomeRequestsTable({ initialData = [] }) {
   }
 
   const pending = rows.filter((r) => r.status === "pending");
-  const resolved = rows.filter((r) => r.status !== "pending");
+  // In History, only show the latest row per user to avoid duplicate entries
+  const resolved = rows
+    .filter((r) => r.status !== "pending")
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .reduce((acc, r) => {
+      if (!acc.some((existing) => existing.user_id === r.user_id)) acc.push(r);
+      return acc;
+    }, []);
 
   const renderRow = (r) => (
     <tr key={r.id} className="align-top">
@@ -125,8 +139,8 @@ export function IncomeRequestsTable({ initialData = [] }) {
       </td>
       <td className="whitespace-nowrap text-xs text-muted">{formatDateTime(r.created_at)}</td>
       <td>
-        <span className={cn("badge badge-sm", STATUS_TONE[r.status] || STATUS_TONE.pending)}>
-          {r.status}
+        <span className={cn("badge badge-sm", STATUS_TONE[r.income_mode_status] || STATUS_TONE[r.status] || STATUS_TONE.pending)}>
+          {r.income_mode_status || r.status}
         </span>
       </td>
       <td className="text-right">
@@ -145,16 +159,22 @@ export function IncomeRequestsTable({ initialData = [] }) {
               </>
             )}
           </div>
-        ) : r.status === "approved" ? (
+        ) : r.income_mode_status === "active" ? (
           <button
-            onClick={() => setDisableFor(r)}
+            onClick={() => setIncomeModeFor({ row: r, action: "disable" })}
             className="btn btn-sm btn-outline btn-error"
             aria-label="Disable Income Mode"
           >
             <ShieldOff className="size-4" /> Disable Income Mode
           </button>
         ) : (
-          <span className="text-xs text-muted">—</span>
+          <button
+            onClick={() => setIncomeModeFor({ row: r, action: "enable" })}
+            className="btn btn-sm btn-outline btn-success"
+            aria-label="Enable Income Mode"
+          >
+            <Sparkles className="size-4" /> Enable Income Mode
+          </button>
         )}
       </td>
     </tr>
@@ -210,52 +230,68 @@ export function IncomeRequestsTable({ initialData = [] }) {
         </section>
       )}
 
-      {/* Disable Income Mode confirmation modal */}
+      {/* Enable / Disable Income Mode confirmation modal */}
       <Modal
-        open={Boolean(disableFor)}
-        onClose={() => setDisableFor(null)}
-        title="Disable Income Mode?"
+        open={Boolean(incomeModeFor)}
+        onClose={() => !incomeModeSubmitting && setIncomeModeFor(null)}
+        title={incomeModeFor?.action === "enable" ? "Enable Income Mode?" : "Disable Income Mode?"}
         size="sm"
         footer={
           <>
             <button
-              onClick={() => setDisableFor(null)}
+              onClick={() => setIncomeModeFor(null)}
               className="btn btn-ghost btn-sm"
-              disabled={disableSubmitting}
+              disabled={incomeModeSubmitting}
             >
               Cancel
             </button>
             <button
-              onClick={confirmDisable}
-              className="btn btn-error btn-sm"
-              disabled={disableSubmitting}
+              onClick={applyIncomeModeChange}
+              className={cn("btn btn-sm", incomeModeFor?.action === "enable" ? "btn-success" : "btn-error")}
+              disabled={incomeModeSubmitting}
             >
-              {disableSubmitting ? (
+              {incomeModeSubmitting ? (
                 <Loader2 className="size-4 animate-spin" />
+              ) : incomeModeFor?.action === "enable" ? (
+                <>
+                  <Sparkles className="size-4" /> Enable Income Mode
+                </>
               ) : (
-                <ShieldOff className="size-4" />
+                <>
+                  <ShieldOff className="size-4" /> Disable Income Mode
+                </>
               )}
-              Disable Income Mode
             </button>
           </>
         }
       >
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-full bg-error/10 text-error shrink-0">
-              <ShieldOff className="size-6" />
+            <div
+              className={cn(
+                "flex size-12 shrink-0 items-center justify-center rounded-full",
+                incomeModeFor?.action === "enable" ? "bg-success/10 text-success" : "bg-error/10 text-error"
+              )}
+            >
+              {incomeModeFor?.action === "enable" ? (
+                <Sparkles className="size-6" />
+              ) : (
+                <ShieldOff className="size-6" />
+              )}
             </div>
             <div>
               <p className="font-semibold text-plum">
-                {disableFor?.name || "User"}
+                {incomeModeFor?.row?.name || "User"}
               </p>
               <p className="text-xs text-muted">
-                @{disableFor?.user_id?.slice(0, 8) || "—"}
+                @{incomeModeFor?.row?.user_id?.slice(0, 8) || "—"}
               </p>
             </div>
           </div>
           <p className="text-sm text-muted">
-            This will prevent this user from converting coins into Taka until Income Mode is enabled again.
+            {incomeModeFor?.action === "enable"
+              ? "This will allow this user to convert coins into Taka immediately without a payment request."
+              : "This will prevent this user from converting coins into Taka until Income Mode is enabled again."}
           </p>
         </div>
       </Modal>

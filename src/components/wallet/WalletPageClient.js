@@ -10,10 +10,13 @@ export function WalletPageClient({ children }) {
 
   useEffect(() => {
     const supabase = createClient();
-    (async () => {
+    let userId = null;
+    let channel = null;
+
+    const load = async () => {
       try {
         const userRes = await supabase.auth.getUser();
-        const userId = userRes?.data?.user?.id;
+        userId = userRes?.data?.user?.id;
         if (!userId) return;
         const { data } = await supabase
           .from("profiles")
@@ -23,10 +26,34 @@ export function WalletPageClient({ children }) {
         if (data?.income_mode_status) {
           setIncomeStatus(data.income_mode_status);
         }
+
+        // Subscribe to live changes so admin actions (disable / enable / suspend) show up immediately
+        channel = supabase
+          .channel(`profile-income-status-${userId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "profiles",
+              filter: `id=eq.${userId}`,
+            },
+            (payload) => {
+              const next = payload?.new?.income_mode_status;
+              if (next) setIncomeStatus(next);
+            }
+          )
+          .subscribe();
       } catch {
         // ignore — DB may not have the column yet
       }
-    })();
+    };
+
+    load();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
   // Show restriction modal if user has a restricted or disabled income mode status.
