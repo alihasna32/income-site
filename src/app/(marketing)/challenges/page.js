@@ -81,13 +81,21 @@ export default function ChallengesPage() {
           ))}
         </div>
 
-        <div className="mt-12 rounded-box bg-gradient-to-br from-plum to-plum-light p-6 sm:p-8 text-neutral-content">
+        <div className="mt-12 rounded-box bg-gradient-to-br from-plum via-plum-light to-plum-dark p-6 sm:p-8">
           <SectionHeader
             eyebrow="Fair play"
-            title="Every reward is validated server-side"
-            description="You can't influence your reward by refreshing, replaying or tampering. Daily limits keep things fair for everyone, and reward rules are transparent."
+            title={
+              <span className="text-neutral-content">
+                Every reward is validated server-side
+              </span>
+            }
+            description={
+              <span className="text-neutral-content/80">
+                You can't influence your reward by refreshing, replaying or tampering. Daily limits keep things fair for everyone, and reward rules are transparent.
+              </span>
+            }
           />
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex justify-center flex-wrap gap-3">
             <span className="badge badge-outline border-gold/50 text-gold">Server-validated</span>
             <span className="badge badge-outline border-white/25 text-neutral-content/80">Fair daily limits</span>
             <span className="badge badge-outline border-white/25 text-neutral-content/80">No purchases needed</span>

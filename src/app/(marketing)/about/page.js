@@ -56,9 +56,7 @@ export default function AboutPage() {
           <p className="mt-4 text-sm sm:text-base text-neutral-content/85 leading-relaxed">
             That's the entire product philosophy. CoinQuest blends light
             mini-games, rotating challenges, scratch cards and a 7-day reward
-            cycle into one friendly place. Everything you earn is virtual —
-            coins are for fun and progress, not for real money. That keeps the
-            experience light, safe and genuinely enjoyable for everyone.
+            cycle into one friendly place. Everything you earn is virtual coins that you can converted to real money.
           </p>
         </div>
 
