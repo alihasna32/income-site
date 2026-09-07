@@ -97,7 +97,7 @@ export async function GET() {
 
     return NextResponse.json({
       ok: true,
-      takaBalance: withdrawalsRes.error ? 0 : (settingsRes?.taka_balance ?? 0),
+      takaBalance: settingsRes?.data?.taka_balance ?? 0,
       minAmount,
       withdrawals: (withdrawalsRes.data || []).map((w) => ({
         id: w.id,
@@ -160,7 +160,20 @@ export async function POST(request) {
         .maybeSingle(),
     ]);
 
-    const takaBalance = walletRes?.taka_balance ?? 0;
+    // Check if wallet query failed
+    if (walletRes.error) {
+      console.error(
+        "[taka-withdrawals] wallet fetch error",
+        walletRes.error
+      );
+
+      return NextResponse.json(
+        { error: "Could not load Taka balance" },
+        { status: 500 }
+      );
+    }
+
+    const takaBalance = walletRes.data?.taka_balance ?? 0;
 
     if (amount < minAmount) {
       return NextResponse.json(
