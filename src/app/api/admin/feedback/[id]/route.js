@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 const feedbackUpdateSchema = z.object({
   message: z.string().trim().min(1).max(2000).optional(),
   is_active: z.boolean().optional(),
+  user_label: z.string().trim().min(1).max(40).optional(),
 });
 
 export async function PATCH(request, { params }) {
@@ -41,12 +42,13 @@ export async function PATCH(request, { params }) {
     const update = { updated_at: new Date().toISOString() };
     if (parsed.data.message !== undefined) update.message = parsed.data.message;
     if (parsed.data.is_active !== undefined) update.is_active = parsed.data.is_active;
+    if (parsed.data.user_label !== undefined) update.user_label = parsed.data.user_label;
 
     const { data, error } = await admin
       .from("feedback")
       .update(update)
       .eq("id", id)
-      .select("id, message, is_active, created_at, updated_at, admin_id")
+      .select("id, message, is_active, user_label, created_at, updated_at, admin_id")
       .single();
     if (error) throw error;
     return NextResponse.json({ ok: true, feedback: data });

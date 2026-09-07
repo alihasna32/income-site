@@ -1,21 +1,32 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
-// GET: public feedback for display (rotation)
-// Returns limited feedback for dashboard display
-export async function GET(request) {
+// GET: returns ALL active feedbacks so the client can randomly pick 3 each
+// 20-second cycle. Each row includes user_label (shown as "author" to users).
+export async function GET() {
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+    if (!admin) {
+      return NextResponse.json({ ok: true, feedbacks: [] });
+    }
+
+    const { data, error } = await admin
       .from("feedback")
-      .select("id, message, created_at")
+      .select("id, message, user_label")
       .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .limit(20);
+      .order("created_at", { ascending: false });
+
     if (error) throw error;
-    return NextResponse.json({ ok: true, feedbacks: data || [] });
+
+    const feedbacks = (data || []).map((row) => ({
+      id: row.id,
+      message: row.message,
+      author: row.user_label || "Admin",
+    }));
+
+    return NextResponse.json({ ok: true, feedbacks });
   } catch (err) {
     console.error("/api/feedback GET", err?.message || err);
     return NextResponse.json({ error: "Could not fetch feedback" }, { status: 500 });

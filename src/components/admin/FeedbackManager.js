@@ -14,6 +14,7 @@ export function FeedbackManager() {
   const [submitting, setSubmitting] = useState(false);
   const [editing, setEditing] = useState(null);
   const [editDraft, setEditDraft] = useState("");
+  const [editLabelDraft, setEditLabelDraft] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -99,6 +100,7 @@ export function FeedbackManager() {
   const startEdit = (fb) => {
     setEditing(fb.id);
     setEditDraft(fb.message);
+    setEditLabelDraft(fb.user_label || "");
   };
 
   const saveEdit = async () => {
@@ -110,19 +112,30 @@ export function FeedbackManager() {
       const res = await fetch(`/api/admin/feedback/${editing}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: editDraft.trim() }),
+        body: JSON.stringify({
+          message: editDraft.trim(),
+          user_label: editLabelDraft.trim() || undefined,
+        }),
       });
       if (res.ok) {
         toast("Feedback updated", "success");
         setEditing(null);
         setEditDraft("");
+        setEditLabelDraft("");
         load();
       } else {
-        toast("Could not update", "error");
+        const data = await res.json().catch(() => null);
+        toast(data?.error || "Could not update", "error");
       }
     } catch {
       toast("Could not update", "error");
     }
+  };
+
+  const cancelEdit = () => {
+    setEditing(null);
+    setEditDraft("");
+    setEditLabelDraft("");
   };
 
   if (loading) {
@@ -186,6 +199,14 @@ export function FeedbackManager() {
                 <div className="min-w-0 flex-1">
                   {editing === fb.id ? (
                     <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={editLabelDraft}
+                        onChange={(e) => setEditLabelDraft(e.target.value)}
+                        maxLength={40}
+                        placeholder="Display name (e.g. User 1)"
+                        className="input input-bordered input-sm w-full max-w-xs"
+                      />
                       <textarea
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
@@ -197,14 +218,19 @@ export function FeedbackManager() {
                         <button onClick={saveEdit} className="btn btn-primary btn-xs">
                           <Save className="size-3" /> Save
                         </button>
-                        <button onClick={() => setEditing(null)} className="btn btn-ghost btn-xs">
+                        <button onClick={cancelEdit} className="btn btn-ghost btn-xs">
                           <X className="size-3" /> Cancel
                         </button>
                       </div>
                     </div>
                   ) : (
                     <>
-                      <p className="text-sm text-plum whitespace-pre-wrap break-words">{fb.message}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="badge badge-sm badge-secondary text-white">
+                          {fb.user_label || "User"}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-plum whitespace-pre-wrap break-words">{fb.message}</p>
                       <p className="mt-1 text-xs text-muted">Added {formatDateTime(fb.created_at)}</p>
                     </>
                   )}
