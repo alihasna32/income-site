@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader2, ShieldOff, X } from "lucide-react";
 import { useToast } from "@/components/shared/ToastProvider";
 import { formatDateTime } from "@/lib/utils/format";
+import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils/cn";
 
 const STATUS_TONE = {
@@ -13,6 +14,7 @@ const STATUS_TONE = {
   active: "bg-success/15 text-success",
   inactive: "bg-muted/15 text-muted",
   restricted: "bg-error/15 text-error",
+  disabled: "bg-base-200 text-muted",
 };
 
 export function IncomeRequestsTable({ initialData = [] }) {
@@ -20,6 +22,8 @@ export function IncomeRequestsTable({ initialData = [] }) {
   const [rows, setRows] = useState(initialData || []);
   const [loading, setLoading] = useState(!initialData);
   const [actingId, setActingId] = useState(null);
+  const [disableFor, setDisableFor] = useState(null);
+  const [disableSubmitting, setDisableSubmitting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -65,6 +69,30 @@ export function IncomeRequestsTable({ initialData = [] }) {
       toast("Could not process request", "error");
     } finally {
       setActingId(null);
+    }
+  };
+
+  const confirmDisable = async () => {
+    if (!disableFor) return;
+    setDisableSubmitting(true);
+    try {
+      const res = await fetch(`/api/admin/users/${disableFor.user_id}/income-mode`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "disable" }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        toast("Income Mode disabled for user", "success");
+        await load();
+      } else {
+        toast(data?.error || "Could not disable Income Mode", "error");
+      }
+    } catch {
+      toast("Could not disable Income Mode", "error");
+    } finally {
+      setDisableSubmitting(false);
+      setDisableFor(null);
     }
   };
 
@@ -117,6 +145,14 @@ export function IncomeRequestsTable({ initialData = [] }) {
               </>
             )}
           </div>
+        ) : r.status === "approved" ? (
+          <button
+            onClick={() => setDisableFor(r)}
+            className="btn btn-sm btn-outline btn-error"
+            aria-label="Disable Income Mode"
+          >
+            <ShieldOff className="size-4" /> Disable Income Mode
+          </button>
         ) : (
           <span className="text-xs text-muted">—</span>
         )}
@@ -173,6 +209,56 @@ export function IncomeRequestsTable({ initialData = [] }) {
           </div>
         </section>
       )}
+
+      {/* Disable Income Mode confirmation modal */}
+      <Modal
+        open={Boolean(disableFor)}
+        onClose={() => setDisableFor(null)}
+        title="Disable Income Mode?"
+        size="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setDisableFor(null)}
+              className="btn btn-ghost btn-sm"
+              disabled={disableSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDisable}
+              className="btn btn-error btn-sm"
+              disabled={disableSubmitting}
+            >
+              {disableSubmitting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <ShieldOff className="size-4" />
+              )}
+              Disable Income Mode
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-12 items-center justify-center rounded-full bg-error/10 text-error shrink-0">
+              <ShieldOff className="size-6" />
+            </div>
+            <div>
+              <p className="font-semibold text-plum">
+                {disableFor?.name || "User"}
+              </p>
+              <p className="text-xs text-muted">
+                @{disableFor?.user_id?.slice(0, 8) || "—"}
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-muted">
+            This will prevent this user from converting coins into Taka until Income Mode is enabled again.
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 }

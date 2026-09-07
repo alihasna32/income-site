@@ -29,8 +29,9 @@ export function WalletPageClient({ children }) {
     })();
   }, []);
 
-  // Show restriction modal if user has a restricted income mode status.
-  const restrictedStatuses = ["pending", "suspended", "blocked"];
+  // Show restriction modal if user has a restricted or disabled income mode status.
+  // "disabled" status is also shown to prompt users to enable income mode.
+  const restrictedStatuses = ["pending", "suspended", "blocked", "disabled"];
   const isRestricted = restrictedStatuses.includes(incomeStatus);
 
   return (

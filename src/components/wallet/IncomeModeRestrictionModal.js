@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertTriangle, Clock, ShieldOff } from "lucide-react";
+import { AlertTriangle, Clock, ShieldOff, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 
 const STATUS_CONFIG = {
@@ -31,7 +32,40 @@ const STATUS_CONFIG = {
 };
 
 export function IncomeModeRestrictionModal({ open, onClose, status }) {
-  if (!status || status === "active" || status === "disabled") return null;
+  if (!status || status === "active") return null;
+
+  // Handle disabled status separately
+  if (status === "disabled") {
+    return (
+      <Modal
+        open={open}
+        onClose={onClose}
+        title="Income Mode is disabled"
+        size="sm"
+      >
+        <div className="flex flex-col items-center gap-4 py-4 text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-base-200 text-muted">
+            <Sparkles className="size-7" />
+          </div>
+          <p className="text-sm text-muted">
+            Enable Income Mode to convert your coins into Taka.
+          </p>
+          <div className="flex flex-col gap-2 w-full">
+            <Link
+              href="/dashboard/settings"
+              className="btn btn-primary w-full"
+              onClick={onClose}
+            >
+              Enable Income Mode
+            </Link>
+            <button onClick={onClose} className="btn btn-ghost w-full">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
 
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.blocked;
   const Icon = config.icon;
@@ -60,6 +94,9 @@ export function IncomeModeRestrictionModal({ open, onClose, status }) {
             For more information, contact our support team.
           </p>
         )}
+        <button onClick={onClose} className="btn btn-ghost w-full">
+          Close
+        </button>
       </div>
     </Modal>
   );

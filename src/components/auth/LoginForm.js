@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
 import { normalizePhone } from "@/components/auth/RegisterForm";
 import { claimGuestPrize } from "@/lib/utils/guestSpin";
+import { getAuthRedirectUrl } from "@/lib/utils/site-url";
 
 export function LoginForm() {
   const router = useRouter();
@@ -133,11 +134,15 @@ export function LoginForm() {
           type="button"
           onClick={async () => {
             const supabase = createClient();
-            const origin = typeof window !== "undefined" ? window.location.origin : "";
+            const redirectTo = getAuthRedirectUrl("/auth/callback");
             const { error } = await supabase.auth.signInWithOAuth({
               provider: "google",
               options: {
-                redirectTo: `${origin}/auth/callback`,
+                redirectTo,
+                queryParams: {
+                  access_type: "offline",
+                  prompt: "consent",
+                },
               },
             });
             if (error) {

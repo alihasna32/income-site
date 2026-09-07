@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { useFeedbackRotation } from "@/hooks/useFeedbackRotation";
 import { cn } from "@/lib/utils/cn";
 
-const formatRelative = (dateString) => {
+function formatRelative(dateString) {
   if (!dateString) return "";
   const then = new Date(dateString).getTime();
   const now = Date.now();
@@ -21,11 +21,12 @@ const formatRelative = (dateString) => {
   }
   const d = Math.floor(diff / 86400);
   return `${d} day${d !== 1 ? "s" : ""} ago`;
-};
+}
 
 export function FeedbackButton() {
-  const { current, loading, feedbacks } = useFeedbackRotation();
+  const { feedbacks, current, loading } = useFeedbackRotation();
   const [open, setOpen] = useState(false);
+  const [seenIds, setSeenIds] = useState(new Set());
   const [, forceUpdate] = useState(0);
 
   // Re-render the relative time every minute to keep it fresh
@@ -34,16 +35,62 @@ export function FeedbackButton() {
     return () => clearInterval(id);
   }, []);
 
+  // Fetch seen feedback IDs from server on mount
+  useEffect(() => {
+    fetch("/api/feedback/seen")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok) {
+          setSeenIds(new Set(data.seenIds || []));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const hasUnseen = feedbacks.some((fb) => !seenIds.has(fb.id));
+
+  const markAllSeen = useCallback(async () => {
+    if (feedbacks.length === 0) return;
+    try {
+      const res = await fetch("/api/feedback/seen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ feedbackIds: feedbacks.map((fb) => fb.id) }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ok) {
+          setSeenIds(new Set(feedbacks.map((fb) => fb.id)));
+        }
+      }
+    } catch {
+      // silently fail
+    }
+  }, [feedbacks]);
+
+  const handleOpen = () => {
+    setOpen((v) => {
+      const next = !v;
+      if (next) {
+        markAllSeen();
+      }
+      return next;
+    });
+  };
+
   return (
     <>
       {/* Floating button */}
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={handleOpen}
         className="fixed bottom-24 right-4 z-50 lg:bottom-6 lg:right-6 flex size-14 items-center justify-center rounded-full bg-secondary text-white shadow-card hover:scale-105 transition-transform"
         aria-label="Open feedback"
       >
         <MessageCircle className="size-6" />
+        {hasUnseen && (
+          <span className="absolute -right-0.5 -top-0.5 flex size-3 items-center justify-center rounded-full bg-error" />
+        )}
       </button>
 
       {/* Panel */}
@@ -57,7 +104,7 @@ export function FeedbackButton() {
           <div className="fixed bottom-40 right-4 z-50 lg:bottom-24 lg:right-6 w-[calc(100vw-2rem)] sm:w-96 max-w-sm rounded-box bg-base-100 border border-base-300 shadow-card overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-base-200">
               <h3 className="flex items-center gap-2 font-bold text-plum">
-                <MessageCircle className="size-4 text-secondary" /> Community feedback
+                <MessageCircle className="size-4 text-secondary" /> Feedback
               </h3>
               <button
                 onClick={() => setOpen(false)}
@@ -83,9 +130,19 @@ export function FeedbackButton() {
                     Added {formatRelative(current.created_at)}
                   </p>
                   {feedbacks.length > 1 && (
-                    <p className="mt-2 text-xs text-muted">
-                      Showing {feedbacks.indexOf(current) + 1} of {feedbacks.length} · rotates every 5 min
-                    </p>
+                    <div className="mt-3 flex items-center gap-1.5">
+                      {feedbacks.map((_, idx) => (
+                        <span
+                          key={idx}
+                          className={cn(
+                            "size-1.5 rounded-full transition-colors",
+                            idx === feedbacks.indexOf(current)
+                              ? "bg-secondary"
+                              : "bg-base-300"
+                          )}
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               )}
