@@ -12,7 +12,6 @@ const settingsSchema = z.object({
       inviteBonusCoins: z.number().int().min(0).max(1000),
     })
     .optional(),
-  withdrawals: z.object({ minAmount: z.number().int().min(1).max(1000000) }).optional(),
   mathDaily: z.object({ rewardCoins: z.number().int().min(0).max(10000) }).optional(),
   streaks: z.object({ graceDays: z.number().int().min(0).max(7) }).optional(),
   math: z
@@ -29,6 +28,8 @@ const settingsSchema = z.object({
     })
     .optional(),
   platform: z.object({ siteName: z.string().trim().min(1).max(40) }).optional(),
+  takaConversion: z.object({ minCoins: z.number().int().min(1).max(10000000) }).optional(),
+  takaWithdrawals: z.object({ minAmount: z.number().int().min(1).max(1000000) }).optional(),
 });
 
 export async function GET() {
@@ -42,11 +43,12 @@ export async function GET() {
 
   const settings = {
     referrals: { bonusCoins: 30, inviteBonusCoins: 60 },
-    withdrawals: { minAmount: 1000 },
     mathDaily: { rewardCoins: 20 },
     streaks: { graceDays: 0 },
     math: { dailyAttempts: 5 },
     platform: { siteName: "CoinQuest" },
+    takaConversion: { minCoins: 1000 },
+    takaWithdrawals: { minAmount: 200 },
   };
 
   for (const row of data || []) {
@@ -54,11 +56,6 @@ export async function GET() {
       settings.referrals = {
         bonusCoins: row.value?.bonus_coins ?? 30,
         inviteBonusCoins: row.value?.invite_bonus_coins ?? 30,
-      };
-    }
-    if (row.key === "withdrawals") {
-      settings.withdrawals = {
-        minAmount: row.value?.min_amount ?? 1000,
       };
     }
     if (row.key === "math_daily") {
@@ -82,6 +79,16 @@ export async function GET() {
     }
     if (row.key === "platform") {
       settings.platform.siteName = row.value?.site_name || "CoinQuest";
+    }
+    if (row.key === "taka_conversion") {
+      settings.takaConversion = {
+        minCoins: row.value?.min_coins ?? 1000,
+      };
+    }
+    if (row.key === "taka_withdrawals") {
+      settings.takaWithdrawals = {
+        minAmount: row.value?.min_amount ?? 200,
+      };
     }
   }
 
@@ -129,17 +136,6 @@ export async function POST(request) {
             invite_bonus_coins:
               parsed.data.referrals.inviteBonusCoins ?? existing.invite_bonus_coins ?? 30,
           },
-        })
-    );
-  }
-
-  if (parsed.data.withdrawals) {
-    upserts.push(
-      admin
-        .from("admin_settings")
-        .upsert({
-          key: "withdrawals",
-          value: { min_amount: parsed.data.withdrawals.minAmount },
         })
     );
   }
@@ -209,6 +205,28 @@ export async function POST(request) {
         .upsert({
           key: "platform",
           value: { site_name: parsed.data.platform.siteName },
+        })
+    );
+  }
+
+  if (parsed.data.takaConversion) {
+    upserts.push(
+      admin
+        .from("admin_settings")
+        .upsert({
+          key: "taka_conversion",
+          value: { min_coins: parsed.data.takaConversion.minCoins },
+        })
+    );
+  }
+
+  if (parsed.data.takaWithdrawals) {
+    upserts.push(
+      admin
+        .from("admin_settings")
+        .upsert({
+          key: "taka_withdrawals",
+          value: { min_amount: parsed.data.takaWithdrawals.minAmount },
         })
     );
   }

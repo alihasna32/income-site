@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/games", label: "Games", icon: Gamepad2 },
   { href: "/admin/rewards", label: "Rewards & Ledger", icon: Coins },
-  { href: "/admin/withdrawals", label: "Withdrawals", icon: Banknote },
+  { href: "/admin/taka-withdrawals", label: "Withdrawals", icon: Banknote },
   { href: "/admin/messages", label: "Messages", icon: Mail },
   { href: "/admin/income-requests", label: "Income Requests", icon: Coins },
   { href: "/admin/feedback", label: "Feedback", icon: MessageCircle },

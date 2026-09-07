@@ -207,10 +207,22 @@ export function DashboardShell({ children, profile, unreadCount, userId }) {
             <div className="flex min-w-0 items-center gap-2">
               <Link
                 href="/dashboard/wallet"
-                className="flex min-w-0 max-w-[9.5rem] items-center gap-1.5 rounded-field bg-white/10 px-3 py-1.5 text-sm font-bold text-gold hover:bg-white/15"
+                className="group flex min-w-0 items-center gap-1.5 rounded-field bg-gradient-to-r from-white/10 to-white/5 px-3 py-1.5 text-sm font-bold text-gold ring-1 ring-white/10 transition hover:from-white/15 hover:to-white/10 hover:ring-gold/40"
+                aria-label="Coin balance"
+                title="Coin balance"
               >
                 <CoinValue value={wallet?.coins} className="text-gold" />
               </Link>
+              {Number(wallet?.taka_balance) > 0 && (
+                <Link
+                  href="/dashboard/wallet"
+                  className="flex min-w-0 items-center gap-1 rounded-field bg-gradient-to-r from-success/20 to-success/10 px-2.5 py-1.5 text-sm font-bold text-success ring-1 ring-success/20 transition hover:from-success/25 hover:to-success/15"
+                  aria-label="Taka balance"
+                  title="Taka balance"
+                >
+                  <span>৳{new Intl.NumberFormat("en-US").format(wallet?.taka_balance || 0)}</span>
+                </Link>
+              )}
               <BellDropdown initialUnread={unreadCount} userId={userId} />
               <Link
                 href="/dashboard/profile"

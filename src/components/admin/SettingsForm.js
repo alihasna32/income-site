@@ -140,25 +140,25 @@ export function SettingsForm() {
       </section>
 
       <section className="card bg-base-100 border border-base-300 shadow-card p-6">
-        <h2 className="font-bold text-plum">Withdrawals</h2>
+        <h2 className="font-bold text-plum">Taka Withdrawals</h2>
         <div className="mt-4 max-w-lg">
-          <label className="label-text font-semibold text-plum">Minimum withdrawal amount (coins)</label>
+          <label className="label-text font-semibold text-plum">Minimum Taka withdrawal amount (৳)</label>
           <input
             type="number"
             min={1}
-            value={settings.withdrawals.minAmount}
-            onChange={(e) => set("withdrawals.minAmount", Number(e.target.value))}
+            value={settings.takaWithdrawals.minAmount}
+            onChange={(e) => set("takaWithdrawals.minAmount", Number(e.target.value))}
             className="input input-bordered w-full mt-1"
           />
           <p className="text-xs text-muted mt-1">
-            Requests below this amount are rejected automatically. Applies to all users.
+            Users must have at least this amount in Taka balance to request a withdrawal.
           </p>
         </div>
       </section>
 
       <section className="card bg-base-100 border border-base-300 shadow-card p-6">
         <h2 className="flex items-center gap-2 font-bold text-plum">
-          <Coins className="size-5 text-secondary" /> Income / Wallet conversion
+          <Coins className="size-5 text-secondary" /> Coin → Taka conversion
         </h2>
         <p className="mt-1 text-sm text-muted">
           Set how many coins equal one Taka. This rate is used by all users when converting their coins.
@@ -193,6 +193,20 @@ export function SettingsForm() {
               </button>
             </>
           )}
+        </div>
+
+        <div className="mt-6 max-w-lg pt-6 border-t border-base-200">
+          <label className="label-text font-semibold text-plum">Minimum coin amount per conversion</label>
+          <input
+            type="number"
+            min={1}
+            value={settings.takaConversion?.minCoins ?? 1000}
+            onChange={(e) => set("takaConversion.minCoins", Number(e.target.value))}
+            className="input input-bordered w-full mt-1"
+          />
+          <p className="text-xs text-muted mt-1">
+            Users must convert at least this many coins at a time. Saved with the other settings below.
+          </p>
         </div>
       </section>
 
