@@ -68,8 +68,14 @@ export async function middleware(request) {
       return NextResponse.redirect(url);
     }
 
-    // Session is now stored in cookies — redirect to dashboard
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Session cookies were written into `response` by setAll. We must keep
+    // them on the redirect response — otherwise the next request to /dashboard
+    // has no session and the layout's getSession() sends the user back to /login.
+    const dashboardRedirect = NextResponse.redirect(new URL("/dashboard", request.url));
+    response.cookies.getAll().forEach((c) => {
+      dashboardRedirect.cookies.set(c.name, c.value, c);
+    });
+    return dashboardRedirect;
   }
 
   // ---------------------------------------------------------------------------
