@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
 import { normalizePhone } from "@/components/auth/RegisterForm";
 import { claimGuestPrize } from "@/lib/utils/guestSpin";
-import { getAuthRedirectUrl } from "@/lib/utils/site-url";
 
 export function LoginForm() {
   const router = useRouter();
@@ -132,24 +131,12 @@ export function LoginForm() {
       <div className="flex justify-center">
         <button
           type="button"
-          onClick={async () => {
-            const supabase = createClient();
-            const redirectTo = getAuthRedirectUrl("/auth/callback");
-            const { error } = await supabase.auth.signInWithOAuth({
-              provider: "google",
-              options: {
-                redirectTo,
-                queryParams: {
-                  access_type: "offline",
-                  prompt: "consent",
-                },
-              },
-            });
-            if (error) {
-              toast("Google login failed", "error");
-              return;
-            }
-            // signInWithOAuth will redirect, so this won't be reached if successful
+          onClick={() => {
+            // Navigate to the server route that initiates Google OAuth.  This
+            // stores the PKCE code verifier in cookies (instead of localStorage)
+            // so the middleware can complete the session exchange after Google
+            // redirects back to /auth/callback.
+            window.location.href = "/api/auth/google-signin";
           }}
           className="btn btn-ghost w-full"
         >

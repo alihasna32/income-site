@@ -53,7 +53,13 @@ export async function middleware(request) {
     }
 
     // Exchange the code for a session
-    const { error } = await supabase.auth.exchangeCodeForSession(callbackCode);
+    // The ?sb_flow_id=... query param is added by Supabase to the callback URL so the
+    // server can find the matching PKCE code verifier stored in cookies.
+    const flowId = request.nextUrl.searchParams.get("sb_flow_id");
+    const { error } = await supabase.auth.exchangeCodeForSession(
+      callbackCode,
+      flowId ? { flowId } : undefined
+    );
 
     if (error) {
       console.error("[middleware] OAuth code exchange failed:", error.message);
