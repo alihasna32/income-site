@@ -7,6 +7,7 @@ import { Eye, EyeOff, Gift, Loader2, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/shared/ToastProvider";
 import { claimGuestPrize } from "@/lib/utils/guestSpin";
+import { getAuthRedirectUrl } from "@/lib/utils/site-url";
 import { cn } from "@/lib/utils/cn";
 import { registerSchema } from "@/lib/validations";
 
@@ -265,10 +266,15 @@ function RegisterFormInner() {
           setError("");
           setLoading(true);
           const supabase = createClient();
+          const redirectTo = getAuthRedirectUrl("/auth/callback");
           const { error: oauthError } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-              redirectTo: `${window.location.origin}/auth/callback`,
+              redirectTo,
+              queryParams: {
+                access_type: "offline",
+                prompt: "consent",
+              },
             },
           });
           if (oauthError) {
