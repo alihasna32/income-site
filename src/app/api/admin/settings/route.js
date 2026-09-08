@@ -30,6 +30,17 @@ const settingsSchema = z.object({
   platform: z.object({ siteName: z.string().trim().min(1).max(40) }).optional(),
   takaConversion: z.object({ minCoins: z.number().int().min(1).max(10000000) }).optional(),
   takaWithdrawals: z.object({ minAmount: z.number().int().min(1).max(1000000) }).optional(),
+  incomeModeActivation: z
+    .object({
+      enabled: z.boolean().default(true),
+      title: z.string().trim().min(1).max(200),
+      message: z.string().trim().min(1).max(2000),
+      provider: z.string().trim().max(100).optional(),
+      number: z.string().trim().min(1).max(30),
+      amount: z.number().int().positive(),
+      button_text: z.string().trim().min(1).max(200),
+    })
+    .optional(),
 });
 
 export async function GET() {
@@ -49,6 +60,15 @@ export async function GET() {
     platform: { siteName: "CoinQuest" },
     takaConversion: { minCoins: 1000 },
     takaWithdrawals: { minAmount: 200 },
+    incomeModeActivation: {
+      enabled: true,
+      title: "Income Mode চালু করুন",
+      message: "এই নম্বরে ১০০ টাকা Send Money করে Income Mode চালু করুন এবং ইনকাম করুন।",
+      provider: "bKash",
+      number: "017XXXXXXXX",
+      amount: 100,
+      button_text: "Income Mode চালু করুন",
+    },
   };
 
   for (const row of data || []) {
@@ -88,6 +108,17 @@ export async function GET() {
     if (row.key === "taka_withdrawals") {
       settings.takaWithdrawals = {
         minAmount: row.value?.min_amount ?? 200,
+      };
+    }
+    if (row.key === "income_mode_activation") {
+      settings.incomeModeActivation = {
+        enabled: row.value?.enabled ?? true,
+        title: row.value?.title || "Income Mode চালু করুন",
+        message: row.value?.message || "এই নম্বরে ১০০ টাকা Send Money করে Income Mode চালু করুন এবং ইনকাম করুন।",
+        provider: row.value?.provider || "bKash",
+        number: row.value?.number || "017XXXXXXXX",
+        amount: row.value?.amount || 100,
+        button_text: row.value?.button_text || "Income Mode চালু করুন",
       };
     }
   }
@@ -227,6 +258,60 @@ export async function POST(request) {
         .upsert({
           key: "taka_withdrawals",
           value: { min_amount: parsed.data.takaWithdrawals.minAmount },
+        })
+    );
+  }
+
+  if (parsed.data.incomeModeActivation) {
+    const current = await admin
+      .from("admin_settings")
+      .select("value")
+      .eq("key", "income_mode_activation")
+      .maybeSingle();
+
+    const existing = current.data?.value || {};
+
+    upserts.push(
+      admin
+        .from("admin_settings")
+        .upsert({
+          key: "income_mode_activation",
+          value: {
+            enabled:
+              parsed.data.incomeModeActivation.enabled ??
+              existing.enabled ??
+              true,
+
+            title:
+              parsed.data.incomeModeActivation.title ??
+              existing.title ??
+              "Income Mode চালু করুন",
+
+            message:
+              parsed.data.incomeModeActivation.message ??
+              existing.message ??
+              "এই নম্বরে ১০০ টাকা Send Money করে Income Mode চালু করুন এবং ইনকাম করুন।",
+
+            provider:
+              parsed.data.incomeModeActivation.provider ??
+              existing.provider ??
+              "bKash",
+
+            number:
+              parsed.data.incomeModeActivation.number ??
+              existing.number ??
+              "017XXXXXXXX",
+
+            amount:
+              parsed.data.incomeModeActivation.amount ??
+              existing.amount ??
+              100,
+
+            button_text:
+              parsed.data.incomeModeActivation.button_text ??
+              existing.button_text ??
+              "Income Mode চালু করুন",
+          },
         })
     );
   }

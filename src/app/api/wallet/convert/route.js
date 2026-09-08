@@ -55,6 +55,20 @@ export async function POST(request) {
 
   const admin = createAdminClient();
 
+  // Server-side check: verify user has Income Mode enabled
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("income_mode_status")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!profile || profile.income_mode_status !== "active") {
+    return NextResponse.json(
+      { error: "Income Mode is not enabled" },
+      { status: 403 }
+    );
+  }
+
   // Fetch the active conversion rate from conversion_settings
   const { data: conv } = await admin
     .from("conversion_settings")

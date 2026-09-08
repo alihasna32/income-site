@@ -17,7 +17,7 @@ export function SettingsForm() {
     fetch("/api/admin/settings", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => data && setSettings(data.settings))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -29,7 +29,7 @@ export function SettingsForm() {
           setConversionRate(data.conversion.coins_per_taka);
         }
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoadingRate(false));
   }, []);
 
@@ -136,6 +136,181 @@ export function SettingsForm() {
               className="input input-bordered w-full mt-1"
             />
           </div>
+        </div>
+      </section>
+
+      <section className="card bg-base-100 border border-base-300 shadow-card p-6">
+        <h2 className="font-bold text-plum">
+          Income Mode Activation
+        </h2>
+
+        <p className="mt-1 text-sm text-muted">
+          Configure the information users see when they try to
+          convert coins without Income Mode enabled.
+        </p>
+
+        <div className="mt-5 space-y-4 max-w-2xl">
+
+          {/* Enable */}
+          <label className="flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={settings.incomeModeActivation?.enabled ?? true}
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.enabled",
+                  e.target.checked
+                )
+              }
+            />
+
+            <span className="font-semibold text-plum">
+              Enable activation modal
+            </span>
+          </label>
+
+          {/* Title */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Modal title
+            </label>
+
+            <input
+              type="text"
+              maxLength={200}
+              value={
+                settings.incomeModeActivation?.title ??
+                "Income Mode চালু করুন"
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.title",
+                  e.target.value
+                )
+              }
+              className="input input-bordered mt-1 w-full"
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Modal message
+            </label>
+
+            <textarea
+              rows={4}
+              maxLength={2000}
+              value={
+                settings.incomeModeActivation?.message ?? ""
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.message",
+                  e.target.value
+                )
+              }
+              className="textarea textarea-bordered mt-1 w-full"
+            />
+
+            <p className="mt-1 text-xs text-muted">
+              This message will be shown to users before they
+              enable Income Mode.
+            </p>
+          </div>
+
+          {/* Provider */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Payment provider
+            </label>
+
+            <input
+              type="text"
+              maxLength={100}
+              placeholder="bKash"
+              value={
+                settings.incomeModeActivation?.provider ?? ""
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.provider",
+                  e.target.value
+                )
+              }
+              className="input input-bordered mt-1 w-full"
+            />
+          </div>
+
+          {/* Number */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Payment number
+            </label>
+
+            <input
+              type="text"
+              maxLength={30}
+              placeholder="017XXXXXXXX"
+              value={
+                settings.incomeModeActivation?.number ?? ""
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.number",
+                  e.target.value
+                )
+              }
+              className="input input-bordered mt-1 w-full"
+            />
+          </div>
+
+          {/* Amount */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Activation amount (৳)
+            </label>
+
+            <input
+              type="number"
+              min={1}
+              value={
+                settings.incomeModeActivation?.amount ?? 100
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.amount",
+                  Math.max(1, Number(e.target.value))
+                )
+              }
+              className="input input-bordered mt-1 w-full"
+            />
+          </div>
+
+          {/* Button text */}
+          <div>
+            <label className="label-text font-semibold text-plum">
+              Button text
+            </label>
+
+            <input
+              type="text"
+              maxLength={200}
+              value={
+                settings.incomeModeActivation?.button_text ??
+                "Income Mode চালু করুন"
+              }
+              onChange={(e) =>
+                set(
+                  "incomeModeActivation.button_text",
+                  e.target.value
+                )
+              }
+              className="input input-bordered mt-1 w-full"
+            />
+          </div>
+
         </div>
       </section>
 
