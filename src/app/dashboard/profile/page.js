@@ -282,9 +282,9 @@ export default function ProfilePage() {
             <div className="flex min-w-0 items-center gap-2 text-sm">
               <IdCard className="size-4 text-muted shrink-0" />
               <span className="text-muted">User ID</span>
-              <code className="font-mono font-bold text-plum break-all">{profile.id}</code>
+              <code className="font-mono font-bold text-plum break-all">{profile.id} <CopyButton value={profile.id} label="Copy" /></code>
             </div>
-            <CopyButton value={profile.id} label="Copy" />
+            
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-field bg-base-200 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2 text-sm">

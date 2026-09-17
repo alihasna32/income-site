@@ -97,6 +97,7 @@ export default function ReferralPage() {
                   <Share2 className="size-4" /> Share with friends
                 </button>
                 <div className="flex items-center gap-2 rounded-field bg-base-200 px-4 py-2">
+                  <h2 className="font-bold text-plum">Referral code:</h2>
                   <code className="font-mono text-sm font-bold text-plum">{data.code}</code>
                   <CopyButton value={data.code} label="Copy code" />
                 </div>
@@ -107,7 +108,7 @@ export default function ReferralPage() {
                 <Users className="size-4 text-secondary" /> Fair play rules
               </p>
               <ul className="mt-2 space-y-1.5">
-                <li>• Your friend will got 60 coins and you will got 30 coins as reward.</li>
+                <li>• Your friend will got 100 coins and you will got 200 coins as reward.</li>
                 <li>• Self-referrals are blocked automatically.</li>
                 <li>• Each email can only be counted once.</li>
                 <li>• Suspicious signups are flagged and rejected.</li>

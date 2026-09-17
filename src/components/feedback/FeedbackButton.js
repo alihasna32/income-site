@@ -82,7 +82,7 @@ export function FeedbackButton() {
         <MessageCircle className="size-6" />
         {hasUnseen && (
           <span
-            className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-error ring-2 ring-base-100"
+            className="absolute right-1 top-0.5 size-3 rounded-full bg-error ring-2 ring-base-100"
             aria-label="Unread feedback"
           />
         )}
