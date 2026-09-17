@@ -91,7 +91,6 @@ export default function DailyMathChallenge() {
         refreshWallet();
         if (data.correct) {
           showReward(data.rewardCoins, "math_challenge");
-          toast(`Correct! +${data.rewardCoins} coins`, "success");
         }
       } else {
         submittedRef.current = false;

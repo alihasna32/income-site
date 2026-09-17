@@ -65,7 +65,6 @@ export function MathChallengeGame() {
           setPhase("done");
           if (data.coins > 0) {
             showReward(data.coins, "math_challenge");
-            toast(`+${data.coins} coins earned!`, "success");
             refresh();
           } else {
             toast("No reward this time — try again!", "info");

@@ -199,30 +199,6 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {adminChecked && isAdmin && (
-        <section className="card bg-base-100 border border-base-300 shadow-card p-6">
-          <h2 className="flex items-center gap-2 font-bold text-plum">
-            <ShieldCheck className="size-5 text-secondary" /> Admin
-          </h2>
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-field bg-base-200 p-4 max-w-lg">
-            <div>
-              <p className="text-sm font-semibold text-plum">Admin panel</p>
-              <p className="text-xs text-muted">
-                Switch to the admin dashboard to manage players, rewards and settings.
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              className="toggle toggle-secondary shrink-0"
-              aria-label="Go to admin panel"
-              onChange={(e) => {
-                if (e.target.checked) router.push("/admin");
-              }}
-            />
-          </div>
-        </section>
-      )}
-
       <section className="card bg-base-100 border border-base-300 shadow-card p-6">
         <h2 className="flex items-center gap-2 font-bold text-error">
           <LogOut className="size-5" /> Danger zone

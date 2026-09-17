@@ -5,6 +5,7 @@ import { useToast } from "@/components/shared/ToastProvider";
 import { useWallet } from "@/hooks/WalletProvider";
 import { useReward } from "@/hooks/RewardProvider";
 import { startExternalGame } from "@/lib/games/external";
+import { setActiveCountdown, clearActiveCountdown } from "@/lib/games/externalCountdown";
 
 export function useExternalClaim(game) {
   const { toast } = useToast();
@@ -42,6 +43,12 @@ export function useExternalClaim(game) {
     }
     if (data.canClaim) {
       setState("ready");
+      return;
+    }
+    // Restore an active countdown (e.g. after a reload or route change)
+    if (data.secondsRemaining > 0) {
+      setSecondsLeft(Math.ceil(data.secondsRemaining));
+      setState("countdown");
       return;
     }
     if (stateRef.current !== "countdown") setState("locked");
@@ -95,10 +102,12 @@ export function useExternalClaim(game) {
 
   useEffect(() => {
     if (state !== "countdown") return;
+    setActiveCountdown(game.slug);
     const timer = setInterval(() => {
       setSecondsLeft((current) => {
         if (current <= 1) {
           clearInterval(timer);
+          clearActiveCountdown(game.slug);
           setState("ready");
           return 0;
         }
@@ -107,6 +116,14 @@ export function useExternalClaim(game) {
     }, 1000);
     return () => clearInterval(timer);
   }, [state]);
+
+  useEffect(() => {
+    if (state === "countdown") {
+      setActiveCountdown(game.slug);
+    } else {
+      clearActiveCountdown(game.slug);
+    }
+  }, [state, game.slug]);
 
   const start = async () => {
     const data = await startExternalGame(game.slug);
@@ -125,7 +142,6 @@ export function useExternalClaim(game) {
       const data = await res.json();
       if (res.ok && data.earned) {
         setState("claimed");
-        toast(`+${data.coins} coins claimed!`, "success");
         showReward(data.coins, "daily_reward");
         refresh();
       } else if (data.alreadyClaimed) {

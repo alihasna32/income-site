@@ -119,7 +119,6 @@ export function GameShell({ game, children }) {
           setResult(data);
           if (data.earned) {
             showReward(data.coins, "game_reward");
-            toast(`+${data.coins} coins earned!`, "success");
             refresh();
           } else if (data.dailyRewardClaimed) {
             toast("Daily reward already claimed today — play again for fun!", "info");
@@ -166,7 +165,6 @@ export function GameShell({ game, children }) {
           toast("Daily reward already claimed today — play again for fun!", "info");
         } else {
           if (data.rewardCoins > 0) showReward(data.rewardCoins, "spin_reward");
-          toast(`${data.prizeLabel} — nice luck!`, "success");
         }
         refresh();
         setStatus("ready");
@@ -193,7 +191,6 @@ export function GameShell({ game, children }) {
       toast("Daily reward already claimed today — play again for fun!", "info");
     } else {
       if (pendingResult?.coins > 0) showReward(pendingResult.coins, "spin_reward");
-      toast(`${pendingResult?.prizeLabel || "Nice luck"} — nice luck!`, "success");
     }
     refresh();
   }, [pendingResult, refresh, showReward, toast]);

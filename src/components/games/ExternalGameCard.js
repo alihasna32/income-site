@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Lock, Play, Timer } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
@@ -18,10 +18,28 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
   const counting = claimable && claim.state === "countdown";
   const showClaim = claimable && (claim.state === "ready" || claim.state === "claimed");
 
+  // Track whether any external game is currently counting down, so other
+  // games' Play buttons stay disabled until the active countdown finishes.
+  const [anotherCounting, setAnotherCounting] = useState(false);
+  useEffect(() => {
+    const onStarted = (event) => {
+      if (event.detail?.slug !== game.slug) setAnotherCounting(true);
+    };
+    const onEnded = (event) => {
+      if (event.detail?.slug !== game.slug) setAnotherCounting(false);
+    };
+    window.addEventListener("external-game-countdown-started", onStarted);
+    window.addEventListener("external-game-countdown-ended", onEnded);
+    return () => {
+      window.removeEventListener("external-game-countdown-started", onStarted);
+      window.removeEventListener("external-game-countdown-ended", onEnded);
+    };
+  }, [game.slug]);
+
   const handleClick = (e) => {
-    if (locked) {
+    if (locked || anotherCounting) {
       e.preventDefault();
-      setLockedOpen(true);
+      if (locked) setLockedOpen(true);
       return;
     }
     if (claimable) void claim.start();
@@ -46,7 +64,10 @@ export function ExternalGameCard({ game, variant = "full", claimable = false, lo
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
-        className="block text-left"
+        className={cn(
+          "block text-left",
+          (locked || anotherCounting) && "pointer-events-none opacity-60"
+        )}
         aria-label={`Play ${game.title}`}
       >
         {variant !== "tile" && (

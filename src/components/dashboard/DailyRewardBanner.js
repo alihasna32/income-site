@@ -57,10 +57,6 @@ export function DailyRewardBanner() {
         if (data.days?.length) setDays(data.days);
         setCelebrate(true);
         showReward(data.coins, "daily_reward");
-        toast(
-          `Day ${data.dayInStreak} claimed — +${data.coins} coins!`,
-          "success"
-        );
         refresh();
         setTimeout(() => setCelebrate(false), 2500);
       } else if (res.status === 409) {

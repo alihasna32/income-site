@@ -9,7 +9,7 @@ export function externalGameEligibility(startedAt, now = Date.now()) {
       startedAt: null,
       eligibleAt: null,
       canClaim: false,
-      secondsRemaining: EXTERNAL_GAME_MIN_PLAY_SECONDS,
+      secondsRemaining: 0,
     };
   }
 

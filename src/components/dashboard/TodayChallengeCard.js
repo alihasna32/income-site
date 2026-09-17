@@ -37,7 +37,6 @@ export function TodayChallengeCard({ challenge }) {
         setState(data.correct ? "correct" : "wrong");
         if (data.correct) {
           showReward(data.coins, "daily_challenge");
-          toast(`Correct! +${data.coins} coins`, "success");
           refresh();
         } else {
           toast(data.message || "Not quite!", "info");

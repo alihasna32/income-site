@@ -134,7 +134,6 @@ export function ScratchCardGame() {
         setStatus("claimed");
         setRevealed(true);
         showReward(data.coins, "scratch_card");
-        toast(`You won ${data.prizeLabel}!`, "success");
         refresh();
       } else if (res.status === 409) {
         toast("You've already scratched today", "info");

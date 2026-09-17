@@ -141,51 +141,32 @@ export default function ProfilePage() {
           )}
         </div>
         <div className="px-5 sm:px-8 pb-6">
-          <div className="flex flex-wrap items-end justify-between gap-4 -mt-10">
-            <button
-              onClick={() => setAvatarOpen((v) => !v)}
-              className="relative group shrink-0"
-              aria-label="Change avatar"
-            >
-              <span
-                className={cn(
-                  "flex size-20 items-center justify-center rounded-full text-4xl border-4 border-base-100 shadow-card",
-                  incomeStatus === "active" && "ring-2 ring-success ring-offset-2 ring-offset-base-100",
-                  form.avatarEmoji ? "" : `bg-gradient-to-br ${avatarGradient(profile?.email || "user")}`
-                )}
+          <div className="flex items-center justify-between gap-6 -mt-5">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setAvatarOpen((v) => !v)}
+                className="relative group shrink-0"
+                aria-label="Change avatar"
               >
-                {form.avatarEmoji || initials(profile?.displayName || profile?.email || "U")}
-              </span>
-              <span className="absolute inset-0 flex items-center justify-center rounded-full bg-plum/50 opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-bold">
-                Change
-              </span>
-            </button>
+                <span
+                  className={cn(
+                    "flex size-20 items-center justify-center rounded-full text-4xl border-4 border-base-100 shadow-card",
+                    incomeStatus === "active" && "ring-2 ring-success ring-offset-2 ring-offset-base-100",
+                    form.avatarEmoji ? "" : `bg-gradient-to-br ${avatarGradient(profile?.email || "user")}`
+                  )}
+                >
+                  {form.avatarEmoji || initials(profile?.displayName || profile?.email || "U")}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-plum/50 opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-bold">
+                  Change
+                </span>
+              </button>
+            </div>
             <div className="flex flex-col items-end gap-2">
               <span className="flex items-center gap-2 badge badge-lg bg-plum text-neutral-content shadow-card">
                 <Trophy className="size-4 text-gold" />
                 {level?.title || "Beginner"}
-              </span>
-              <Link
-                href="/dashboard/settings"
-                className={cn(
-                  "flex items-center gap-1.5 badge badge-lg shadow-card text-xs font-semibold border",
-                  incomeStatus === "active"
-                    ? "bg-success/15 border-success/40 text-success"
-                    : incomeStatus === "pending"
-                    ? "bg-warning/15 border-warning/40 text-warning"
-                    : incomeStatus === "suspended" || incomeStatus === "blocked"
-                    ? "bg-error/15 border-error/40 text-error"
-                    : "bg-base-200 border-base-300 text-muted"
-                )}
-              >
-                {incomeStatus === "active" ? (
-                  <><Banknote className="size-3.5" /> Income Mode active</>
-                ) : incomeStatus === "pending" ? (
-                  <><Loader2 className="size-3.5 animate-spin" /> Income Mode pending</>
-                ) : (
-                  <><Settings className="size-3.5" /> Activate Income Mode</>
-                )}
-              </Link>
+              </span>             
             </div>
           </div>
 
