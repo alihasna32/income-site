@@ -11,6 +11,7 @@ import { ResetPasswordModal } from "@/components/auth/ResetPasswordModal";
 import dynamic from "next/dynamic";
 const IncomeModeModal = dynamic(() => import("@/components/settings/IncomeModeModal").then(m => m.IncomeModeModal), { ssr: false });
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils/cn";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function SettingsPage() {
   const [profile, setProfile] = useState(null);
   const [incomeStatus, setIncomeStatus] = useState("disabled");
   const resetTriggerRef = useRef(null);
+  const [incomeSectionHighlight, setIncomeSectionHighlight] = useState(false);
+  const incomeSectionRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -34,12 +37,39 @@ export default function SettingsPage() {
         if (cancelled || !data) return;
         setIsAdmin(Boolean(data.isAdmin));
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => {
         if (!cancelled) setAdminChecked(true);
       });
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("incomeMode") !== "1") return;
+
+    const timer = window.setTimeout(() => {
+      const section = incomeSectionRef.current;
+
+      if (!section) return;
+
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      setIncomeSectionHighlight(true);
+
+      window.setTimeout(() => {
+        setIncomeSectionHighlight(false);
+      }, 4000);
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timer);
     };
   }, []);
 
@@ -171,29 +201,71 @@ export default function SettingsPage() {
         </p>
       </section>
 
-      <section className="card bg-base-100 border border-base-300 shadow-card p-6">
+      <section
+        ref={incomeSectionRef}
+        className={cn(
+          "card border p-6 transition-all duration-500",
+          incomeSectionHighlight
+            ? "border-primary ring-4 ring-primary/20 shadow-xl scale-[1.01] bg-primary/5"
+            : "border-base-300 bg-base-100 shadow-card"
+        )}
+      >
         <h2 className="flex items-center gap-2 font-bold text-plum">
-          <CreditCard className="size-5 text-secondary" /> Income Mode
+          <CreditCard className="size-5 text-secondary" />
+          Income Mode
         </h2>
+
         <div className="mt-4 max-w-lg">
-          <p className="text-sm text-muted">Income Mode lets you convert coins into Taka. Submit a payment transaction to request activation; an admin will review it.</p>
+          <p className="text-sm text-muted">
+            Income Mode lets you convert coins into Taka. Submit a payment
+            transaction to request activation; an admin will review it.
+          </p>
+
+          {incomeSectionHighlight && (
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-semibold text-plum">
+              <span className="flex size-2.5 shrink-0 animate-pulse rounded-full bg-primary" />
+
+              <span>
+                Complete your Income Mode activation from this section.
+              </span>
+            </div>
+          )}
 
           <div className="mt-4 flex items-center gap-3">
             <span className="badge badge-md">
-              {incomeStatus === 'active' ? 'Active' : incomeStatus === 'pending' ? 'Pending' : incomeStatus === 'suspended' ? 'Suspended' : incomeStatus === 'blocked' ? 'Blocked' : 'Disabled'}
+              {incomeStatus === "active"
+                ? "Active"
+                : incomeStatus === "pending"
+                  ? "Pending"
+                  : incomeStatus === "suspended"
+                    ? "Suspended"
+                    : incomeStatus === "blocked"
+                      ? "Blocked"
+                      : "Disabled"}
             </span>
-            {incomeStatus === 'disabled' && (
-              <button className="btn btn-primary btn-sm" onClick={() => setIncomeModalOpen(true)}>
+
+            {incomeStatus === "disabled" && (
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => setIncomeModalOpen(true)}
+              >
                 Activate Income Mode
               </button>
             )}
-            {incomeStatus === 'pending' && (
-              <button className="btn btn-ghost btn-sm" onClick={() => setIncomeModalOpen(true)}>
+
+            {incomeStatus === "pending" && (
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setIncomeModalOpen(true)}
+              >
                 View request
               </button>
             )}
-            {incomeStatus === 'active' && (
-              <p className="text-sm text-success">Income Mode is active.</p>
+
+            {incomeStatus === "active" && (
+              <p className="text-sm text-success">
+                Income Mode is active.
+              </p>
             )}
           </div>
         </div>
@@ -214,7 +286,11 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <IncomeModeModal open={incomeModalOpen} onClose={() => setIncomeModalOpen(false)} profile={profile} />
+      <IncomeModeModal
+        open={incomeModalOpen}
+        onClose={() => setIncomeModalOpen(false)}
+        profile={profile}
+      />
     </div>
   );
 }

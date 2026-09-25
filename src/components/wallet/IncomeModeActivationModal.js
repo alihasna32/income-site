@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/shared/ToastProvider";
-import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_CONFIG = {
   enabled: true,
@@ -22,11 +22,12 @@ export function IncomeModeActivationModal({
   open,
   onClose,
   userHasIncomeMode,
+  onGoToIncomeSection,
 }) {
+  const router = useRouter();
   const [config, setConfig] = useState(DEFAULT_CONFIG);
   const [loading, setLoading] = useState(false);
   const [numberCopied, setNumberCopied] = useState(false);
-
   const { toast } = useToast();
 
   useEffect(() => {
@@ -170,13 +171,16 @@ export function IncomeModeActivationModal({
             </div>
 
             <div className="mt-3 flex w-full flex-col gap-2">
-              <Link
-                href="/dashboard/settings"
-                onClick={onClose}
+              <button
+                type="button"
+                onClick={() => {
+                  onClose?.();
+                  router.push("/dashboard/settings?incomeMode=1");
+                }}
                 className="btn btn-primary w-full"
               >
                 {config.button_text}
-              </Link>
+              </button>
 
               <button
                 type="button"

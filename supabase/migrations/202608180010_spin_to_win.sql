@@ -11,7 +11,7 @@ values (
   10,
   5,
   3,
-  '{"luck": true, "dailyRewardOnce": false, "segments": 8, "outcomes": [{"label": "+10", "coins": 10, "weight": 1}, {"label": "+20", "coins": 20, "weight": 1}, {"label": "0", "coins": 0, "weight": 1}, {"label": "+30", "coins": 30, "weight": 1}, {"label": "+50", "coins": 50, "weight": 1}, {"label": "0", "coins": 0, "weight": 1}, {"label": "+75", "coins": 75, "weight": 1}, {"label": "+100", "coins": 100, "weight": 1}]}'::jsonb,
+  '{"luck": true, "dailyRewardOnce": false, "segments": 8, "lifetimeLimit": true, "outcomes": [{"label": "+10", "coins": 10, "weight": 1}, {"label": "+20", "coins": 20, "weight": 1}, {"label": "0", "coins": 0, "weight": 1}, {"label": "+30", "coins": 30, "weight": 1}, {"label": "+50", "coins": 50, "weight": 1}, {"label": "0", "coins": 0, "weight": 1}, {"label": "+75", "coins": 75, "weight": 1}, {"label": "+100", "coins": 100, "weight": 1}]}'::jsonb,
   true,
   23
 )

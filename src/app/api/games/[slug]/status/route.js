@@ -21,7 +21,7 @@ export async function GET(request, { params }) {
   const admin = createAdminClient();
   const { data: game } = await admin
     .from("games")
-    .select("id, max_plays_per_day, embed_url")
+    .select("id, max_plays_per_day, config, embed_url")
     .eq("slug", slug)
     .eq("is_active", true)
     .maybeSingle();
@@ -30,15 +30,24 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
   }
 
+  const isLifetimeLimit = game.config?.lifetimeLimit === true;
   const { start, end } = localDayRange();
+
+  // Base query for counting plays
+  let playsQuery = admin
+    .from("game_sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("game_id", game.id);
+
+  // For lifetime limit games, count all-time plays; otherwise, count today's plays
+  if (!isLifetimeLimit) {
+    playsQuery = playsQuery.gte("created_at", start).lt("created_at", end);
+  }
+
+  // Daily reward count always uses today's date (for dailyRewardOnce logic)
   const [playsRes, rewardRes, startedRes] = await Promise.all([
-    admin
-      .from("game_sessions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("game_id", game.id)
-      .gte("created_at", start)
-      .lt("created_at", end),
+    playsQuery,
     admin
       .from("game_sessions")
       .select("id", { count: "exact", head: true })
@@ -71,7 +80,7 @@ export async function GET(request, { params }) {
 
   return NextResponse.json(
     {
-      playsToday: count,
+      playsToday: isLifetimeLimit ? count : count, // For UI consistency, we still return playsToday
       maxPlays: game.max_plays_per_day,
       playsLeft: Math.max(0, game.max_plays_per_day - count),
       dailyRewardClaimed: rewardCount > 0,

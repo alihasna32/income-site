@@ -32,6 +32,7 @@ export function GameShell({ game, children }) {
 
   const [status, setStatus] = useState("loading"); // loading | ready | playing | submitting
   const [playsLeft, setPlaysLeft] = useState(null);
+  const [maxPlays, setMaxPlays] = useState(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [result, setResult] = useState(null);
   const [startedAt, setStartedAt] = useState(null);
@@ -46,12 +47,19 @@ export function GameShell({ game, children }) {
     game.config?.luck && Array.isArray(game.config.outcomes) && game.config.outcomes.length
       ? Math.max(...game.config.outcomes.map((o) => o.coins || 0))
       : game.config?.thresholds?.[0]?.coins || game.reward_coins;
+  const isLuckGame = Boolean(game.config?.luck);
+
+  const spinsUsed =
+    isLuckGame && maxPlays !== null && playsLeft !== null
+      ? Math.max(0, maxPlays - playsLeft)
+      : null;
 
   const loadStatus = useCallback(async () => {
     try {
       const res = await fetch(`/api/games/${game.slug}/status`, { cache: "no-store" });
       const data = res.ok ? await res.json() : null;
       setPlaysLeft(data?.playsLeft ?? null);
+      setMaxPlays(data?.maxPlays ?? null);
       setStatus("ready");
     } catch {
       setStatus("ready");
@@ -253,18 +261,18 @@ export function GameShell({ game, children }) {
             )}
           </div>
           <div className="flex justify-between gap-2">
-  <button onClick={start} className="btn btn-primary shadow-card" disabled={playsLeft === 0}>
-    <Play className="size-5" /> Play no
-  </button>
+            <button onClick={start} className="btn btn-primary shadow-card" disabled={playsLeft === 0}>
+              <Play className="size-5" /> Play now
+            </button>
 
-  <button
-    onClick={() => setShowInstructions(true)}
-    className="btn btn-outline"
-    disabled={playsLeft === 0}
-  >
-    <Info className="size-5" /> How to play
-  </button>
-</div>
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="btn btn-outline"
+              disabled={playsLeft === 0}
+            >
+              <Info className="size-5" /> How to play
+            </button>
+          </div>
           {playsLeft === 0 && (
             <p className="text-xs text-muted">
               Daily limit reached for this game — try another game or come back tomorrow!
@@ -284,7 +292,7 @@ export function GameShell({ game, children }) {
           spinTarget={spinTarget}
           onSpinComplete={handleSpinComplete}
           playsLeft={playsLeft}
-          disabled={false}
+          disabled={isLuckGame && playsLeft === 0}
         />
       );
     }
@@ -305,12 +313,33 @@ export function GameShell({ game, children }) {
     <div className="space-y-4">
       {status === "playing" && (
         <div className="flex items-center justify-between">
-          <button onClick={start} className="btn btn-ghost btn-sm" title="Restart">
+          <button
+            onClick={start}
+            className="btn btn-ghost btn-sm"
+            title="Restart"
+            disabled={playsLeft === 0}
+          >
             <RotateCcw className="size-4" /> Restart
           </button>
-          <span className="badge badge-lg bg-plum text-neutral-content font-bold">
-            Playing…
-          </span>
+
+          {isLuckGame && spinsUsed !== null && maxPlays !== null && (
+            <span
+              className={cn(
+                "badge badge-lg font-bold",
+                spinsUsed >= maxPlays
+                  ? "bg-error text-error-content"
+                  : "bg-plum text-neutral-content"
+              )}
+            >
+              Spins: {spinsUsed}/{maxPlays}
+            </span>
+          )}
+
+          {!isLuckGame && (
+            <span className="badge badge-lg bg-plum text-neutral-content font-bold">
+              Playing…
+            </span>
+          )}
         </div>
       )}
 
